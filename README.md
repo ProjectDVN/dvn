@@ -24,4 +24,8 @@ Project DVN is a free open-source cross-platform visual novel framework and engi
 * Visual novel features like characters, diagloues, options, animations, music, sound effects etc-
 * And much more ...
 
-*More coming soon*
+### Building
+
+Please visit the example repo for guides on how to build the engine and/or how to develop your visual novel.
+
+The repo can be found here: https://github.com/ProjectDVN/Example
