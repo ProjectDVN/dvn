@@ -1,0 +1,285 @@
+module zid.application;
+
+import zid.external;
+import zid.meta;
+import zid.fonts;
+import zid.colors;
+import zid.window;
+import zid.delayedtask;
+
+import std.concurrency : spawn, thisTid, send, receive, receiveTimeout;
+public import std.concurrency : Tid;
+import core.thread : dur;
+
+import core.stdc.stdlib : exit;
+
+mixin CreateCustomException!"ApplicationException";
+
+shared static this()
+{
+  EXT_Initialize();
+
+  import zid.texttools;
+  initializeTextTools();
+}
+
+private alias Action = void delegate();
+
+private static void spawnedFunc(Tid uiTid)
+{
+  Action action = null;
+
+  receive((shared(Action) a){
+    action = cast(Action)a;
+  });
+
+  if (action)
+  {
+    action();
+  }
+
+  Action message = {
+    EXT_EndWait();
+  };
+
+  send(uiTid, cast(shared)message);
+}
+
+private __gshared Application _app;
+
+public Application getApplication()
+{
+  return _app;
+}
+
+public final class Application
+{
+  private:
+  FontCollection _fonts;
+  bool _running;
+  Tid _uiTid;
+  int _fps;
+  Color _defaultWindowColor;
+  Window[] _windows;
+  bool _allowWASDMovement;
+  size_t _concurrencyLevel;
+
+  public:
+  final:
+  this(int defaultFps = 60)
+  {
+    this(getColorByName("white"), defaultFps);
+  }
+
+  this(Color defaultWindowColor,int defaultFps = 60)
+  {
+    if (defaultFps <= 0 || defaultFps > 240)
+    {
+      throw new ApplicationException("Invalid default fps.");
+    }
+
+    _defaultWindowColor = defaultWindowColor;
+    _fonts = new FontCollection;
+    _fps = defaultFps;
+    _windows = [];
+    _concurrencyLevel = 4;
+
+    if (!_app)
+    {
+      _app = this;
+    }
+  }
+
+  @property
+  {
+    Window[] windows() { return _windows; }
+    
+    size_t concurrencyLevel() { return _concurrencyLevel; }
+    void concurrencyLevel(size_t newConcurrencyLevel)
+    {
+      if (newConcurrencyLevel == 0)
+      {
+        throw new ApplicationException("The concurrency level must be at least 1. It defaults to 4.");
+      }
+
+      _concurrencyLevel = newConcurrencyLevel;
+    }
+    FontCollection fonts() { return _fonts; }
+    bool running() { return _running; }
+    bool isUIThread() { return _running && _uiTid == thisTid; }
+    Color defaultWindowColor() { return _defaultWindowColor; }
+
+    int fps() { return _fps; }
+    void fps(int newFps)
+    {
+      if (newFps <= 0 || newFps > 240)
+      {
+        throw new ApplicationException("Invalid fps.");
+      }
+
+      _fps = newFps;
+    }
+
+    bool allowWASDMovement() { return _allowWASDMovement; }
+    void allowWASDMovement(bool shouldAllow)
+    {
+      _allowWASDMovement = shouldAllow;
+
+      if (_allowWASDMovement)
+      {
+        EXT_AllowWASDMovement();
+      }
+      else
+      {
+        EXT_DisallowWASDMovement();
+      }
+    }
+  }
+
+  Window createWindow(string title, IntVector size, bool isFullScreen)
+  {
+    auto window = new Window(this, title, size, isFullScreen, _defaultWindowColor);
+
+    _windows ~= window;
+
+    return window;
+  }
+
+  void updateWindows()
+  {
+    Window[] newWindows = [];
+
+    foreach (w; _windows)
+    {
+      if (!w.isRemoved)
+      {
+        newWindows ~= w;
+      }
+    }
+
+    _windows = newWindows;
+  }
+
+  void enableKeyboardState()
+  {
+    EXT_EnableKeyboardState();
+  }
+
+  void disableKeyboardState()
+  {
+    EXT_DisableKeyboardState();
+  }
+
+  void sleepCurrentThread(uint ms)
+  {
+    if (ms == 0) return;
+
+    if (isUIThread)
+    {
+      throw new ApplicationException("Cannot sleep on the UI thread.");
+    }
+
+    import core.thread : Thread;
+
+    Thread.sleep(dur!("msecs")(ms));
+  }
+
+  bool beginLoad(Action loadingFn, out Tid tid)
+  {
+    tid = _uiTid;
+
+    if (!loadingFn) return false;
+
+    EXT_BeginWait();
+
+    tid = spawn(&spawnedFunc, _uiTid);
+
+    send(tid, cast(shared)loadingFn);
+
+    return true;
+  }
+
+  void sendMessage(Action action)
+  {
+    send(_uiTid, cast(shared)action);
+  }
+
+  private void receiveMessages()
+  {
+    foreach (_; 0 .. _concurrencyLevel)
+    {
+      receiveTimeout(
+        dur!("nsecs")(-1),
+        (shared(Action) a) {
+          auto action = cast(Action)a;
+
+          if (action)
+          {
+            action();
+          }
+        });
+    }
+  }
+
+  void start(bool allowTextInput = true)
+  {
+    _uiTid = thisTid;
+    _running = true;
+
+    foreach (window; _windows)
+    {
+      window.update();
+    }
+
+    uint lastTicks = EXT_GetTicksRaw();
+
+    //import std.stdio : writefln;
+
+    if (!allowTextInput)
+    {
+		  EXT_StopTextInput();
+    }
+
+    while (_running && _windows && _windows.length)
+    {
+      EXT_PreAplicationLoop(_fps);
+
+      if (!EXT_ProcessEvents(_windows))
+      {
+        stop();
+        break;
+      }
+
+      auto ticks = EXT_GetTicks();
+
+      if ((ticks - lastTicks) >= 42)
+      {
+        //writefln("time: %s", (ticks - lastTicks));
+        lastTicks = ticks;
+
+        receiveMessages();
+        handleDelayedTasks();
+      }
+
+      EXT_InitializeKeyboardState();
+
+      foreach (window; _windows)
+      {
+        window.executePreRender();
+      }
+
+      foreach (window; _windows)
+      {
+        window.render();
+      }
+
+      EXT_PostApplicationLoop(_fps);
+    }
+  }
+
+  void stop()
+  {
+    _running = false;
+    exit(0);
+  }
+}

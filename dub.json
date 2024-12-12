@@ -1,0 +1,17 @@
+{
+	"authors": [
+		"Jacob Jensen"
+	],
+	"license": "The MIT License (MIT)",
+	"copyright": "Copyright © 2024 Jacob Jensen",
+	"name": "dvn",
+	"sourcePaths": [
+		"source"
+	],
+	"description": "A free open-source visual novel engine written in D.",
+	"homepage": "https://github.com/ProjectDVN/dvn",
+	"dependencies": {
+		"derelict-util": "~>3.0.0-beta.1"
+	},
+	"targetType": "sourceLibrary"
+}
