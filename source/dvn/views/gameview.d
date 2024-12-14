@@ -19,6 +19,7 @@ public final class SceneEntry
 	string sound;
 	string background;
 	SceneCharacter[] characters;
+	SceneCharacterName[] characterNames;
 	SceneImage[] images;
 	SceneAnimation[] animations;
 	string textColor;
@@ -30,10 +31,14 @@ public final class SceneEntry
 public final class SceneCharacter
 {
 	string image;
-	string name;
 	string position;
+}
+
+public final class SceneCharacterName
+{
+	string name;
 	string color;
-	string namePosition;
+	string position;
 }
 
 public final class SceneOption
@@ -60,6 +65,9 @@ public final class SceneAnimation
 }
 
 private SceneEntry[string] _scenes;
+
+private string _lastBackgroundSource;
+private string _lastMusic;
 
 public final class GameView : View
 {
@@ -92,6 +100,7 @@ public final class GameView : View
 
 			SceneEntry entry;
 			SceneCharacter character;
+			SceneCharacterName charName;
 			string textColor = "fff";
 			foreach (l; lines)
 			{
@@ -107,6 +116,7 @@ public final class GameView : View
 					entry = new SceneEntry;
 					entry.name = line[1 .. $-1];
 					character = null;
+					charName = null;
 					textColor = "fff";
 					entry.textColor = "fff";
 
@@ -143,17 +153,19 @@ public final class GameView : View
 							character = new SceneCharacter;
 							character.image = value;
 							character.position = "bottomCenter";
-							character.color = "fff";
-							character.namePosition = "left";
 							entry.characters ~= character;
 							break;
 
 						case "charName":
-							character.name = value;
+							charName = new SceneCharacterName;
+							charName.name = value;
+							charName.color = "fff";
+							charName.position = "left";
+							entry.characterNames ~= charName;
 							break;
 
 						case "charColor":
-							character.color = value;
+							charName.color = value;
 							break;
 
 						case "charPos":
@@ -161,7 +173,7 @@ public final class GameView : View
 							break;
 
 						case "charNamePos":
-							character.namePosition = value;
+							charName.position = value;
 							break;
 
 						case "textColor":
@@ -227,7 +239,7 @@ public final class GameView : View
 		}
     }
 
-    void initializeGame(string sceneName)
+    void initializeGame(string sceneName, string loadBackground = "", string loadMusic = "")
     {
 		auto window = super.window;
 		auto settings = getGlobalSettings();
@@ -252,7 +264,20 @@ public final class GameView : View
 
 		if (scene.music && scene.music.length)
 		{
+			_lastMusic = scene.music;
+
 			auto music = getMusicPath(scene.music);
+
+			if (music && music.length)
+			{
+				EXT_PlayMusic(music);
+			}
+		}
+		else if (loadMusic && loadMusic.length)
+		{
+			_lastMusic = loadMusic;
+
+			auto music = getMusicPath(loadMusic);
 
 			if (music && music.length)
 			{
@@ -288,23 +313,23 @@ public final class GameView : View
 		overlay.position = IntVector(0,0);
 		overlay.show();
 
-		auto bgImage = new Image(window, scene.background);
+		auto backgroundSource = (scene.background ?
+			scene.background : (_lastBackgroundSource ?
+				_lastBackgroundSource : loadBackground));
+
+		auto bgImage = new Image(window, backgroundSource);
         addComponent(bgImage);
         bgImage.position = IntVector(
             (window.width / 2) - (bgImage.width / 2),
             (window.height / 2) - (bgImage.height / 2));
         bgImage.show();
 
-		SceneCharacter[] charNamesAndPos;
+		_lastBackgroundSource = backgroundSource;
+
 		if (scene.characters)
 		{
 			foreach (character; scene.characters)
 			{
-				if (character.name && character.namePosition)
-				{
-					charNamesAndPos ~= character;
-				}
-
 				if (character.image && character.position)
 				{
 					auto chImage = new Image(window, character.image);
@@ -535,7 +560,7 @@ public final class GameView : View
 		);
 		textPanel.show();
 
-		foreach (charNameAndPos; charNamesAndPos)
+		foreach (charNameAndPos; scene.characterNames)
 		{
 			auto charNameLabel = new Label(window);
 			charNameLabel.fontName = settings.defaultFont;
@@ -552,7 +577,7 @@ public final class GameView : View
 			charNamePanel.borderColor = "000".getColorByHex;
 			charNamePanel.size = IntVector(charNameLabel.width + 32, charNameLabel.height + 8);
 			
-			switch (charNameAndPos.namePosition)
+			switch (charNameAndPos.position)
 			{
 				case "center":
 					charNamePanel.position = IntVector(
@@ -709,6 +734,8 @@ public final class GameView : View
 
 		saveButton.onButtonClick(new MouseButtonEventHandler((p,b) {
 			settings.saveScene = scene.name;
+			settings.saveBackground = _lastBackgroundSource;
+			settings.saveMusic = _lastMusic;
 			saveGameSettings("data/settings.json");
 			return false;
 		}));
@@ -784,7 +811,7 @@ public final class GameView : View
 					}
 					else if (nextScene)
 					{
-						if (nextScene.background == scene.background)
+						if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)
 						{
 							initializeGame(nextScene.name);
 						}
@@ -839,7 +866,7 @@ public final class GameView : View
 				}
 				else if (nextScene)
 				{
-					if (nextScene.background == scene.background)
+					if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)
 					{
 						initializeGame(nextScene.name);
 					}

@@ -93,7 +93,7 @@ public final class MainMenuView : View
 										auto gameView = cast(GameView)view;
 										gameView.loadGame();
 
-										gameView.initializeGame(settings.saveScene);
+										gameView.initializeGame(settings.saveScene, settings.saveBackground, settings.saveMusic);
 									});
 								}));
 								break;

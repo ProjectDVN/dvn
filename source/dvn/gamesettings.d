@@ -23,6 +23,8 @@ public final class GameSettings
   string title;
   string loadTitle;
   string saveScene;
+  string saveBackground;
+  string saveMusic;
 
   bool fullScreen;
 }
