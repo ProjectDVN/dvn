@@ -21,7 +21,7 @@ Project DVN is a free open-source cross-platform visual novel framework and engi
 * Lots of game configurations and customization
 * Flexible and dynamic *"game scripting"* for creative story creation
 * Native compilation
-* Visual novel features like characters, diagloues, options, animations, music, sound effects etc-
+* Visual novel features like characters, dialogues, options, animations, music, sound effects etc-
 * And much more ...
 
 ### Building
