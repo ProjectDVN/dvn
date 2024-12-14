@@ -6,12 +6,15 @@ import dvn.resources;
 import dvn.gamesettings;
 import dvn.music;
 import dvn.views.settingsview : backToScene;
+import dvn.views.actview;
 
 import zid;
 
 public final class SceneEntry
 {
 	string name;
+	string act;
+	string actContinueButton;
 	string music;
 	string sound;
 	string background;
@@ -204,6 +207,12 @@ public final class GameView : View
 							entry.nextScene = keyData[1];
 							break;
 
+						case "act":
+							entry.act = value;
+							entry.nextScene = keyData[1];
+							entry.actContinueButton = keyData[2];
+							break;
+
 						case "option":
 							auto option = new SceneOption;
 							option.text = value;
@@ -259,6 +268,18 @@ public final class GameView : View
 			{
 				EXT_PlaySound(sound);
 			}
+		}
+
+		if (scene.act && scene.act.length)
+		{
+			runDelayedTask(0, {
+                window.fadeToView("ActView", getColorByName("black"), false, (view) {
+                    auto actView = cast(ActView)view;
+
+                    actView.initialzieAct(scene.act, scene.actContinueButton, scene.background, scene.nextScene);
+                });
+            });
+			return;
 		}
 
 		auto overlay = new Panel(window);

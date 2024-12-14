@@ -73,6 +73,7 @@ public final class SettingsView : View
         }));
 
         int nextY = backLabel.y + backLabel.height + 16;
+        int settingsOffsetY = 104;
 
         // full screen
         {
@@ -122,7 +123,7 @@ public final class SettingsView : View
                 }
             });
 
-            nextY += 104 + dropdown.height;
+            nextY += settingsOffsetY + dropdown.height;
         }
 
         // mute music
@@ -174,7 +175,7 @@ public final class SettingsView : View
                 }
             });
 
-            nextY += 104 + dropdown.height;
+            nextY += settingsOffsetY + dropdown.height;
         }
         
         // mute sound effects
@@ -225,7 +226,7 @@ public final class SettingsView : View
                 }
             });
 
-            nextY += 104 + dropdown.height;
+            nextY += settingsOffsetY + dropdown.height;
         }
 
         // volume
@@ -276,7 +277,7 @@ public final class SettingsView : View
                 EXT_PlayLastMusic();
             });
 
-            nextY += 104 + dropdown.height;
+            nextY += settingsOffsetY + dropdown.height;
         }
 
         // text speed
@@ -319,7 +320,7 @@ public final class SettingsView : View
                 saveSettings();
             });
 
-            nextY += 104 + dropdown.height;
+            nextY += settingsOffsetY + dropdown.height;
         }
     }
 }
