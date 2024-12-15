@@ -329,8 +329,8 @@ public final class GameView : View
 		overlay.show();
 
 		auto backgroundSource = (scene.background ?
-			scene.background : (_lastBackgroundSource ?
-				_lastBackgroundSource : loadBackground));
+			scene.background : ((loadBackground && loadBackground.length) ?
+				loadBackground : _lastBackgroundSource));
 
 		auto bgImage = new Image(window, backgroundSource);
         addComponent(bgImage);
