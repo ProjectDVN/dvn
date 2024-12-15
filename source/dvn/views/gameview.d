@@ -284,6 +284,15 @@ public final class GameView : View
 				EXT_PlayMusic(music);
 			}
 		}
+		else if (_lastMusic && _lastMusic.length)
+		{
+			auto music = getMusicPath(_lastMusic);
+
+			if (music && music.length)
+			{
+				EXT_PlayMusic(music);
+			}
+		}
 
 		if (scene.sound && scene.sound.length)
 		{
