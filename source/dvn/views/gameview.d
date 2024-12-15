@@ -88,6 +88,8 @@ public final class GameView : View
 		import std.file : dirEntries, SpanMode, readText;
 		import std.string : strip;
 		import std.array : replace, split;
+		
+		auto settings = getGlobalSettings();
 
 		auto scriptFiles = dirEntries("data/game/scripts","*.{vns}",SpanMode.depth);
 		foreach (scriptFile; scriptFiles)
@@ -160,6 +162,10 @@ public final class GameView : View
 							charName = new SceneCharacterName;
 							charName.name = value;
 							charName.color = "fff";
+							if (settings.defaultCharacterNameColors)
+							{
+								charName.color = settings.defaultCharacterNameColors.get(charName.name, "fff");
+							}
 							charName.position = "left";
 							entry.characterNames ~= charName;
 							break;

@@ -27,6 +27,8 @@ public final class GameSettings
   string saveMusic;
 
   bool fullScreen;
+
+  string[string] defaultCharacterNameColors;
 }
 
 private GameSettings _settings;
