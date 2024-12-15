@@ -63,6 +63,7 @@ public final class Application
   Window[] _windows;
   bool _allowWASDMovement;
   size_t _concurrencyLevel;
+  size_t _messageLevel;
 
   public:
   final:
@@ -83,6 +84,7 @@ public final class Application
     _fps = defaultFps;
     _windows = [];
     _concurrencyLevel = 4;
+    _messageLevel = 42;
 
     if (!_app)
     {
@@ -93,6 +95,12 @@ public final class Application
   @property
   {
     Window[] windows() { return _windows; }
+
+    size_t messageLevel() { return _messageLevel; }
+    void messageLevel(size_t newMessageLevel)
+    {
+      _messageLevel = newMessageLevel;
+    }
     
     size_t concurrencyLevel() { return _concurrencyLevel; }
     void concurrencyLevel(size_t newConcurrencyLevel)
@@ -252,7 +260,7 @@ public final class Application
 
       auto ticks = EXT_GetTicks();
 
-      if ((ticks - lastTicks) >= 42)
+      if ((ticks - lastTicks) >= _messageLevel)
       {
         //writefln("time: %s", (ticks - lastTicks));
         lastTicks = ticks;
