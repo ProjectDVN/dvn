@@ -13,6 +13,8 @@ import zid;
 
 public final class SceneEntry
 {
+	public:
+	final:
 	string name;
 	string act;
 	string actContinueButton;
@@ -31,12 +33,16 @@ public final class SceneEntry
 
 public final class SceneCharacter
 {
+	public:
+	final:
 	string image;
 	string position;
 }
 
 public final class SceneCharacterName
 {
+	public:
+	final:
 	string name;
 	string color;
 	string position;
@@ -44,12 +50,16 @@ public final class SceneCharacterName
 
 public final class SceneOption
 {
+	public:
+	final:
 	string text;
 	string nextScene;
 }
 
 public final class SceneImage
 {
+	public:
+	final:
 	string source;
 	int x;
 	int y;
@@ -58,6 +68,8 @@ public final class SceneImage
 
 public final class SceneAnimation
 {
+	public:
+	final:
 	string source;
 	int x;
 	int y;
