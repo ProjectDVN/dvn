@@ -138,4 +138,8 @@ void renderGameViewOverplayEnd(Panel overlay) {}
 
 // Called when a scene has finished rendering
 void endGameView() {}
+
+// Settings View
+// Called when a dropdown is rendered in the settings view
+void renderSettingsDropDown(DropDown dropdown) {}
 ```
