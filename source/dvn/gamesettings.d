@@ -29,6 +29,10 @@ public final class GameSettings
   bool fullScreen;
 
   string[string] defaultCharacterNameColors;
+  string dialoguePanelBackgroundColor;
+  string dialoguePanelBorderColor;
+  string namePanelBackgroundColor;
+  string namePanelBorderColor;
 }
 
 private GameSettings _settings;

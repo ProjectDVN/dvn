@@ -564,8 +564,8 @@ public final class GameView : View
 
 		auto textPanel = new Panel(window);
 		addComponent(textPanel);
-		textPanel.fillColor = "000".getColorByHex.changeAlpha(150);
-		textPanel.borderColor = "000".getColorByHex;
+		textPanel.fillColor = settings.dialoguePanelBackgroundColor.getColorByHex.changeAlpha(150);
+		textPanel.borderColor = settings.dialoguePanelBorderColor.getColorByHex;
 		textPanel.size = IntVector(
 			(window.width / 100) * 90,
 			(window.height / 100) * 33);
@@ -588,8 +588,8 @@ public final class GameView : View
 
 			auto charNamePanel = new Panel(window);
 			addComponent(charNamePanel);
-			charNamePanel.fillColor = "000".getColorByHex.changeAlpha(150);
-			charNamePanel.borderColor = "000".getColorByHex;
+			charNamePanel.fillColor = settings.namePanelBackgroundColor.getColorByHex.changeAlpha(150);
+			charNamePanel.borderColor = settings.namePanelBorderColor.getColorByHex;
 			charNamePanel.size = IntVector(charNameLabel.width + 32, charNameLabel.height + 8);
 			
 			switch (charNameAndPos.position)
