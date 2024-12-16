@@ -8,6 +8,8 @@ Discord: https://discord.gg/UhetecF4US
 
 Project DVN is a free open-source cross-platform visual novel framework and engine, written in the D programming language using SDL, and can be used freely for personal and commercial projects.
 
+To create your first visual novel see: https://github.com/ProjectDVN/dvn/wiki/Creating-your-first-visual-novel
+
 ---
 
 ### Preview
