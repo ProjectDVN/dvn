@@ -5,6 +5,7 @@ import std.conv : to;
 import dvn.resources;
 import dvn.gamesettings;
 import dvn.views.gameview;
+import dvn.events;
 
 import zid;
 
@@ -98,6 +99,7 @@ public final class SettingsView : View
             dropdown.fontSize = 18;
             dropdown.textColor = "000".getColorByHex;
 
+            DvnEvents.getEvents().renderSettingsDropDown(dropdown);
             dropdown.restyle();
 
             dropdown.addItem("Yes", "yes");
@@ -149,6 +151,7 @@ public final class SettingsView : View
             dropdown.fontSize = 18;
             dropdown.textColor = "000".getColorByHex;
 
+            DvnEvents.getEvents().renderSettingsDropDown(dropdown);
             dropdown.restyle();
 
             dropdown.addItem("Yes", "yes");
@@ -201,6 +204,7 @@ public final class SettingsView : View
             dropdown.fontSize = 18;
             dropdown.textColor = "000".getColorByHex;
 
+            DvnEvents.getEvents().renderSettingsDropDown(dropdown);
             dropdown.restyle();
 
             dropdown.addItem("Yes", "yes");
@@ -252,6 +256,7 @@ public final class SettingsView : View
             dropdown.fontSize = 18;
             dropdown.textColor = "000".getColorByHex;
 
+            DvnEvents.getEvents().renderSettingsDropDown(dropdown);
             dropdown.restyle();
 
             dropdown.addItem("10", 10);
@@ -303,6 +308,7 @@ public final class SettingsView : View
             dropdown.fontSize = 18;
             dropdown.textColor = "000".getColorByHex;
 
+            DvnEvents.getEvents().renderSettingsDropDown(dropdown);
             dropdown.restyle();
 
             dropdown.addItem("32", 32);

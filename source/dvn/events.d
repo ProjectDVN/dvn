@@ -51,6 +51,9 @@ public class DvnEvents
 
     void endGameView() {}
 
+    // Settings View
+    void renderSettingsDropDown(DropDown dropdown) {}
+
     static:
     final:
     void setEvents(DvnEvents events)
