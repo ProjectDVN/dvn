@@ -6,4 +6,5 @@ public
   import dvn.resources;
   import dvn.views;
   import dvn.music;
+  import dvn.events;
 }

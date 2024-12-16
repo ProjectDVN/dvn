@@ -7,6 +7,7 @@ import dvn.gamesettings;
 import dvn.music;
 import dvn.views.settingsview : backToScene;
 import dvn.views.gameview;
+import dvn.events;
 
 import zid;
 
@@ -26,6 +27,8 @@ public final class ActView : View
 
     void initialzieAct(string actName, string continueText, string background, string sceneName)
     {
+        DvnEvents.getEvents().beginActView(actName, continueText, background, sceneName);
+
 		auto window = super.window;
 		auto settings = getGlobalSettings();
 
@@ -35,6 +38,8 @@ public final class ActView : View
             (window.width / 2) - (bgImage.width / 2),
             (window.height / 2) - (bgImage.height / 2));
         bgImage.show();
+
+        DvnEvents.getEvents().renderActBackgroundImage(bgImage);
         
         auto actTitleLabel = new Label(window);
         addComponent(actTitleLabel);
@@ -45,6 +50,8 @@ public final class ActView : View
         actTitleLabel.shadow = true;
         actTitleLabel.position = IntVector(16, 16);
         actTitleLabel.updateRect();
+
+        DvnEvents.getEvents().renderActTitleLabel(actTitleLabel);
 
         auto beginLabel = new Label(window);
         addComponent(beginLabel);
@@ -67,5 +74,9 @@ public final class ActView : View
             });
             return false;
         }));
+
+        DvnEvents.getEvents().renderActBeginLabel(actTitleLabel);
+
+        DvnEvents.getEvents().endActView();
     }
 }

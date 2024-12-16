@@ -9,6 +9,7 @@ import dvn.views.gameview;
 import dvn.views.settingsview;
 import dvn.views.actview;
 import dvn.music;
+import dvn.events;
 
 import zid;
 
@@ -23,6 +24,8 @@ public final class LoadingView : View
 
 	protected override void onInitialize(bool useCache)
 	{
+		DvnEvents.getEvents().loadingGame();
+
 		import std.random : uniform;
 		
 		EXT_DisableKeyboardState();
@@ -161,6 +164,8 @@ public final class LoadingView : View
 			loadMusic("data/game/music.json");
 
 			loaded = true;
+
+			DvnEvents.getEvents().loadedGame();
 
 			loadingLabel.text = (loadingText ~ " ...").to!dstring;
 			loadingLabel.updateRect();

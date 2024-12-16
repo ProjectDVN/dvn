@@ -7,6 +7,7 @@ import dvn.gamesettings;
 import dvn.music;
 import dvn.views.settingsview : backToScene;
 import dvn.views.actview;
+import dvn.events;
 
 import zid;
 
@@ -88,6 +89,8 @@ public final class GameView : View
 		import std.file : dirEntries, SpanMode, readText;
 		import std.string : strip;
 		import std.array : replace, split;
+
+		DvnEvents.getEvents().loadingGameScripts();
 		
 		auto settings = getGlobalSettings();
 
@@ -243,15 +246,21 @@ public final class GameView : View
 				}
 			}
 		}
+
+		DvnEvents.getEvents().loadedGameScripts(_scenes);
     }
 
     void initializeGame(string sceneName, string loadBackground = "", string loadMusic = "")
     {
+		DvnEvents.getEvents().beginGameView(sceneName, loadBackground, loadMusic);
+
 		auto window = super.window;
 		auto settings = getGlobalSettings();
 
 		if (!_scenes)
 		{
+			DvnEvents.getEvents().endGameView();
+			
 			return;
 		}
 
@@ -259,6 +268,8 @@ public final class GameView : View
 
 		if (!scene)
 		{
+			DvnEvents.getEvents().endGameView();
+			
 			return;
 		}
 
@@ -267,6 +278,8 @@ public final class GameView : View
 		auto nextScene = _scenes.get(scene.nextScene, null);
 
 		bool isEnding = scene.nextScene == "end";
+
+		DvnEvents.getEvents().beginHandleScene(scene, nextScene, isEnding);
 
 		if (scene.music && scene.music.length)
 		{
@@ -277,6 +290,8 @@ public final class GameView : View
 			if (music && music.length)
 			{
 				EXT_PlayMusic(music);
+
+				DvnEvents.getEvents().playingMusic(music);
 			}
 		}
 		else if (loadMusic && loadMusic.length)
@@ -288,6 +303,8 @@ public final class GameView : View
 			if (music && music.length)
 			{
 				EXT_PlayMusic(music);
+
+				DvnEvents.getEvents().playingMusic(music);
 			}
 		}
 		else if (_lastMusic && _lastMusic.length)
@@ -297,6 +314,8 @@ public final class GameView : View
 			if (music && music.length)
 			{
 				EXT_PlayMusic(music);
+
+				DvnEvents.getEvents().playingMusic(music);
 			}
 		}
 
@@ -307,11 +326,15 @@ public final class GameView : View
 			if (sound && sound.length)
 			{
 				EXT_PlaySound(sound);
+
+				DvnEvents.getEvents().playingSound(sound);
 			}
 		}
 
 		if (scene.act && scene.act.length)
 		{
+			DvnEvents.getEvents().endGameView();
+
 			runDelayedTask(0, {
                 window.fadeToView("ActView", getColorByName("black"), false, (view) {
                     auto actView = cast(ActView)view;
@@ -328,6 +351,8 @@ public final class GameView : View
 		overlay.position = IntVector(0,0);
 		overlay.show();
 
+		DvnEvents.getEvents().renderGameViewOverplayBegin(overlay);
+
 		auto backgroundSource = (scene.background ?
 			scene.background : ((loadBackground && loadBackground.length) ?
 				loadBackground : _lastBackgroundSource));
@@ -338,6 +363,8 @@ public final class GameView : View
             (window.width / 2) - (bgImage.width / 2),
             (window.height / 2) - (bgImage.height / 2));
         bgImage.show();
+
+		DvnEvents.getEvents().renderGameViewBackground(bgImage);
 
 		_lastBackgroundSource = backgroundSource;
 
@@ -410,6 +437,8 @@ public final class GameView : View
 					}
 
 					chImage.show();
+
+					DvnEvents.getEvents().renderGameViewCharacter(character, chImage);
 				}
 			}
 		}
@@ -485,6 +514,8 @@ public final class GameView : View
 				}
 
 				imageComponent.show();
+
+				DvnEvents.getEvents().renderGameViewImage(image, imageComponent);
 			}
 		}
 
@@ -559,6 +590,8 @@ public final class GameView : View
 				}
 
 				ani.show();
+
+				DvnEvents.getEvents().renderGameViewAnimation(animation, ani);
 			}
 		}
 
@@ -574,6 +607,8 @@ public final class GameView : View
 			window.height - (textPanel.height + 14)
 		);
 		textPanel.show();
+
+		DvnEvents.getEvents().renderGameViewDialoguePanel(textPanel);
 
 		foreach (charNameAndPos; scene.characterNames)
 		{
@@ -619,6 +654,8 @@ public final class GameView : View
 
 			charNamePanel.addComponent(charNameLabel);
 			charNamePanel.show();
+
+			DvnEvents.getEvents().renderGameViewCharacterName(charNameAndPos, charNameLabel, charNamePanel);
 		}
 
 		bool hasOptions = false;
@@ -728,6 +765,8 @@ public final class GameView : View
 				closure(optionLabel, optionNextScene, option.nextScene == "end")();
 
 				lastY += 12 + optionLabel.height;
+
+				DvnEvents.getEvents().renderGameViewOption(optionLabel);
 			}
 		}
 
@@ -755,6 +794,8 @@ public final class GameView : View
 			return false;
 		}));
 
+		DvnEvents.getEvents().renderGameViewSaveButton(saveButton);
+
 		auto exitButton = new Button(window);
 		addComponent(exitButton);
 		exitButton.size = IntVector(64, 28);
@@ -777,6 +818,8 @@ public final class GameView : View
 			return false;
 		}));
 
+		DvnEvents.getEvents().renderGameViewExitButton(exitButton);
+
 		auto settingsButton = new Button(window);
 		addComponent(settingsButton);
 		settingsButton.size = IntVector(92, 28);
@@ -798,6 +841,8 @@ public final class GameView : View
 			window.fadeToView("SettingsView", getColorByName("black"), false);
 			return false;
 		}));
+
+		DvnEvents.getEvents().renderGameViewSettingsButton(settingsButton);
 
 		bool intersectsWith(int x1, int y1, int x2, int y2, int w2, int h2)
 		{
@@ -903,5 +948,9 @@ public final class GameView : View
 				textLabel.text = finalText;
 			}
 		}));
+
+		DvnEvents.getEvents().renderGameViewOverplayEnd(overlay);
+
+		DvnEvents.getEvents().endGameView();
     }
 }
