@@ -2,6 +2,8 @@ module dvn.gamesettings;
 
 import zid.meta;
 
+import dvn.events;
+
 mixin CreateCustomException!"GameSettingsException";
 
 public final class GameSettings
@@ -77,6 +79,8 @@ void saveGame(GameSettings settings, string id, string scene, string background,
   saveFile.music = music;
 
   settings.saves[id] = saveFile;
+
+  DvnEvents.getEvents().savedGame(settings.saves, saveFile);
 
   updateSaveFiles(settings);
 }

@@ -3,6 +3,7 @@ module dvn.events;
 import zid;
 
 import dvn.views.gameview;
+import dvn.gamesettings;
 
 private DvnEvents _events;
 
@@ -15,6 +16,7 @@ public class DvnEvents
     // Global
     void loadingGame() {}
     void loadedGame() {}
+    void savingGame(SaveFile[string] saves, SaveFile saveFile) {}
 
     // Act View
     void beginActView(string actName, string continueText, string background, string sceneName) {}
