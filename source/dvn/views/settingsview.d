@@ -75,6 +75,7 @@ public final class SettingsView : View
 
         int nextY = backLabel.y + backLabel.height + 16;
         int settingsOffsetY = 104;
+        int settingsOffsetYSmall = 52;
 
         // full screen
         {
@@ -88,44 +89,38 @@ public final class SettingsView : View
 			label.position = IntVector(260, nextY + 3);
 			label.updateRect();
 
-            auto dropdown = new DropDown(window);
-            addComponent(dropdown);
-            dropdown.size = IntVector(190, 24);
-            dropdown.position = IntVector(
-                window.width - (dropdown.width + 260),
+            auto checkbox = new CheckBox(window);
+            checkbox.fillColor = "e5e7e9".getColorByHex;
+            checkbox.borderColor = "000".getColorByHex;
+            addComponent(checkbox);
+            
+            DvnEvents.getEvents().renderSettingsCheckBox(checkbox);
+
+            checkbox.size = IntVector(24, 24);
+            checkbox.position = IntVector(
+                window.width - (checkbox.width + 260),
                 nextY
             );
-            dropdown.fontName = settings.defaultFont;
-            dropdown.fontSize = 18;
-            dropdown.textColor = "000".getColorByHex;
-
-            DvnEvents.getEvents().renderSettingsDropDown(dropdown);
-            dropdown.restyle();
-
-            dropdown.addItem("Yes", "yes");
-            dropdown.addItem("No", "no");
-            dropdown.setItem(settings.fullScreen ? "Yes" : "No");
-
-            dropdown.show();
-
-            dropdown.onItemChanged((value)
-            {
-                if (value == "Yes")
+            checkbox.initialize();
+            checkbox.checked = settings.fullScreen;
+            checkbox.updateRect();
+            checkbox.onChanged({
+                if (checkbox.checked)
                 {
                     settings.fullScreen = true;
                     saveSettings();
                     EXT_SetWindowFullscreen(window.nativeWindow, 1);
 
                 }
-                else if (value == "No")
+                else
                 {
                     settings.fullScreen = false;
                     saveSettings();
                     EXT_SetWindowFullscreen(window.nativeWindow, 0);
                 }
             });
-
-            nextY += settingsOffsetY + dropdown.height;
+            
+            nextY += settingsOffsetYSmall + checkbox.height;
         }
 
         // mute music
@@ -140,36 +135,30 @@ public final class SettingsView : View
 			label.position = IntVector(260, nextY + 3);
 			label.updateRect();
 
-            auto dropdown = new DropDown(window);
-            addComponent(dropdown);
-            dropdown.size = IntVector(190, 24);
-            dropdown.position = IntVector(
-                window.width - (dropdown.width + 260),
+            auto checkbox = new CheckBox(window);
+            checkbox.fillColor = "e5e7e9".getColorByHex;
+            checkbox.borderColor = "000".getColorByHex;
+            addComponent(checkbox);
+            
+            DvnEvents.getEvents().renderSettingsCheckBox(checkbox);
+
+            checkbox.size = IntVector(24, 24);
+            checkbox.position = IntVector(
+                window.width - (checkbox.width + 260),
                 nextY
             );
-            dropdown.fontName = settings.defaultFont;
-            dropdown.fontSize = 18;
-            dropdown.textColor = "000".getColorByHex;
-
-            DvnEvents.getEvents().renderSettingsDropDown(dropdown);
-            dropdown.restyle();
-
-            dropdown.addItem("Yes", "yes");
-            dropdown.addItem("No", "no");
-            dropdown.setItem(settings.muteMusic ? "Yes" : "No");
-
-            dropdown.show();
-
-            dropdown.onItemChanged((value)
-            {
-                if (value == "Yes")
+            checkbox.initialize();
+            checkbox.checked = settings.muteMusic;
+            checkbox.updateRect();
+            checkbox.onChanged({
+                if (checkbox.checked)
                 {
                     settings.muteMusic = true;
                     saveSettings();
                     EXT_DisableMusic();
 
                 }
-                else if (value == "No")
+                else
                 {
                     settings.muteMusic = false;
                     saveSettings();
@@ -177,8 +166,8 @@ public final class SettingsView : View
                     EXT_PlayLastMusic();
                 }
             });
-
-            nextY += settingsOffsetY + dropdown.height;
+            
+            nextY += settingsOffsetYSmall + checkbox.height;
         }
         
         // mute sound effects
@@ -193,44 +182,37 @@ public final class SettingsView : View
 			label.position = IntVector(260, nextY + 3);
 			label.updateRect();
 
-            auto dropdown = new DropDown(window);
-            addComponent(dropdown);
-            dropdown.size = IntVector(190, 24);
-            dropdown.position = IntVector(
-                window.width - (dropdown.width + 260),
+            auto checkbox = new CheckBox(window);
+            checkbox.fillColor = "e5e7e9".getColorByHex;
+            checkbox.borderColor = "000".getColorByHex;
+            addComponent(checkbox);
+            
+            DvnEvents.getEvents().renderSettingsCheckBox(checkbox);
+
+            checkbox.size = IntVector(24, 24);
+            checkbox.position = IntVector(
+                window.width - (checkbox.width + 260),
                 nextY
             );
-            dropdown.fontName = settings.defaultFont;
-            dropdown.fontSize = 18;
-            dropdown.textColor = "000".getColorByHex;
-
-            DvnEvents.getEvents().renderSettingsDropDown(dropdown);
-            dropdown.restyle();
-
-            dropdown.addItem("Yes", "yes");
-            dropdown.addItem("No", "no");
-            dropdown.setItem(settings.muteSoundEffects ? "Yes" : "No");
-
-            dropdown.show();
-
-            dropdown.onItemChanged((value)
-            {
-                if (value == "Yes")
+            checkbox.initialize();
+            checkbox.checked = settings.muteSoundEffects;
+            checkbox.updateRect();
+            checkbox.onChanged({
+                if (checkbox.checked)
                 {
                     settings.muteSoundEffects = true;
                     saveSettings();
                     EXT_DisableSoundEffects();
-
                 }
-                else if (value == "No")
+                else
                 {
                     settings.muteSoundEffects = false;
                     saveSettings();
                     EXT_EnableSoundEffects();
                 }
             });
-
-            nextY += settingsOffsetY + dropdown.height;
+            
+            nextY += settingsOffsetYSmall + checkbox.height;
         }
 
         // volume

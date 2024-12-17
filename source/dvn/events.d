@@ -56,6 +56,7 @@ public class DvnEvents
 
     // Settings View
     void renderSettingsDropDown(DropDown dropdown) {}
+    void renderSettingsCheckBox(CheckBox checkbox) {}
 
     static:
     final:
