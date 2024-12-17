@@ -6,4 +6,5 @@ public
   import dvn.views.mainmenuview;
   import dvn.views.gameview;
   import dvn.views.actview;
+  import dvn.views.loadgameview;
 }

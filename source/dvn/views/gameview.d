@@ -82,6 +82,13 @@ private SceneEntry[string] _scenes;
 private string _lastBackgroundSource;
 private string _lastMusic;
 
+private string _saveId;
+
+void setSaveId(string id)
+{
+	_saveId = id;
+}
+
 public final class GameView : View
 {
 	public:
@@ -799,9 +806,12 @@ public final class GameView : View
 		saveButton.show();
 
 		saveButton.onButtonClick(new MouseButtonEventHandler((p,b) {
-			settings.saveScene = scene.name;
-			settings.saveBackground = _lastBackgroundSource;
-			settings.saveMusic = _lastMusic;
+			//settings.saveScene = scene.name;
+			//settings.saveBackground = _lastBackgroundSource;
+			//settings.saveMusic = _lastMusic;
+
+			saveGame(settings, _saveId, scene.name, _lastBackgroundSource, _lastMusic);
+
 			saveGameSettings("data/settings.json");
 			return false;
 		}));

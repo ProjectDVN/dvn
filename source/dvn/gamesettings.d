@@ -22,9 +22,7 @@ public final class GameSettings
   int textSpeed;
   string title;
   string loadTitle;
-  string saveScene;
-  string saveBackground;
-  string saveMusic;
+  SaveFile[string] saves;
 
   bool fullScreen;
 
@@ -33,6 +31,83 @@ public final class GameSettings
   string dialoguePanelBorderColor;
   string namePanelBackgroundColor;
   string namePanelBorderColor;
+
+  string loadText;
+}
+
+public final class SaveFile
+{
+  public:
+  final:
+  this() {}
+
+  string id;
+  string date;
+  string scene;
+  string background;
+  string music;
+}
+
+private SaveFile[] saveFiles;
+
+void saveGame(GameSettings settings, string id, string scene, string background, string music)
+{
+  import std.uuid : randomUUID;
+  import std.datetime : Clock;
+  import std.string : format;
+
+  if (!id || !id.length)
+  {
+    id = randomUUID().toString;
+  }
+
+  auto date = Clock.currTime();
+  auto year = date.year;
+  auto month = cast(int)date.month;
+  auto day = date.day;
+  auto hour = date.hour;
+  auto min = date.minute;
+
+  auto saveFile = new SaveFile;
+  saveFile.id = id;
+  saveFile.date = format("%s-%s-%s %s:%s", year, cast(int)month, day, hour, min);
+  saveFile.scene = scene;
+  saveFile.background = background;
+  saveFile.music = music;
+
+  settings.saves[id] = saveFile;
+
+  updateSaveFiles(settings);
+}
+
+void updateSaveFiles(GameSettings settings)
+{
+  SaveFile[] s = [];
+
+  foreach (k,v; settings.saves)
+  {
+    s ~= v;
+  }
+
+  saveFiles = s;
+}
+
+SaveFile[] getSaveFilesPaged(int page)
+{
+  SaveFile[] s = [];
+
+  int skip = page * 6;
+  int take = 6;
+    
+  foreach (i; skip .. (skip + take))
+  {
+    if (i >= saveFiles.length) continue;
+      
+    auto saveFile = saveFiles[i];
+    s ~= saveFile;
+  }
+
+  return s;
 }
 
 private GameSettings _settings;
@@ -56,6 +131,12 @@ GameSettings loadGameSettings(string path)
   }
 
   _settings = settings;
+
+  if (_settings && _settings.saves)
+  {
+    updateSaveFiles(_settings);
+  }
+
   return settings;
 }
 

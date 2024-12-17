@@ -8,6 +8,7 @@ import dvn.views.mainmenuview;
 import dvn.views.gameview;
 import dvn.views.settingsview;
 import dvn.views.actview;
+import dvn.views.loadgameview;
 import dvn.music;
 import dvn.events;
 
@@ -177,6 +178,7 @@ public final class LoadingView : View
 			mainWindow.addView!GameView("GameView");
 			mainWindow.addView!SettingsView("SettingsView");
 			mainWindow.addView!ActView("ActView");
+			mainWindow.addView!LoadGameView("LoadGameView");
 			
 			mainWindow.fadeToView("MainMenu", getColorByName("black"), false);
 

@@ -68,6 +68,11 @@ public final class MainMenuView : View
 							case "mouseUp":
 								playLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
 									window.fadeToView("GameView", getColorByName("black"), false, (view) {
+										import std.uuid : randomUUID;
+										
+										auto id = randomUUID().toString;
+										setSaveId(id);
+
 										auto gameView = cast(GameView)view;
 										gameView.loadGame();
 
@@ -89,12 +94,14 @@ public final class MainMenuView : View
 
 							case "mouseUp":
 								loadLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
-									window.fadeToView("GameView", getColorByName("black"), false, (view) {
-										auto gameView = cast(GameView)view;
-										gameView.loadGame();
+									window.fadeToView("LoadGameView", getColorByName("black"), false);
 
-										gameView.initializeGame(settings.saveScene, settings.saveBackground, settings.saveMusic);
-									});
+									// window.fadeToView("GameView", getColorByName("black"), false, (view) {
+									// 	auto gameView = cast(GameView)view;
+									// 	gameView.loadGame();
+
+									// 	gameView.initializeGame(settings.saveScene, settings.saveBackground, settings.saveMusic);
+									// });
 								}));
 								break;
 
