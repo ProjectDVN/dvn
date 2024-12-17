@@ -874,6 +874,7 @@ public final class GameView : View
 				(y1 < (y2 + h2));
 		}
 		
+		auto lastTicks = EXT_GetTicks();
 
 		overlay.onKeyboardUp(new KeyboardEventHandler((k) {
 			if (switchingScene || hasOptions)
@@ -881,7 +882,17 @@ public final class GameView : View
 				return;
 			}
 			
-			if (k == KeyboardKey.returnKey)
+			auto ticks = EXT_GetTicks();
+
+      		if ((ticks - lastTicks) < 256)
+			{
+				return;
+			}
+
+			lastTicks = ticks;
+			
+			if (k == KeyboardKey.returnKey ||
+				k == KeyboardKey.LControl)
 			{
 				if (loaded)
 				{
@@ -916,8 +927,6 @@ public final class GameView : View
 				}
 			}
 		}), true);
-
-		auto lastTicks = EXT_GetTicks();
 
 		overlay.onTextInput(new TextInputEventHandler((c,s) {
 			if (switchingScene || hasOptions)
@@ -990,6 +999,15 @@ public final class GameView : View
 			{
 				return;
 			}
+			
+			auto ticks = EXT_GetTicks();
+
+      		if ((ticks - lastTicks) < 256)
+			{
+				return;
+			}
+
+			lastTicks = ticks;
 
 			if (loaded)
 			{
