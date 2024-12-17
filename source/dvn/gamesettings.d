@@ -51,6 +51,7 @@ public final class SaveFile
   string scene;
   string background;
   string music;
+  string[string] meta;
 }
 
 private SaveFile[] saveFiles;
@@ -73,7 +74,17 @@ void saveGame(GameSettings settings, string id, string scene, string background,
   auto hour = date.hour;
   auto min = date.minute;
 
-  auto saveFile = new SaveFile;
+  SaveFile saveFile;
+  if (settings.saves)
+  {
+    saveFile = settings.saves.get(id, null);
+  }
+
+  if (!saveFile)
+  {
+    saveFile = new SaveFile;
+  }
+
   saveFile.id = id;
   saveFile.date = format("%s-%s-%s %s:%s", year, cast(int)month, day, hour, min);
   saveFile.scene = scene;

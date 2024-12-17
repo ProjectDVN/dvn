@@ -94,6 +94,18 @@ string getCurrentSaveId()
 	return _saveId;
 }
 
+SaveFile getCurrentSaveFile()
+{
+	auto settings = getGlobalSettings();
+
+	if (!settings.saves)
+	{
+		return null;
+	}
+
+	return settings.saves.get(getCurrentSaveId(), null);
+}
+
 private bool isAuto;
 
 public final class GameView : View
