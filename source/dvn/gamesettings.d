@@ -38,6 +38,12 @@ public final class GameSettings
   string backText;
 
   string[string] meta;
+
+  string saveButtonText;
+  string exitButtonText;
+  string settingsButtonText;
+  string autoButtonTextOn;
+  string autoButtonTextOff;
 }
 
 public final class SaveFile

@@ -844,7 +844,7 @@ public final class GameView : View
 		saveButton.fontName = settings.defaultFont;
 		saveButton.fontSize = 18;
 		saveButton.textColor = "000".getColorByHex;
-		saveButton.text = "Save";
+		saveButton.text = settings.saveButtonText.to!dstring;
 		saveButton.fitToSize = false;
 
 		saveButton.restyle();
@@ -873,7 +873,7 @@ public final class GameView : View
 		exitButton.fontName = settings.defaultFont;
 		exitButton.fontSize = 18;
 		exitButton.textColor = "000".getColorByHex;
-		exitButton.text = "Exit";
+		exitButton.text = settings.exitButtonText.to!dstring;
 		exitButton.fitToSize = false;
 
 		exitButton.restyle();
@@ -897,7 +897,7 @@ public final class GameView : View
 		settingsButton.fontName = settings.defaultFont;
 		settingsButton.fontSize = 18;
 		settingsButton.textColor = "000".getColorByHex;
-		settingsButton.text = "Settings";
+		settingsButton.text = settings.settingsButtonText.to!dstring;
 		settingsButton.fitToSize = false;
 
 		settingsButton.restyle();
@@ -921,7 +921,7 @@ public final class GameView : View
 		autoButton.fontName = settings.defaultFont;
 		autoButton.fontSize = 18;
 		autoButton.textColor = "000".getColorByHex;
-		autoButton.text = (isAuto ? "Auto: On" : "Auto: Off").to!dstring;
+		autoButton.text = (isAuto ? settings.autoButtonTextOn : settings.autoButtonTextOff).to!dstring;
 		autoButton.fitToSize = false;
 
 		autoButton.restyle();
@@ -933,11 +933,11 @@ public final class GameView : View
 
 			if (isAuto)
 			{
-				autoButton.text = "Auto: On";
+				autoButton.text = settings.autoButtonTextOn.to!dstring;
 			}
 			else
 			{
-				autoButton.text = "Auto: Off";
+				autoButton.text = settings.autoButtonTextOff.to!dstring;
 			}
 
 			return false;
