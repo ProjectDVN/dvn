@@ -80,7 +80,7 @@ void saveGame(GameSettings settings, string id, string scene, string background,
 
   settings.saves[id] = saveFile;
 
-  DvnEvents.getEvents().savedGame(settings.saves, saveFile);
+  DvnEvents.getEvents().savingGame(settings.saves, saveFile);
 
   updateSaveFiles(settings);
 }
