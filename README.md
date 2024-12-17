@@ -34,9 +34,7 @@ To create your first visual novel see: https://github.com/ProjectDVN/dvn/wiki/Cr
 
 ### Building
 
-Please visit the example repo for guides on how to build the engine and/or how to develop your visual novel.
-
-The repo can be found here: https://github.com/ProjectDVN/Example
+See: https://github.com/ProjectDVN/dvn/wiki/Creating-your-first-visual-novel
 
 ### Events
 
