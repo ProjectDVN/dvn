@@ -16,7 +16,7 @@ To create your first visual novel see: https://github.com/ProjectDVN/dvn/wiki/Cr
 
 ### Preview
 
-![DVN Preview](https://i.imgur.com/F28Y9Sr.png "DVN Preview")
+![DVN Preview](https://i.imgur.com/yW8TQZ0.png "DVN Preview")
 
 ---
 
