@@ -917,6 +917,59 @@ public final class GameView : View
 			}
 		}), true);
 
+		auto lastTicks = EXT_GetTicks();
+
+		overlay.onTextInput(new TextInputEventHandler((c,s) {
+			if (switchingScene || hasOptions)
+			{
+				return;
+			}
+			
+			auto ticks = EXT_GetTicks();
+
+      		if ((ticks - lastTicks) < 256)
+			{
+				return;
+			}
+
+			lastTicks = ticks;
+			
+			if (s == " ")
+			{
+				if (loaded)
+				{
+					switchingScene = true;
+
+					if (isEnding)
+					{
+						window.fadeToView("MainMenu", getColorByName("black"), false);
+					}
+					else if (nextScene)
+					{
+						if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)
+						{
+							initializeGame(nextScene.name);
+						}
+						else
+						{
+							runDelayedTask(0, {
+								window.fadeToView("GameView", getColorByName("black"), false, (view) {
+									auto gameView = cast(GameView)view;
+
+									gameView.initializeGame(nextScene.name);
+								});
+							});
+						}
+					}
+				}
+				else
+				{
+					loaded = true;
+					textLabel.text = finalText;
+				}
+			}
+		}), true);
+
 		overlay.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
 			if (switchingScene || hasOptions)
 			{

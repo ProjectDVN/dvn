@@ -43,6 +43,6 @@ public
     window.addView!LoadingView("Loading");
 	  window.fadeToView("Loading", getColorByName("black"), false);
 
-    app.start(false);
+    app.start();
   }
 }
