@@ -89,6 +89,8 @@ void setSaveId(string id)
 	_saveId = id;
 }
 
+private bool isAuto;
+
 public final class GameView : View
 {
 	public:
@@ -688,6 +690,8 @@ public final class GameView : View
 		bool loaded = false;
 		bool switchingScene = false;
 
+		bool disableEvents = false;
+
 		if (scene.text)
 		{
 			textLabel = new Label(window);
@@ -721,6 +725,31 @@ public final class GameView : View
 				if (finalText == textLabel.text)
 				{
 					loaded = true;
+				}
+
+				if (loaded && isAuto && !isEnding)
+				{
+					disableEvents = true;
+
+					runDelayedTask(2000, {
+						if (nextScene)
+						{
+							if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)
+							{
+								initializeGame(nextScene.name);
+							}
+							else
+							{
+								runDelayedTask(0, {
+									window.fadeToView("GameView", getColorByName("black"), false, (view) {
+										auto gameView = cast(GameView)view;
+
+										gameView.initializeGame(nextScene.name);
+									});
+								});
+							}
+						}
+					});
 				}
 
 				return loaded;
@@ -866,6 +895,39 @@ public final class GameView : View
 
 		DvnEvents.getEvents().renderGameViewSettingsButton(settingsButton);
 
+		auto autoButton = new Button(window);
+		addComponent(autoButton);
+		autoButton.size = IntVector(saveButton.width, saveButton.height);
+		autoButton.position = IntVector(
+			settingsButton.x,
+			settingsButton.y + settingsButton.height + 12);
+		autoButton.fontName = settings.defaultFont;
+		autoButton.fontSize = 18;
+		autoButton.textColor = "000".getColorByHex;
+		autoButton.text = (isAuto ? "Auto: On" : "Auto: Off").to!dstring;
+		autoButton.fitToSize = false;
+
+		autoButton.restyle();
+
+		autoButton.show();
+
+		autoButton.onButtonClick(new MouseButtonEventHandler((p,b) {
+			isAuto = !isAuto;
+
+			if (isAuto)
+			{
+				autoButton.text = "Auto: On";
+			}
+			else
+			{
+				autoButton.text = "Auto: Off";
+			}
+
+			return false;
+		}));
+
+		DvnEvents.getEvents().renderGameViewAutoButton(autoButton);
+
 		bool intersectsWith(int x1, int y1, int x2, int y2, int w2, int h2)
 		{
 			return (x1 > x2) &&
@@ -877,7 +939,7 @@ public final class GameView : View
 		auto lastTicks = EXT_GetTicks();
 
 		overlay.onKeyboardUp(new KeyboardEventHandler((k) {
-			if (switchingScene || hasOptions)
+			if (switchingScene || hasOptions || disableEvents)
 			{
 				return;
 			}
@@ -928,7 +990,7 @@ public final class GameView : View
 		}), true);
 
 		overlay.onTextInput(new TextInputEventHandler((c,s) {
-			if (switchingScene || hasOptions)
+			if (switchingScene || hasOptions || disableEvents)
 			{
 				return;
 			}
@@ -979,7 +1041,7 @@ public final class GameView : View
 		}), true);
 
 		overlay.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
-			if (switchingScene || hasOptions)
+			if (switchingScene || hasOptions || disableEvents)
 			{
 				return;
 			}
@@ -995,6 +1057,11 @@ public final class GameView : View
 			}
 
 			if (intersectsWith(p.x, p.y, settingsButton.x, settingsButton.y, settingsButton.width, settingsButton.height))
+			{
+				return;
+			}
+
+			if (intersectsWith(p.x, p.y, autoButton.x, autoButton.y, autoButton.width, autoButton.height))
 			{
 				return;
 			}
