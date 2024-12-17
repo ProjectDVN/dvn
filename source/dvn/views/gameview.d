@@ -89,6 +89,11 @@ void setSaveId(string id)
 	_saveId = id;
 }
 
+string getCurrentSaveId()
+{
+	return _saveId;
+}
+
 private bool isAuto;
 
 public final class GameView : View
