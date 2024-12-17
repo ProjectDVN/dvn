@@ -36,6 +36,8 @@ public final class GameSettings
 
   string loadText;
   string backText;
+
+  string[string] meta;
 }
 
 public final class SaveFile
