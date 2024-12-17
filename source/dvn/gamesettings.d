@@ -33,6 +33,7 @@ public final class GameSettings
   string namePanelBorderColor;
 
   string loadText;
+  string backText;
 }
 
 public final class SaveFile
