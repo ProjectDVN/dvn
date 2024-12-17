@@ -891,8 +891,7 @@ public final class GameView : View
 
 			lastTicks = ticks;
 			
-			if (k == KeyboardKey.returnKey ||
-				k == KeyboardKey.LControl)
+			if (k == KeyboardKey.LControl)
 			{
 				if (loaded)
 				{
