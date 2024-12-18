@@ -179,6 +179,8 @@ public final class LoadingView : View
 			mainWindow.addView!SettingsView("SettingsView");
 			mainWindow.addView!ActView("ActView");
 			mainWindow.addView!LoadGameView("LoadGameView");
+
+			DvnEvents.getEvents().loadingViews(mainWindow);
 			
 			mainWindow.fadeToView("MainMenu", getColorByName("black"), false);
 

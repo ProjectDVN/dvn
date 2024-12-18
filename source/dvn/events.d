@@ -17,6 +17,7 @@ public class DvnEvents
     void loadingGame() {}
     void loadedGame() {}
     void savingGame(SaveFile[string] saves, SaveFile saveFile) {}
+    void loadingViews(Window window) {}
 
     // Act View
     void beginActView(string actName, string continueText, string background, string sceneName) {}
