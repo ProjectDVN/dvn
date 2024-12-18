@@ -144,7 +144,7 @@ public final class LoadingView : View
 						v.path = v.randomPath[uniform(0,v.randomPath.length)];
 					}
 
-					mainWindow.addSheet(k, v.path, IntVector(v.size.width, v.size.height), v.columns);
+					mainWindow.addSheet(k, v.path, IntVector(v.size.width, v.size.height), v.columns ? v.columns : 1);
 
 					if (v.entries && v.entries.length)
 					{
@@ -152,6 +152,10 @@ public final class LoadingView : View
 						{
 							mainWindow.addSheetEntry(entry.name, k, entry.row, entry.col);
 						}
+					}
+					else
+					{
+						mainWindow.addSheetEntry(k, k, 0, 0);
 					}
 				}
 			}
