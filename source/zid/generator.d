@@ -130,7 +130,7 @@ public final class UIItemEntry
   string fontName;
   size_t fontSize;
 
-  // image
+  // image & animation
   string source;
 
   // label
@@ -350,6 +350,12 @@ private void parseGUIItems(string language, Window window, View view, UIGenerato
           auto image = new Image(window, item.source);
           component = image;
           image.show();
+          break;
+
+        case "animation":
+          auto ani = new Animation(window, item.source, false, 0);
+          component = ani;
+          ani.show();
           break;
 
         case "label":
