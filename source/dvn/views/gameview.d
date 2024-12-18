@@ -21,6 +21,7 @@ public final class SceneEntry
 	string music;
 	string sound;
 	string background;
+	SceneLabel[] labels;
 	SceneCharacter[] characters;
 	SceneCharacterName[] characterNames;
 	SceneImage[] images;
@@ -29,6 +30,17 @@ public final class SceneEntry
 	string text;
 	string nextScene;
 	SceneOption[] options;
+}
+
+public final class SceneLabel
+{
+	public:
+	final:
+	string text;
+	size_t fontSize;
+	int x;
+	int y;
+	string color;
 }
 
 public final class SceneCharacter
@@ -259,6 +271,18 @@ public final class GameView : View
 							}
 
 							entry.animations ~= animation;
+							break;
+							
+						case "label":
+							auto label = new SceneLabel;
+							label.text = value;
+							label.fontSize = keyData[1].to!size_t;
+							auto labelPosition = keyData[2].split(",");
+							label.x = labelPosition[0].to!int;
+							label.y = labelPosition[1].to!int;
+							label.color = keyData[3];
+
+							entry.labels ~= label;
 							break;
 
 						case "text":
@@ -630,6 +654,23 @@ public final class GameView : View
 				ani.show();
 
 				DvnEvents.getEvents().renderGameViewAnimation(animation, ani);
+			}
+		}
+
+		if (scene.labels && scene.labels.length)
+		{
+			foreach (label; scene.labels)
+			{
+				auto sceneLabel = new Label(window);
+				addComponent(sceneLabel);
+				sceneLabel.fontName = settings.defaultFont;
+				sceneLabel.fontSize = label.fontSize;
+				sceneLabel.color = label.color.getColorByHex;
+				sceneLabel.text = label.text.to!dstring;
+				sceneLabel.shadow = true;
+				sceneLabel.position = IntVector(label.x, label.y);
+				sceneLabel.updateRect();
+				sceneLabel.show();
 			}
 		}
 
