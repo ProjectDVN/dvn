@@ -5,6 +5,7 @@ import std.conv : to;
 import dvn.resources;
 import dvn.gamesettings;
 import dvn.views.gameview;
+import dvn.events;
 
 import zid;
 
@@ -147,5 +148,7 @@ public final class MainMenuView : View
 				}
 			});
 		}
+
+		DvnEvents.getEvents().renderMainMenuView(window, titleLabel, playLabel, loadLabel, settingsLabel, exitLabel);
 	}
 }

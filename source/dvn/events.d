@@ -59,6 +59,9 @@ public class DvnEvents
     void renderSettingsDropDown(DropDown dropdown) {}
     void renderSettingsCheckBox(CheckBox checkbox) {}
 
+    // Main Menu View
+    void renderMainMenuView(Window window, Label titleLabel, Label playLabel, Label loadLabel, Label settingsLabel, Label exitLabel) {}
+
     static:
     final:
     void setEvents(DvnEvents events)
