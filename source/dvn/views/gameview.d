@@ -671,6 +671,8 @@ public final class GameView : View
 				sceneLabel.position = IntVector(label.x, label.y);
 				sceneLabel.updateRect();
 				sceneLabel.show();
+
+				DvnEvents.getEvents().renderGameViewLabel(label, sceneLabel);
 			}
 		}
 

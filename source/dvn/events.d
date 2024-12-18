@@ -43,6 +43,7 @@ public class DvnEvents
     void renderGameViewCharacter(SceneCharacter character, Image image) {}
     void renderGameViewImage(SceneImage image, Image imageComponent) {}
     void renderGameViewAnimation(SceneAnimation animation, Animation animationComponent) {}
+    void renderGameViewLabel(SceneLabel label, Label labelComponent) {}
     void renderGameViewDialoguePanel(Panel panel) {}
     void renderGameViewCharacterName(SceneCharacterName characterName, Label label, Panel panel) {}
     void renderGameViewOption(Label option) {}
