@@ -27,6 +27,7 @@ public final class SceneEntry
 	SceneImage[] images;
 	SceneAnimation[] animations;
 	string textColor;
+	string textFont;
 	string text;
 	string nextScene;
 	SceneOption[] options;
@@ -283,6 +284,10 @@ public final class GameView : View
 							label.color = keyData[3];
 
 							entry.labels ~= label;
+							break;
+
+						case "font":
+							entry.textFont = value;
 							break;
 
 						case "text":
@@ -757,6 +762,10 @@ public final class GameView : View
 			textLabel = new Label(window);
 			textPanel.addComponent(textLabel);
 			textLabel.fontName = settings.defaultFont;
+			if (scene.textFont && scene.textFont.length)
+			{
+				textLabel.fontName = scene.textFont;
+			}
 			textLabel.fontSize = 22;
 			textLabel.color = scene.textColor.getColorByHex;
 			textLabel.text = "";
