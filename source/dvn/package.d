@@ -8,6 +8,45 @@ public
   import dvn.music;
   import dvn.events;
 
+  void displayView(string name)
+  {
+    import zid;
+    
+    runDelayedTask(0, {
+      getApplication().windows[0].fadeToView(name, getColorByName("black"), false);
+    });
+  }
+
+  void displayLastSceneView()
+  {
+    import zid;
+    import dvn.views.settingsview : backToScene;
+
+    runDelayedTask(0, {
+      getApplication().windows[0].fadeToView("GameView", getColorByName("black"), false, (view) {
+          auto gameView = cast(GameView)view;
+          gameView.loadGame();
+
+          gameView.initializeGame(backToScene);
+      });
+    });
+  }
+
+  void displayScene(string scene)
+  {
+    import zid;
+    import dvn.views.settingsview : backToScene;
+
+    runDelayedTask(0, {
+      getApplication().windows[0].fadeToView("GameView", getColorByName("black"), false, (view) {
+          auto gameView = cast(GameView)view;
+          gameView.loadGame();
+
+          gameView.initializeGame(scene);
+      });
+    });
+  }
+
   void runDVN()
   {
     import zid;

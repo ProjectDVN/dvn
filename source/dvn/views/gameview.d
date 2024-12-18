@@ -31,6 +31,7 @@ public final class SceneEntry
 	string text;
 	string nextScene;
 	SceneOption[] options;
+	string view;
 }
 
 public final class SceneLabel
@@ -308,6 +309,10 @@ public final class GameView : View
 							entry.options ~= option;
 							break;
 
+						case "view":
+							entry.view = value;
+							break;
+
 						default: break;
 					}
 				}
@@ -409,6 +414,16 @@ public final class GameView : View
                     actView.initialzieAct(scene.act, scene.actContinueButton, scene.background, scene.nextScene);
                 });
             });
+			return;
+		}
+
+		if (scene.view && scene.view.length)
+		{
+			import dvn : displayView;
+			
+			DvnEvents.getEvents().endGameView();
+			
+			displayView(scene.view);
 			return;
 		}
 
