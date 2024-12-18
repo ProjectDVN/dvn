@@ -774,6 +774,33 @@ public final class GameView : View
 
 		if (scene.text)
 		{
+			if (settings.dialogueHistory && _saveId && _saveId.length)
+			{
+				import std.file : exists, mkdir, append;
+				import std.array : join;
+
+				if (!exists("data/history"))
+				{
+					mkdir("data/history");
+				}
+
+				auto historyText = scene.text;
+
+				if (scene.characterNames && scene.characterNames.length)
+				{
+					string[] names = [];
+
+					foreach (name; scene.characterNames)
+					{
+						names ~= name.name;
+					}
+
+					historyText = names.join(",") ~ ": " ~ historyText;
+				}
+
+				append("data/history/" ~ _saveId ~ ".txt", historyText ~ "\r\n");
+			}
+
 			textLabel = new Label(window);
 			textPanel.addComponent(textLabel);
 			textLabel.fontName = settings.defaultFont;
@@ -842,6 +869,30 @@ public final class GameView : View
 		else if (scene.options && scene.options.length)
 		{
 			hasOptions = true;
+
+			if (settings.dialogueHistory && _saveId && _saveId.length)
+			{
+				import std.file : exists, mkdir, append;
+				import std.array : join;
+
+				if (!exists("data/history"))
+				{
+					mkdir("data/history");
+				}
+
+				string[] optionHistory = ["----"];
+
+				foreach (option; scene.options)
+				{
+					optionHistory ~= "<" ~ option.text ~ ">";
+				}
+				
+				optionHistory ~= "----";
+
+				auto historyText = optionHistory.join("\r\n");
+
+				append("data/history/" ~ _saveId ~ ".txt", historyText ~ "\r\n");
+			}
 
 			int lastY = 50;
 			foreach (option; scene.options)

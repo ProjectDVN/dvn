@@ -44,6 +44,8 @@ public final class GameSettings
   string settingsButtonText;
   string autoButtonTextOn;
   string autoButtonTextOff;
+
+  bool dialogueHistory;
 }
 
 public final class SaveFile
