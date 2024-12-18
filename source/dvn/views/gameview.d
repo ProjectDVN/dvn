@@ -515,6 +515,43 @@ public final class GameView : View
 								0);
 							break;
 
+						case "topSlightLeft":
+							chImage.position = IntVector(
+								((window.width / 2) - (chImage.width / 2)) -
+								chImage.width / 2,
+								0);
+							break;
+						case "topSlightRight":
+							chImage.position = IntVector(
+								((window.width / 2) - (chImage.width / 2)) +
+								chImage.width / 2,
+								0);
+							break;
+						case "slightLeft":
+							chImage.position = IntVector(
+								((window.width / 2) - (chImage.width / 2)) -
+								chImage.width / 2,
+								(window.height / 2) - (chImage.height / 2));
+							break;
+						case "slightRight":
+							chImage.position = IntVector(
+								((window.width / 2) - (chImage.width / 2)) +
+								chImage.width / 2,
+								(window.height / 2) - (chImage.height / 2));
+							break;
+						case "bottomSlightLeft":
+							chImage.position = IntVector(
+								((window.width / 2) - (chImage.width / 2)) -
+								chImage.width / 2,
+								window.height - chImage.height);
+							break;
+						case "bottomSlightRight":
+							chImage.position = IntVector(
+								((window.width / 2) - (chImage.width / 2)) +
+								chImage.width / 2,
+								window.height - chImage.height);
+							break;
+
 						default: break;
 					}
 
@@ -886,7 +923,7 @@ public final class GameView : View
 				{
 					optionHistory ~= "<" ~ option.text ~ ">";
 				}
-				
+
 				optionHistory ~= "----";
 
 				auto historyText = optionHistory.join("\r\n");
