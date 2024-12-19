@@ -32,6 +32,8 @@ public final class SceneEntry
 	string nextScene;
 	SceneOption[] options;
 	string view;
+	bool hideDialogue;
+	bool hideButtons;
 }
 
 public final class SceneLabel
@@ -191,6 +193,18 @@ public final class GameView : View
 
 					if (kv.length != 2)
 					{
+						switch (line)
+						{
+							case "hideDialogue":
+								entry.hideDialogue = true;
+								break;
+
+							case "hideButtons":
+								entry.hideButtons = true;
+								break;
+
+							default: break;
+						}
 						continue;
 					}
 
@@ -751,6 +765,10 @@ public final class GameView : View
 			window.height - (textPanel.height + 14)
 		);
 		textPanel.show();
+		if (scene.hideDialogue)
+		{
+			textPanel.hide();
+		}
 
 		DvnEvents.getEvents().renderGameViewDialoguePanel(textPanel);
 
@@ -1025,6 +1043,8 @@ public final class GameView : View
 
 		DvnEvents.getEvents().renderGameViewSaveButton(saveButton);
 
+		if (scene.hideButtons) saveButton.hide();
+
 		auto exitButton = new Button(window);
 		addComponent(exitButton);
 		exitButton.size = IntVector(64, 28);
@@ -1049,6 +1069,8 @@ public final class GameView : View
 
 		DvnEvents.getEvents().renderGameViewExitButton(exitButton);
 
+		if (scene.hideButtons) exitButton.hide();
+
 		auto settingsButton = new Button(window);
 		addComponent(settingsButton);
 		settingsButton.size = IntVector(92, 28);
@@ -1072,6 +1094,8 @@ public final class GameView : View
 		}));
 
 		DvnEvents.getEvents().renderGameViewSettingsButton(settingsButton);
+
+		if (scene.hideButtons) settingsButton.hide();
 
 		auto autoButton = new Button(window);
 		addComponent(autoButton);
@@ -1105,6 +1129,8 @@ public final class GameView : View
 		}));
 
 		DvnEvents.getEvents().renderGameViewAutoButton(autoButton);
+
+		if (scene.hideButtons) autoButton.hide();
 
 		bool intersectsWith(int x1, int y1, int x2, int y2, int w2, int h2)
 		{
