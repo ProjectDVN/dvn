@@ -53,6 +53,8 @@ public final class SceneCharacter
 	final:
 	string image;
 	string position;
+	int x;
+	int y;
 }
 
 public final class SceneCharacterName
@@ -251,6 +253,14 @@ public final class GameView : View
 
 						case "charPos":
 							character.position = value;
+							auto charXYPos = value.split(",");
+							
+							if (charXYPos.length == 2)
+							{
+								character.position = "";
+								character.x = charXYPos[0].to!int;
+								character.y = charXYPos[1].to!int;
+							}
 							break;
 
 						case "charNamePos":
@@ -572,7 +582,12 @@ public final class GameView : View
 								window.height - chImage.height);
 							break;
 
-						default: break;
+						default:
+							if (character.position == "")
+							{
+								chImage.position = IntVector(character.x, character.y);
+							}
+							break;
 					}
 
 					chImage.show();
