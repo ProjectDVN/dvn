@@ -1,6 +1,6 @@
 # Project DVN - Visual Novel Engine
 
-![DVN](https://i.imgur.com/l2iw53C.png "DVN")
+![Project DVN](https://i.imgur.com/98e30Mv.png "DVN")
 
 Website: (Coming Soon)
 
