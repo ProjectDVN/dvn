@@ -51,3 +51,5 @@ See: https://github.com/ProjectDVN/dvn/wiki/2.-Creating-your-first-visual-novel
 ### Events
 
 See: https://github.com/ProjectDVN/dvn/wiki/7.-Events
+
+![Project DVN](https://i.imgur.com/l2iw53C.png "DVN")
