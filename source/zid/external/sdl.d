@@ -976,6 +976,7 @@ EXT_Screen EXT_CreateScreen(EXT_Window nativeWindow)
 }
 
 public alias EXT_Rectangle = SDL_Rect*;
+public alias EXT_RectangleNative = SDL_Rect;
 
 EXT_Rectangle EXT_CreateEmptyRectangle()
 {
@@ -1072,11 +1073,13 @@ void EXT_CLEAR_TILESET(EXT_Sheet tileset)
   tileset.sheet = null;
 }
 
+public alias EXT_IMG_Load = IMG_Load;
+
 EXT_Texture EXT_CREATE_SHEET(SDL_Renderer* renderer, string path)
 {
   import std.string : toStringz;
 
-	SDL_Surface* temp = IMG_Load(path.toStringz);
+	SDL_Surface* temp = EXT_IMG_Load(path.toStringz);
 	SDL_Texture* sheet = SDL_CreateTextureFromSurface(renderer, temp);
 	SDL_FreeSurface(temp);
 
