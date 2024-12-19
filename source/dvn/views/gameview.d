@@ -914,6 +914,11 @@ public final class GameView : View
 					loaded = true;
 				}
 
+				if (loaded)
+				{
+					DvnEvents.getEvents().renderGameViewTextFinished(textLabel);
+				}
+
 				if (loaded && isAuto && !isEnding)
 				{
 					disableEvents = true;
@@ -1027,6 +1032,8 @@ public final class GameView : View
 
 				DvnEvents.getEvents().renderGameViewOption(optionLabel);
 			}
+
+			DvnEvents.getEvents().renderGameViewOptionsFinished();
 		}
 
 		auto saveButton = new Button(window);
@@ -1206,6 +1213,8 @@ public final class GameView : View
 				{
 					loaded = true;
 					textLabel.text = finalText;
+
+					DvnEvents.getEvents().renderGameViewTextFinished(textLabel);
 				}
 			}
 		}), true);
@@ -1259,6 +1268,8 @@ public final class GameView : View
 				{
 					loaded = true;
 					textLabel.text = finalText;
+
+					DvnEvents.getEvents().renderGameViewTextFinished(textLabel);
 				}
 			}
 		}), true);
