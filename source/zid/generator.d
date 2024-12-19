@@ -133,6 +133,9 @@ public final class UIItemEntry
   // image & animation
   string source;
 
+  // video & animation
+  bool repeat;
+
   // label
   string text;
   bool shadow;
@@ -353,9 +356,16 @@ private void parseGUIItems(string language, Window window, View view, UIGenerato
           break;
 
         case "animation":
-          auto ani = new Animation(window, item.source, false, 0);
+          auto ani = new Animation(window, item.source, !item.repeat, 0);
           component = ani;
           ani.show();
+          break;
+
+        case "video":
+          auto video = new Video(window, item.source, item.repeat);
+          video.size = IntVector(item.size[0], item.size[1]);
+          component = video;
+          video.show();
           break;
 
         case "label":

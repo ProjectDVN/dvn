@@ -22,10 +22,11 @@ public final class Video : Component
     alias EVENT = void delegate();
     EVENT[] _onFinishedEvents;
     bool _finished;
+    bool _repeat;
 
     public:
     final:
-    this(Window window, string framesFolder)
+    this(Window window, string framesFolder, bool repeat = false)
     {
         import std.file : dirEntries, SpanMode;
         import std.array : array;
@@ -44,11 +45,15 @@ public final class Video : Component
         {
             _frames ~= name;
         }
+
+        _repeat = repeat;
     }
     
     @property
     {
         bool finished() { return _finished; }
+
+        bool repeat() { return _repeat; }
     }
 
     void onFinishedVideo(EVENT event)
@@ -96,7 +101,16 @@ public final class Video : Component
         {
             _finished = true;
             fireFinishedVideo();
-            return;
+
+            if (_repeat && _frames.length)
+            {
+                _finished = false;
+                _frameIndex = 0;
+            }
+            else
+            {
+                return;
+            }
         }
 
         auto path = _frames[_frameIndex];
