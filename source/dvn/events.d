@@ -39,6 +39,8 @@ public class DvnEvents
     void playingMusic(string music) {}
     void playingSound(string sound) {}
 
+    void addClickSafeComponents(ref Component[] components) {}
+
     void renderGameViewOverplayBegin(Panel overlay) {}
     void renderGameViewBackground(Image background) {}
     void renderGameViewCharacter(SceneCharacter character, Image image) {}

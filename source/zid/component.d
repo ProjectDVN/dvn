@@ -155,6 +155,86 @@ public abstract class Component
     }
   }
 
+  public void fireMouseButtonDown(MouseButton button, IntVector mousePosition)
+  {
+    if (!_onMouseButtonDown)
+    {
+      return;
+    }
+
+    foreach (event; _onMouseButtonDown)
+    {
+      event(button, mousePosition);
+    }
+  }
+
+  public void fireMouseButtonUp(MouseButton button, IntVector mousePosition)
+  {
+    if (!_onMouseButtonUp)
+    {
+      return;
+    }
+
+    foreach (event; _onMouseButtonUp)
+    {
+      event(button, mousePosition);
+    }
+  }
+
+  public void fireMouseMove(IntVector mousePosition)
+  {
+    if (!_onMouseMove)
+    {
+      return;
+    }
+
+    foreach (event; _onMouseMove)
+    {
+      event(mousePosition);
+    }
+  }
+
+  public void fireTextInput(dchar c)
+  {
+    import std.conv : to;
+
+    if (!_onTextInput)
+    {
+      return;
+    }
+
+    foreach (event; _onTextInput)
+    {
+      event(c, c.to!dstring);
+    }
+  }
+
+  public void fireKeyboardDown(KeyboardKey key)
+  {
+    if (!_onKeyboardDown)
+    {
+      return;
+    }
+
+    foreach (event; _onKeyboardDown)
+    {
+      event(key);
+    }
+  }
+
+  public void fireKeyboardUp(KeyboardKey key)
+  {
+    if (!_onKeyboardUp)
+    {
+      return;
+    }
+
+    foreach (event; _onKeyboardUp)
+    {
+      event(key);
+    }
+  }
+
   public void update()
   {
     if (_cleaned) return;

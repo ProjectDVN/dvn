@@ -497,6 +497,19 @@ public final class Button : Component
     _buttonClickEvents ~= eventHandler;
   }
 
+  void fireButtonClick()
+  {
+    if (!_buttonClickEvents)
+    {
+      return;
+    }
+
+    foreach (event; _buttonClickEvents)
+    {
+      event(MouseButton.left, IntVector(x, y));
+    }
+  }
+
   void setCustomButtonDraw(DrawButtonDelegate customButtonDraw)
   {
     _customButtonDraw = customButtonDraw;

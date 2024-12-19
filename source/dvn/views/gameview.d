@@ -1012,7 +1012,7 @@ public final class GameView : View
 
 		saveButton.show();
 
-		saveButton.onButtonClick(new MouseButtonEventHandler((p,b) {
+		saveButton.onButtonClick(new MouseButtonEventHandler((b,p) {
 			//settings.saveScene = scene.name;
 			//settings.saveBackground = _lastBackgroundSource;
 			//settings.saveMusic = _lastMusic;
@@ -1041,7 +1041,7 @@ public final class GameView : View
 
 		exitButton.show();
 
-		exitButton.onButtonClick(new MouseButtonEventHandler((p,b) {
+		exitButton.onButtonClick(new MouseButtonEventHandler((b,p) {
 			backToScene = "";
 			window.fadeToView("MainMenu", getColorByName("black"), false);
 			return false;
@@ -1065,7 +1065,7 @@ public final class GameView : View
 
 		settingsButton.show();
 
-		settingsButton.onButtonClick(new MouseButtonEventHandler((p,b) {
+		settingsButton.onButtonClick(new MouseButtonEventHandler((b,p) {
 			backToScene = scene.name;
 			window.fadeToView("SettingsView", getColorByName("black"), false);
 			return false;
@@ -1089,7 +1089,7 @@ public final class GameView : View
 
 		autoButton.show();
 
-		autoButton.onButtonClick(new MouseButtonEventHandler((p,b) {
+		autoButton.onButtonClick(new MouseButtonEventHandler((b,p) {
 			isAuto = !isAuto;
 
 			if (isAuto)
@@ -1222,31 +1222,43 @@ public final class GameView : View
 			}
 		}), true);
 
+		Component[] safeComponents = [saveButton, exitButton, settingsButton, autoButton];
+
+		DvnEvents.getEvents().addClickSafeComponents(safeComponents);
+
 		overlay.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
 			if (switchingScene || hasOptions || disableEvents)
 			{
 				return;
 			}
 
-			if (intersectsWith(p.x, p.y, saveButton.x, saveButton.y, saveButton.width, saveButton.height))
+			foreach (component; safeComponents)
 			{
-				return;
+				if (intersectsWith(p.x, p.y, component.x, component.y, component.width, component.height))
+				{
+					return;
+				}
 			}
 
-			if (intersectsWith(p.x, p.y, exitButton.x, exitButton.y, exitButton.width, exitButton.height))
-			{
-				return;
-			}
+			// if (intersectsWith(p.x, p.y, saveButton.x, saveButton.y, saveButton.width, saveButton.height))
+			// {
+			// 	return;
+			// }
 
-			if (intersectsWith(p.x, p.y, settingsButton.x, settingsButton.y, settingsButton.width, settingsButton.height))
-			{
-				return;
-			}
+			// if (intersectsWith(p.x, p.y, exitButton.x, exitButton.y, exitButton.width, exitButton.height))
+			// {
+			// 	return;
+			// }
 
-			if (intersectsWith(p.x, p.y, autoButton.x, autoButton.y, autoButton.width, autoButton.height))
-			{
-				return;
-			}
+			// if (intersectsWith(p.x, p.y, settingsButton.x, settingsButton.y, settingsButton.width, settingsButton.height))
+			// {
+			// 	return;
+			// }
+
+			// if (intersectsWith(p.x, p.y, autoButton.x, autoButton.y, autoButton.width, autoButton.height))
+			// {
+			// 	return;
+			// }
 			
 			auto ticks = EXT_GetTicks();
 
