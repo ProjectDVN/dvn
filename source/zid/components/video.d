@@ -19,6 +19,9 @@ public final class Video : Component
     size_t _frameIndex;
     uint _lastMS;
     uint _delay;
+    alias EVENT = void delegate();
+    EVENT[] _onFinishedEvents;
+    bool _finished;
 
     public:
     final:
@@ -42,6 +45,29 @@ public final class Video : Component
             _frames ~= name;
         }
     }
+    
+    @property
+    {
+        bool finished() { return _finished; }
+    }
+
+    void onFinishedVideo(EVENT event)
+    {
+        _onFinishedEvents ~= event;
+    }
+
+    void fireFinishedVideo()
+    {
+        if (!_onFinishedEvents)
+        {
+            return;
+        }
+
+        foreach (event; _onFinishedEvents)
+        {
+            event();
+        }
+    }
 
     override void repaint()
     {
@@ -50,6 +76,11 @@ public final class Video : Component
 
     override void renderNativeComponent()
     {
+        if (_finished)
+        {
+            return;
+        }
+
         import std.string : toStringz;
 
         auto ms = EXT_GetTicks();
@@ -63,6 +94,8 @@ public final class Video : Component
 
         if (_frameIndex >= _frames.length)
         {
+            _finished = true;
+            fireFinishedVideo();
             return;
         }
 
