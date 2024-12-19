@@ -121,6 +121,12 @@ SaveFile getCurrentSaveFile()
 }
 
 private bool isAuto;
+private string _lastScene;
+
+public string getLastScene()
+{
+	return _lastScene;
+}
 
 public final class GameView : View
 {
@@ -1137,6 +1143,8 @@ public final class GameView : View
 					}
 					else if (nextScene)
 					{
+						_lastScene = scene.name;
+					
 						if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)
 						{
 							initializeGame(nextScene.name);
@@ -1188,6 +1196,8 @@ public final class GameView : View
 					}
 					else if (nextScene)
 					{
+						_lastScene = scene.name;
+					
 						if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)
 						{
 							initializeGame(nextScene.name);
@@ -1257,6 +1267,8 @@ public final class GameView : View
 				}
 				else if (nextScene)
 				{
+					_lastScene = scene.name;
+
 					if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)
 					{
 						initializeGame(nextScene.name);

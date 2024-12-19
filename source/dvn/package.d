@@ -20,14 +20,14 @@ public
   void displayLastSceneView()
   {
     import zid;
-    import dvn.views.settingsview : backToScene;
+    import dvn.views.gameview : getLastScene;
 
     runDelayedTask(0, {
       getApplication().windows[0].fadeToView("GameView", getColorByName("black"), false, (view) {
           auto gameView = cast(GameView)view;
           gameView.loadGame();
 
-          gameView.initializeGame(backToScene);
+          gameView.initializeGame(getLastScene);
       });
     });
   }
