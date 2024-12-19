@@ -12,7 +12,7 @@ Project DVN is a powerful, user-friendly and flexible free open-source visual no
 
 ## Who It's For
 
-Project DVN is perfect for writers and developers of all experience levels. Whether you're creating a personal passion project or a commercial release, Project DVN empowers you to build engaging stories across all genres imaginiable.
+Project DVN is perfect for writers and developers of all experience levels. Whether you're creating a personal passion project or a commercial release, Project DVN empowers you to build engaging stories across all genres imaginable.
 
 ## Why Project DVN?
 
