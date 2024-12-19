@@ -48,6 +48,10 @@ To create your first visual novel see: https://github.com/ProjectDVN/dvn/wiki/2.
 
 See: https://github.com/ProjectDVN/dvn/wiki/2.-Creating-your-first-visual-novel
 
+### Scripting
+
+See: https://github.com/ProjectDVN/dvn/wiki/6.-Scripting
+
 ### Events
 
 See: https://github.com/ProjectDVN/dvn/wiki/7.-Events
