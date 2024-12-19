@@ -46,6 +46,7 @@ public final class GameSettings
   string autoButtonTextOff;
 
   bool dialogueHistory;
+  string customStartView;
 }
 
 public final class SaveFile
