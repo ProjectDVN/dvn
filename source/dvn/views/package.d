@@ -7,4 +7,5 @@ public
   import dvn.views.gameview;
   import dvn.views.actview;
   import dvn.views.loadgameview;
+  import dvn.views.videoloadingview;
 }

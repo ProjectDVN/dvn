@@ -9,6 +9,7 @@ import dvn.views.gameview;
 import dvn.views.settingsview;
 import dvn.views.actview;
 import dvn.views.loadgameview;
+import dvn.views.videoloadingview;
 import dvn.music;
 import dvn.events;
 
@@ -37,11 +38,14 @@ public final class LoadingView : View
 
 		EXT_SetWindowBordered(window.nativeWindow, EXT_bool.SDL_FALSE);
 
-		auto music = "data/music/main.mp3";
-
-		if (music && music.length)
+		if (!settings.disableLoadScreenMusic)
 		{
-			EXT_PlayMusic(music);
+			auto music = "data/music/main.mp3";
+
+			if (music && music.length)
+			{
+				EXT_PlayMusic(music);
+			}
 		}
 		
 		auto loadingText = settings.loadTitle;
@@ -183,10 +187,22 @@ public final class LoadingView : View
 			mainWindow.addView!SettingsView("SettingsView");
 			mainWindow.addView!ActView("ActView");
 			mainWindow.addView!LoadGameView("LoadGameView");
+			mainWindow.addView!VideoLoadingView("VideoLoadingView");
 
 			DvnEvents.getEvents().loadingViews(mainWindow);
 			
-			mainWindow.fadeToView("MainMenu", getColorByName("black"), false);
+			if (settings.customStartView && settings.customStartView.length)
+			{
+				mainWindow.fadeToView(settings.customStartView, getColorByName("black"), false);
+			}
+			else if (settings.videoLoadingScreen && settings.videoLoadingScreen.length)
+			{
+				mainWindow.fadeToView("VideoLoadingView", getColorByName("black"), false);
+			}
+			else
+			{
+				mainWindow.fadeToView("MainMenu", getColorByName("black"), false);
+			}
 
 			if (!settings.fullScreen) EXT_ShowWindow(mainWindow.nativeWindow);
 

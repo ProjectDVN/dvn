@@ -23,6 +23,7 @@ public final class Video : Component
     EVENT[] _onFinishedEvents;
     bool _finished;
     bool _repeat;
+    size_t _frameCount;
 
     public:
     final:
@@ -41,12 +42,15 @@ public final class Video : Component
         auto files = dirEntries(framesFolder, SpanMode.shallow).array();
         sort!((a, b) => baseName(stripExtension(a.name)).to!int < baseName(stripExtension(b.name)).to!int)(files);
 
+        _frames = [];
+
         foreach (string name; files)
         {
             _frames ~= name;
         }
 
         _repeat = repeat;
+        _frameCount = _frames.length;
     }
     
     @property
@@ -54,6 +58,18 @@ public final class Video : Component
         bool finished() { return _finished; }
 
         bool repeat() { return _repeat; }
+
+        size_t frameIndex() { return _frameIndex; }
+        void frameIndex(size_t frameIndexStart)
+        {
+            _frameIndex = frameIndexStart;
+        }
+
+        size_t frameCount() { return _frameCount; }
+        void frameCount(size_t newFrameCount)
+        {
+            _frameCount = newFrameCount;
+        }
     }
 
     void onFinishedVideo(EVENT event)
@@ -97,12 +113,12 @@ public final class Video : Component
             _frameIndex++;
         }
 
-        if (_frameIndex >= _frames.length)
+        if (_frameIndex >= _frameCount)
         {
             _finished = true;
             fireFinishedVideo();
 
-            if (_repeat && _frames.length)
+            if (_repeat && _frameCount)
             {
                 _finished = false;
                 _frameIndex = 0;

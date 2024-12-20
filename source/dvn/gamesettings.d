@@ -46,7 +46,13 @@ public final class GameSettings
   string autoButtonTextOff;
 
   bool dialogueHistory;
+  
   string customStartView;
+
+  string videoLoadingScreen;
+  string videoLoadingMusic;
+
+  bool disableLoadScreenMusic;
 }
 
 public final class SaveFile
