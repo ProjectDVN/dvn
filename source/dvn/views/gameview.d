@@ -178,6 +178,11 @@ public final class GameView : View
 
 				auto line = l.strip;
 
+				if (line[0] == '#')
+				{
+					continue;
+				}
+
 				if (line[0] == '[' && line[$-1] == ']')
 				{
 					entry = new SceneEntry;
