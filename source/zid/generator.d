@@ -130,7 +130,7 @@ public final class UIItemEntry
   string fontName;
   size_t fontSize;
 
-  // image & animation
+  // image, video & animation
   string source;
 
   // video & animation
