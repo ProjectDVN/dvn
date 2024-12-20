@@ -46,14 +46,14 @@ To create your first visual novel see: https://github.com/ProjectDVN/dvn/wiki/2.
 
 ### Building
 
-See: https://github.com/ProjectDVN/dvn/wiki/2.-Creating-your-first-visual-novel
+See: https://dvn-docs.readthedocs.io/en/latest/getting-started.html
 
 ### Scripting
 
-See: https://github.com/ProjectDVN/dvn/wiki/6.-Scripting
+See: https://dvn-docs.readthedocs.io/en/latest/scripting.html
 
 ### Events
 
-See: https://github.com/ProjectDVN/dvn/wiki/7.-Events
+See: https://dvn-docs.readthedocs.io/en/latest/events.html
 
 ![Project DVN](https://i.imgur.com/l2iw53C.png "DVN")
