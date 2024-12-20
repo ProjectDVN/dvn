@@ -67,6 +67,9 @@ public class DvnEvents
     // Main Menu View
     void renderMainMenuView(Window window, Label titleLabel, Label playLabel, Label loadLabel, Label settingsLabel, Label exitLabel) {}
 
+    // Video Loading View
+    void renderVideoLoadingView(Video video) {}
+
     static:
     final:
     void setEvents(DvnEvents events)

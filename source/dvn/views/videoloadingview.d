@@ -44,5 +44,7 @@ public final class VideoLoadingView : View
         video.onFinishedVideo({
             window.fadeToView("MainMenu", getColorByName("black"), false);
         });
+
+        DvnEvents.getEvents().renderVideoLoadingView(video);
     }
 }
