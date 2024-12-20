@@ -8,7 +8,7 @@ import dvn.views.gameview;
 import dvn.events;
 import dvn.music;
 
-import zid;
+import dvn.ui;
 
 public final class VideoLoadingView : View
 {

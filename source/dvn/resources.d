@@ -3,7 +3,7 @@ module dvn.resources;
 import std.file : dirEntries, SpanMode;
 import std.path : baseName, CaseSensitive;
 
-import zid.meta;
+import dvn.meta;
 
 mixin CreateCustomException!"ResourceException";
 
@@ -49,7 +49,7 @@ Resource[string] getResources()
 void appendResources(Resource[string] originalResources, string path)
 {
   import std.file : readText;
-  import zid.json;
+  import dvn.json;
 
   string text = readText(path);
   string[] errorMessages;
@@ -73,7 +73,7 @@ Resource[string] loadResources(string path = "", bool forceLoadResource = false)
   }
 
   import std.file : readText;
-  import zid.json;
+  import dvn.json;
 
   string text = readText(path);
   string[] errorMessages;

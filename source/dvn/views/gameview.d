@@ -9,7 +9,7 @@ import dvn.views.settingsview : backToScene;
 import dvn.views.actview;
 import dvn.events;
 
-import zid;
+import dvn.ui;
 
 public final class SceneEntry
 {

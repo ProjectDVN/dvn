@@ -7,7 +7,7 @@ import dvn.gamesettings;
 import dvn.views.gameview;
 import dvn.events;
 
-import zid;
+import dvn.ui;
 
 public final class LoadGameView : View
 {

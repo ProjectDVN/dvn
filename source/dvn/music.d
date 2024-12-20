@@ -3,7 +3,7 @@ module dvn.music;
 import std.file : dirEntries, SpanMode;
 import std.path : baseName, CaseSensitive;
 
-import zid.meta;
+import dvn.meta;
 
 mixin CreateCustomException!"MusicException";
 
@@ -17,7 +17,7 @@ void loadMusic(string path)
     }
 
     import std.file : readText;
-    import zid.json;
+    import dvn.json;
 
     string text = readText(path);
     string[] errorMessages;

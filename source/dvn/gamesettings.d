@@ -1,7 +1,6 @@
 module dvn.gamesettings;
 
-import zid.meta;
-
+import dvn.meta;
 import dvn.events;
 
 mixin CreateCustomException!"GameSettingsException";
@@ -153,7 +152,7 @@ GameSettings loadGameSettings(string path)
   }
 
   import std.file : readText;
-  import zid.json;
+  import dvn.json;
 
   string text = readText(path);
   string[] errorMessages;
@@ -190,7 +189,7 @@ void saveGameSettings(string path)
   }
 
   import std.file : write;
-  import zid.json;
+  import dvn.json;
   
   string serializedJson;
   if (!serializeJsonSafe(globalSettings, serializedJson, true))

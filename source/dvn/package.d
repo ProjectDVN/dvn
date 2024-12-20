@@ -2,16 +2,37 @@ module dvn;
 
 public
 {
+  import dvn.components;
+  import dvn.external;
+  import dvn.json;
+
   import dvn.gamesettings;
   import dvn.resources;
   import dvn.views;
   import dvn.music;
   import dvn.events;
 
+  import dvn.application;
+  import dvn.atlas;
+  import dvn.colors;
+  import dvn.component;
+  import dvn.delayedtask;
+  import dvn.events;
+  import dvn.fonts;
+  import dvn.generator;
+  import dvn.i18n;
+  import dvn.meta;
+  import dvn.painting;
+  import dvn.sheetcollection;
+  import dvn.surface;
+  import dvn.texttools;
+  import dvn.tools;
+  import dvn.view;
+  import dvn.unorderedlist;
+  import dvn.window;
+
   void displayView(string name)
   {
-    import zid;
-    
     runDelayedTask(0, {
       getApplication().windows[0].fadeToView(name, getColorByName("black"), false);
     });
@@ -19,7 +40,6 @@ public
 
   void displayLastSceneView()
   {
-    import zid;
     import dvn.views.gameview : getLastScene;
 
     runDelayedTask(0, {
@@ -34,7 +54,6 @@ public
 
   void displayScene(string scene)
   {
-    import zid;
     import dvn.views.settingsview : backToScene;
 
     runDelayedTask(0, {
@@ -49,8 +68,6 @@ public
 
   void runDVN()
   {
-    import zid;
-    
     auto gameSettings = loadGameSettings("data/settings.json");
     setGlobalSettings(gameSettings);
       

@@ -13,7 +13,7 @@ import dvn.views.videoloadingview;
 import dvn.music;
 import dvn.events;
 
-import zid;
+import dvn.ui;
 
 public final class LoadingView : View
 {
