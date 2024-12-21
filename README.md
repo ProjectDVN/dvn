@@ -65,4 +65,8 @@ See: https://dvn-docs.readthedocs.io/en/latest/scripting.html
 
 See: https://dvn-docs.readthedocs.io/en/latest/events.html
 
+### Contributing
+
+If you wish to contribute just go ahead and do a pull-request or create an issue if you wish to discuss the design of a feature further.
+
 ![Project DVN](https://i.imgur.com/l2iw53C.png "DVN")
