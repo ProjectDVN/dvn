@@ -5,7 +5,7 @@
 [![DONATE](https://img.shields.io/badge/Support%20Project%20DVN-Donate-brightgreen.svg)](https://buymeacoffee.com/projectdvn)
 [![OS](https://img.shields.io/badge/os-windows%20%7C%20linux%20%7C%20macos-ff69b4.svg)](https://code.dlang.org/packages/dvn)
 [![Version](https://img.shields.io/github/v/release/projectdvn/dvn
-)](https://github.com/ProjectDVN/dvn)
+)](https://github.com/ProjectDVN/dvn/releases)
 [![Docs](https://img.shields.io/badge/documentation-online-blue
 )](https://dvn-docs.readthedocs.io/en/latest/)
 [![License](https://img.shields.io/dub/l/dvn.svg)](https://code.dlang.org/packages/dvn)
