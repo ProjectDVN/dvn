@@ -12,4 +12,5 @@ public
   import dvn.components.dropdown;
   import dvn.components.checkbox;
   import dvn.components.video;
+  import dvn.components.rawimage;
 }
