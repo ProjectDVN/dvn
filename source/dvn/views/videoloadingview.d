@@ -44,6 +44,17 @@ public final class VideoLoadingView : View
         video.onFinishedVideo({
             window.fadeToView("MainMenu", getColorByName("black"), false);
         });
+        
+        video.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
+			window.fadeToView("MainMenu", getColorByName("black"), false);
+		}));
+
+		video.onKeyboardUp(new KeyboardEventHandler((k) {
+			if (k == KeyboardKey.escape)
+			{
+				window.fadeToView("MainMenu", getColorByName("black"), false);
+			}
+		}), true);
 
         DvnEvents.getEvents().renderVideoLoadingView(video);
     }
