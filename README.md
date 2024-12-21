@@ -33,7 +33,7 @@ Project DVN combines ease of use with powerful features, making it the ideal cho
 
 With Project DVN, the power to create unforgettable narrative experiences is in your hands. Start your journey and bring your stories to life today!
 
-To create your first visual novel see: https://github.com/ProjectDVN/dvn/wiki/2.-Creating-your-first-visual-novel
+To create your first visual novel see: https://dvn-docs.readthedocs.io/en/latest/getting-started.html
 
 ---
 
