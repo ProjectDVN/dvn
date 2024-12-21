@@ -773,6 +773,24 @@ public final class GameView : View
 			}
 		}
 
+		if (settings.dialoguePanelImage)
+		{
+			auto rawImage = new RawImage(window,
+				settings.dialoguePanelImage.path,
+				IntVector(settings.dialoguePanelImage.size.width,
+					settings.dialoguePanelImage.size.height));
+			addComponent(rawImage);
+			rawImage.size = IntVector(
+				(window.width / 100) * 90,
+				(window.height / 100) * 33);
+			rawImage.position = IntVector(
+				((window.width / 2) - (rawImage.width / 2)),
+				window.height - (rawImage.height + 14)
+			);
+
+			DvnEvents.getEvents().renderGameViewDialoguePanelImage(rawImage);
+		}
+
 		auto textPanel = new Panel(window);
 		addComponent(textPanel);
 		textPanel.fillColor = settings.dialoguePanelBackgroundColor.getColorByHex.changeAlpha(150);
@@ -792,6 +810,12 @@ public final class GameView : View
 
 		DvnEvents.getEvents().renderGameViewDialoguePanel(textPanel);
 
+		if (settings.dialoguePanelImage)
+		{
+			textPanel.fillColor = textPanel.fillColor.changeAlpha(0);
+			textPanel.borderColor = textPanel.borderColor.changeAlpha(0);
+		}
+
 		foreach (charNameAndPos; scene.characterNames)
 		{
 			auto charNameLabel = new Label(window);
@@ -802,6 +826,18 @@ public final class GameView : View
 			charNameLabel.shadow = true;
 			charNameLabel.position = IntVector(16, 4);
 			charNameLabel.updateRect();
+
+			RawImage namePanelImage;
+			if (settings.namePanelImage)
+			{
+				auto rawImage = new RawImage(window,
+					settings.namePanelImage.path,
+					IntVector(settings.namePanelImage.size.width,
+						settings.namePanelImage.size.height));
+				addComponent(rawImage);
+				rawImage.size = IntVector(charNameLabel.width + 32, charNameLabel.height + 8);
+				namePanelImage = rawImage;
+			}
 
 			auto charNamePanel = new Panel(window);
 			addComponent(charNamePanel);
@@ -836,8 +872,16 @@ public final class GameView : View
 
 			charNamePanel.addComponent(charNameLabel);
 			charNamePanel.show();
+			
+			if (settings.namePanelImage)
+			{
+				charNamePanel.fillColor = charNamePanel.fillColor.changeAlpha(0);
+				charNamePanel.borderColor = charNamePanel.borderColor.changeAlpha(0);
 
-			DvnEvents.getEvents().renderGameViewCharacterName(charNameAndPos, charNameLabel, charNamePanel);
+				namePanelImage.position = IntVector(charNamePanel.x, charNamePanel.y - 1);
+			}
+
+			DvnEvents.getEvents().renderGameViewCharacterName(charNameAndPos, charNameLabel, charNamePanel, namePanelImage);
 		}
 
 		bool hasOptions = false;

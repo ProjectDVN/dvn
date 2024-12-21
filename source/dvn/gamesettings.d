@@ -52,6 +52,24 @@ public final class GameSettings
   string videoLoadingMusic;
 
   bool disableLoadScreenMusic;
+  SettingsImage dialoguePanelImage;
+  SettingsImage namePanelImage;
+}
+
+public final class SettingsImage
+{
+  public:
+  final:
+  string path;
+  SettingsSize size;
+}
+
+public final class SettingsSize
+{
+  public:
+  final:
+  int width;
+  int height;
 }
 
 public final class SaveFile
