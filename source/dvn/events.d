@@ -50,6 +50,7 @@ public class DvnEvents
     void renderGameViewDialoguePanel(Panel panel) {}
     void renderGameViewCharacterName(SceneCharacterName characterName, Label label, Panel panel) {}
     void renderGameViewOption(Label option) {}
+    void renderGameViewOptionsStart() {}
     void renderGameViewOptionsFinished() {}
     void renderGameViewSaveButton(Button button) {}
     void renderGameViewExitButton(Button button) {}

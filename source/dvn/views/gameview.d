@@ -956,6 +956,8 @@ public final class GameView : View
 		{
 			hasOptions = true;
 
+			DvnEvents.getEvents().renderGameViewOptionsStart();
+
 			if (settings.dialogueHistory && _saveId && _saveId.length)
 			{
 				import std.file : exists, mkdir, append;
