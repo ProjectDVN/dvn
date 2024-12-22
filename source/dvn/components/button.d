@@ -93,6 +93,19 @@ public final class Button : Component
   ButtonPaint _hoverPaint;
   ButtonPaint _clickPaint;
 
+  EXT_Surface _temp;
+  EXT_Texture _texture;
+  EXT_RectangleNative* _rect1;
+  EXT_RectangleNative* _rect2;
+
+  EXT_Surface _tempHover;
+  EXT_Texture _textureHover;
+  EXT_RectangleNative* _rect1Hover;
+    EXT_RectangleNative* _rect2Hover;
+
+  bool _cleaned;
+  bool _isImageRender;
+
   alias VERIFY_CLICK_DELGATE = bool delegate();
 
   VERIFY_CLICK_DELGATE[] _verifyClicks;
@@ -224,6 +237,8 @@ public final class Button : Component
 
     _buttonClickEvents = [];
 
+    _isImageRender = false;
+
     onMouseButtonDown(new MouseButtonEventHandler((b,p) {
       if (super.isDisabled)
       {
@@ -346,6 +361,61 @@ public final class Button : Component
     }));
 
     restyle();
+  }
+
+  void renderButtonImage(string path, IntVector imageSize, string hoverPath, IntVector imageSizeHover)
+  {
+    import std.string : toStringz;
+
+    _isImageRender = true;
+
+    _temp = EXT_IMG_Load(path.toStringz);
+    _texture = EXT_CreateTextureFromSurface(window.nativeScreen, _temp);
+
+    _rect1 = new EXT_RectangleNative;
+    _rect1.x = 0;
+    _rect1.y = 0;
+    _rect1.w = imageSize.x;
+    _rect1.h = imageSize.y;
+
+    _rect2 = new EXT_RectangleNative;
+    _rect2.x = super.x;
+    _rect2.y = super.y;
+    _rect2.w = super.width;
+    _rect2.h = super.height;
+    
+    _tempHover = EXT_IMG_Load(hoverPath.toStringz);
+    _textureHover = EXT_CreateTextureFromSurface(window.nativeScreen, _tempHover);
+
+    _rect1Hover = new EXT_RectangleNative;
+    _rect1Hover.x = 0;
+    _rect1Hover.y = 0;
+    _rect1Hover.w = imageSizeHover.x;
+    _rect1Hover.h = imageSizeHover.y;
+    
+    _rect2Hover = new EXT_RectangleNative;
+    _rect2Hover.x = super.x;
+    _rect2Hover.y = super.y;
+    _rect2Hover.w = super.width;
+    _rect2Hover.h = super.height;
+    
+    defaultPaint.backgroundColor = defaultPaint.backgroundColor.changeAlpha(0);
+		defaultPaint.backgroundBottomColor = defaultPaint.backgroundColor;
+		defaultPaint.borderColor = defaultPaint.backgroundColor;
+		defaultPaint.shadowColor = defaultPaint.backgroundColor;
+
+		hoverPaint.backgroundColor = defaultPaint.backgroundColor;
+		hoverPaint.backgroundBottomColor = defaultPaint.backgroundColor;
+		hoverPaint.borderColor = defaultPaint.backgroundColor;
+		hoverPaint.shadowColor = defaultPaint.backgroundColor;
+
+		clickPaint.backgroundColor = defaultPaint.backgroundColor;
+		clickPaint.backgroundBottomColor = defaultPaint.backgroundColor;
+		clickPaint.borderColor = defaultPaint.backgroundColor;
+		clickPaint.shadowColor = defaultPaint.backgroundColor;
+
+    restyle();
+    show();
   }
 
   private void updateLabel()
@@ -652,11 +722,42 @@ public final class Button : Component
     }
   }
 
+  override void clean()
+  {
+    if (!_isImageRender)
+    {
+      return;
+    }
+
+    EXT_DestroyTexture(_texture);
+    EXT_FreeSurface(_temp);
+
+    _cleaned = true;
+
+    super.clean();
+  }
+
   override void renderNativeComponent()
   {
     auto screen = super.window.nativeScreen;
 
-    if (_activeRender && _activeRender.texture)
+    if (_isImageRender)
+    {
+      if (!_texture || !_textureHover || _cleaned)
+      {
+        return;
+      }
+      
+      if (_hasMouseHover)
+      {
+        EXT_RenderCopy(screen, _textureHover, _rect1Hover, _rect2Hover);
+      }
+      else
+      {
+        EXT_RenderCopy(screen, _texture, _rect1, _rect2);
+      }
+    }
+    else if (_activeRender && _activeRender.texture)
     {
       EXT_RenderCopy(screen, _activeRender.texture, _activeRender.entry.textureRect, _activeRender.entry.rect);
     }
