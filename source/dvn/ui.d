@@ -24,3 +24,14 @@ public
     import dvn.components;
     import dvn.external;
 }
+
+public:
+void takeScreenshot(Window window, string path)
+{
+    import std.string : toStringz;
+
+    auto sshot = EXT_CreateRGBSurface(0, window.width, window.height, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+    EXT_RenderReadPixels(window.nativeScreen, null, EXT_PIXELFORMAT_ARGB8888, sshot.pixels, sshot.pitch);
+    EXT_IMG_SavePNG(sshot, path.toStringz);
+    EXT_FreeSurface(sshot);
+}

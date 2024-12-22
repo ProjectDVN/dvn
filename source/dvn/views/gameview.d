@@ -1108,6 +1108,19 @@ public final class GameView : View
 			//settings.saveBackground = _lastBackgroundSource;
 			//settings.saveMusic = _lastMusic;
 
+			import std.file : exists, mkdir, remove;
+
+			if (!exists("data/game/saves"))
+			{
+				mkdir("data/game/saves");
+			}
+			else if (exists("data/game/saves/" ~ _saveId ~ ".png"))
+			{
+				remove("data/game/saves/" ~ _saveId ~ ".png");
+			}
+
+			takeScreenshot(window, "data/game/saves/" ~ _saveId ~ ".png");
+
 			saveGame(settings, _saveId, scene.name, _lastBackgroundSource, _lastMusic);
 
 			saveGameSettings("data/settings.json");

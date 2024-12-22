@@ -31,6 +31,16 @@ public alias EXT_StartTextInput = SDL_StartTextInput;
 
 public alias EXT_SetWindowFullscreen = SDL_SetWindowFullscreen;
 
+public alias EXT_CreateRGBSurface = SDL_CreateRGBSurface;
+
+public alias EXT_PIXELFORMAT_ARGB8888 = SDL_PIXELFORMAT_ARGB8888;
+
+public alias EXT_SaveBMP = SDL_SaveBMP;
+
+public alias EXT_RenderReadPixels = SDL_RenderReadPixels;
+
+public alias EXT_IMG_SavePNG = IMG_SavePNG;
+
 void EXT_Initialize()
 {
   if (_initialized) return;
