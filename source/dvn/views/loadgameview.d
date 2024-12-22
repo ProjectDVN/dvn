@@ -113,35 +113,89 @@ public final class LoadGameView : View
 
         int saveFileY = 220;
 
-        foreach (saveFile; saveFiles)
+        int saveIndex = 0;
+        int saveX = 0;
+        int saveY = 125;
+
+        foreach (y; 0 .. 2)
         {
-            auto saveLabel = new Label(window);
-            addComponent(saveLabel);
-            saveLabel.fontName = settings.defaultFont;
-            saveLabel.fontSize = 24;
-            saveLabel.color = "fff".getColorByHex;
-            saveLabel.text = (settings.loadText ~ saveFile.date).to!dstring;
-            saveLabel.shadow = true;
-            saveLabel.isLink = true;
-            saveLabel.position = IntVector((window.width / 2) - (saveLabel.width / 2), saveFileY);
-            saveLabel.updateRect();
+            saveX = 120;
 
-            auto closure = (Label oLabel, SaveFile sFile) { return () {
-                oLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
-                    window.fadeToView("GameView", getColorByName("black"), false, (view) {
-                        setSaveId(sFile.id);
+            foreach (x; 0 .. 3)
+            {
+                if (saveIndex >= saveFiles.length)
+                {
+                    break;
+                }
 
-                    	auto gameView = cast(GameView)view;
-                    	gameView.loadGame();
+                auto saveFile = saveFiles[saveIndex];
 
-                    	gameView.initializeGame(sFile.scene, sFile.background, sFile.music);
-                    });
-                }));
-            };};
+                auto rawImage = new RawImage(window, "data/game/saves/" ~ saveFile.id ~ ".png", IntVector(1280, 720));
+                addComponent(rawImage);
+                rawImage.size = IntVector(340, 196);
+                rawImage.position = IntVector(saveX, saveY);
+                
+                auto saveLabel = new Label(window);
+                addComponent(saveLabel);
+                saveLabel.fontName = settings.defaultFont;
+                saveLabel.fontSize = 24;
+                saveLabel.color = "fff".getColorByHex;
+                saveLabel.text = (settings.loadText ~ saveFile.date).to!dstring;
+                saveLabel.shadow = true;
+                saveLabel.isLink = true;
+                saveLabel.position = IntVector(
+                    rawImage.x + ((rawImage.width / 2) - (saveLabel.width / 2)),
+                    rawImage.y + rawImage.height + 6
+                );
+                saveLabel.updateRect();
 
-            closure(saveLabel, saveFile)();
+                auto closure = (Label oLabel, RawImage oImage, SaveFile sFile) { return () {
+                    oLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
+                        window.fadeToView("GameView", getColorByName("black"), false, (view) {
+                            setSaveId(sFile.id);
 
-            saveFileY += saveLabel.height + 16;
+                            auto gameView = cast(GameView)view;
+                            gameView.loadGame();
+
+                            gameView.initializeGame(sFile.scene, sFile.background, sFile.music);
+                        });
+                    }));
+
+                    oImage.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
+                        window.fadeToView("GameView", getColorByName("black"), false, (view) {
+                            setSaveId(sFile.id);
+
+                            auto gameView = cast(GameView)view;
+                            gameView.loadGame();
+
+                            gameView.initializeGame(sFile.scene, sFile.background, sFile.music);
+                        });
+                    }));
+
+                    bool rawImageHasMouseHover = false;
+                    oImage.onMouseMove(new MouseMoveEventHandler((p) {
+                        rawImageHasMouseHover = oImage.intersectsWith(p);
+
+                        if (rawImageHasMouseHover && oImage.isEnabled)
+                        {
+                            EXT_SetHandCursor();
+                        }
+                        else
+                        {
+                            EXT_ResetCursor();
+                        }
+
+                        return !rawImageHasMouseHover;
+                    }));
+                };};
+
+                closure(saveLabel, rawImage, saveFile)();
+
+                saveIndex++;
+                saveX += 340 + 16;
+            }
+
+            saveY += 196 + 16 + 30;
         }
     }
 }
