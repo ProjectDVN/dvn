@@ -168,7 +168,7 @@ public final class GameView : View
 			SceneEntry entry;
 			SceneCharacter character;
 			SceneCharacterName charName;
-			string textColor = "fff";
+			string textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
 			foreach (l; lines)
 			{
 				if (!l || !l.strip.length)
@@ -189,8 +189,8 @@ public final class GameView : View
 					entry.name = line[1 .. $-1];
 					character = null;
 					charName = null;
-					textColor = "fff";
-					entry.textColor = "fff";
+					textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
+					entry.textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
 
 					_scenes[entry.name] = entry;
 				}

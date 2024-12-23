@@ -14,6 +14,7 @@ public final class GameSettings
   string[string] fonts;
   string[] backupFonts;
   string defaultFont;
+  string defaultTextColor;
 
   bool muteMusic;
   bool muteSoundEffects;
