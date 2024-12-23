@@ -26,7 +26,7 @@ public final class MainMenuView : View
 		auto window = super.window;
 		auto settings = getGlobalSettings();
 
-		auto music = "data/music/main.mp3";
+		auto music = settings.mainMusic && settings.mainMusic.length ? settings.mainMusic : "data/music/main.mp3";
 
 		if (music && music.length)
 		{

@@ -27,7 +27,7 @@ public final class PhotoView : View
 		auto window = super.window;
 		auto settings = getGlobalSettings();
 
-		auto music = "data/music/main.mp3";
+		auto music = settings.mainMusic && settings.mainMusic.length ? settings.mainMusic : "data/music/main.mp3";
 
 		if (music && music.length)
 		{
@@ -39,7 +39,7 @@ public final class PhotoView : View
     {
 		auto window = super.window;
 		auto settings = getGlobalSettings();
-        
+
         auto bgImage = new RawImage(window, path, IntVector(1280, 720));
         addComponent(bgImage);
         bgImage.size = IntVector(1280, 720);

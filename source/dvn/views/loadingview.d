@@ -42,7 +42,7 @@ public final class LoadingView : View
 
 		if (!settings.disableLoadScreenMusic)
 		{
-			auto music = "data/music/main.mp3";
+			auto music = settings.loadingMusic && settings.loadingMusic.length ? settings.loadingMusic : "data/music/main.mp3";
 
 			if (music && music.length)
 			{

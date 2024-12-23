@@ -55,6 +55,9 @@ public final class GameSettings
   bool disableLoadScreenMusic;
   SettingsImage dialoguePanelImage;
   SettingsImage namePanelImage;
+
+  string loadingMusic;
+  string mainMusic;
 }
 
 public final class SettingsImage
