@@ -67,7 +67,7 @@ public class DvnEvents
     void renderSettingsCheckBox(CheckBox checkbox) {}
 
     // Main Menu View
-    void renderMainMenuView(Window window, Label titleLabel, Label playLabel, Label loadLabel, Label settingsLabel, Label exitLabel) {}
+    void renderMainMenuView(Window window, Component titleLabel, Component playLabel, Component loadLabel, Component settingsLabel, Component exitLabel) {}
 
     // Video Loading View
     void renderVideoLoadingView(Video video) {}

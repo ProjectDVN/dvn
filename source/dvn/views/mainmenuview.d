@@ -37,19 +37,20 @@ public final class MainMenuView : View
 		loadTheme("data/game/views/mainmenutheme.json", "default", true);
 
 		UIGenerator generator;
-		Label titleLabel;
-		Label playLabel;
-		Label loadLabel;
-		Label settingsLabel;
-		Label exitLabel;
+		Component titleLabel;
+		Component playLabel;
+		Component loadLabel;
+		Component settingsLabel;
+		Component exitLabel;
 		if (tryGetGenerator("MainMenuViewUI", generator))
 		{
 			generateUI("EN_US", window, this, generator, (component,eventName,componentName)
 			{
+				auto button = cast(Button)component;
 				switch (componentName)
 				{
 					case "titleLabel":
-						titleLabel = cast(Label)component;
+						titleLabel = component;
 						switch (eventName)
 						{
 							case "initialize":
@@ -60,26 +61,48 @@ public final class MainMenuView : View
 						break;
 
 					case "playLabel":
-						playLabel = cast(Label)component;
+						playLabel = component;
 						switch (eventName)
 						{
 							case "initialize":
 								break;
 
 							case "mouseUp":
-								playLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
-									window.fadeToView("GameView", getColorByName("black"), false, (view) {
-										import std.uuid : randomUUID;
-										
-										auto id = randomUUID().toString;
-										setSaveId(id);
+								if (button)
+								{
+									button.onButtonClick(new MouseButtonEventHandler((b,p)
+									{
+										window.fadeToView("GameView", getColorByName("black"), false, (view) {
+											import std.uuid : randomUUID;
+											
+											auto id = randomUUID().toString;
+											setSaveId(id);
 
-										auto gameView = cast(GameView)view;
-										gameView.loadGame();
+											auto gameView = cast(GameView)view;
+											gameView.loadGame();
 
-										gameView.initializeGame(settings.mainScript);
-									});
-								}));
+											gameView.initializeGame(settings.mainScript);
+										});
+										return false;
+									}));
+								}
+								else
+								{
+									playLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p)
+									{
+										window.fadeToView("GameView", getColorByName("black"), false, (view) {
+											import std.uuid : randomUUID;
+											
+											auto id = randomUUID().toString;
+											setSaveId(id);
+
+											auto gameView = cast(GameView)view;
+											gameView.loadGame();
+
+											gameView.initializeGame(settings.mainScript);
+										});
+									}));
+								}
 								break;
 
 							default: break;
@@ -87,23 +110,28 @@ public final class MainMenuView : View
 						break;
 
 					case "loadLabel":
-						loadLabel = cast(Label)component;
+						loadLabel = component;
 						switch (eventName)
 						{
 							case "initialize":
 								break;
 
 							case "mouseUp":
-								loadLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
-									window.fadeToView("LoadGameView", getColorByName("black"), false);
-
-									// window.fadeToView("GameView", getColorByName("black"), false, (view) {
-									// 	auto gameView = cast(GameView)view;
-									// 	gameView.loadGame();
-
-									// 	gameView.initializeGame(settings.saveScene, settings.saveBackground, settings.saveMusic);
-									// });
-								}));
+								if (button)
+								{
+									button.onButtonClick(new MouseButtonEventHandler((b,p)
+									{
+										window.fadeToView("LoadGameView", getColorByName("black"), false);
+										return false;
+									}));
+								}
+								else
+								{
+									loadLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p)
+									{
+										window.fadeToView("LoadGameView", getColorByName("black"), false);
+									}));
+								}
 								break;
 
 							default: break;
@@ -111,16 +139,28 @@ public final class MainMenuView : View
 						break;
 
 					case "settingsLabel":
-						settingsLabel = cast(Label)component;
+						settingsLabel = component;
 						switch (eventName)
 						{
 							case "initialize":
 								break;
 
 							case "mouseUp":
-								settingsLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
-									window.fadeToView("SettingsView", getColorByName("black"), false);
-								}));
+								if (button)
+								{
+									button.onButtonClick(new MouseButtonEventHandler((b,p)
+									{
+										window.fadeToView("SettingsView", getColorByName("black"), false);
+										return false;
+									}));
+								}
+								else
+								{
+									settingsLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p)
+									{
+										window.fadeToView("SettingsView", getColorByName("black"), false);
+									}));
+								}
 								break;
 
 							default: break;
@@ -128,16 +168,28 @@ public final class MainMenuView : View
 						break;
 
 					case "exitLabel":
-						exitLabel = cast(Label)component;
+						exitLabel = component;
 						switch (eventName)
 						{
 							case "initialize":
 								break;
 
 							case "mouseUp":
-								exitLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
-									getApplication().stop();
-								}));
+								if (button)
+								{
+									button.onButtonClick(new MouseButtonEventHandler((b,p)
+									{
+										getApplication().stop();
+										return false;
+									}));
+								}
+								else
+								{
+									exitLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p)
+									{
+										getApplication().stop();
+									}));
+								}
 								break;
 
 							default: break;
