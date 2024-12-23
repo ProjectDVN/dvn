@@ -8,4 +8,6 @@ public
   import dvn.views.actview;
   import dvn.views.loadgameview;
   import dvn.views.videoloadingview;
+  import dvn.views.galleryview;
+  import dvn.views.photoview;
 }

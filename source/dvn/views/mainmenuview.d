@@ -41,6 +41,7 @@ public final class MainMenuView : View
 		Component playLabel;
 		Component loadLabel;
 		Component settingsLabel;
+		Component galleryLabel;
 		Component exitLabel;
 		if (tryGetGenerator("MainMenuViewUI", generator))
 		{
@@ -167,6 +168,35 @@ public final class MainMenuView : View
 						}
 						break;
 
+					case "galleryLabel":
+						galleryLabel = component;
+						switch (eventName)
+						{
+							case "initialize":
+								break;
+
+							case "mouseUp":
+								if (button)
+								{
+									button.onButtonClick(new MouseButtonEventHandler((b,p)
+									{
+										window.fadeToView("GalleryView", getColorByName("black"), false);
+										return false;
+									}));
+								}
+								else
+								{
+									galleryLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p)
+									{
+										window.fadeToView("GalleryView", getColorByName("black"), false);
+									}));
+								}
+								break;
+
+							default: break;
+						}
+						break;
+
 					case "exitLabel":
 						exitLabel = component;
 						switch (eventName)
@@ -201,6 +231,6 @@ public final class MainMenuView : View
 			});
 		}
 
-		DvnEvents.getEvents().renderMainMenuView(window, titleLabel, playLabel, loadLabel, settingsLabel, exitLabel);
+		DvnEvents.getEvents().renderMainMenuView(window, titleLabel, playLabel, loadLabel, settingsLabel, galleryLabel, exitLabel);
 	}
 }

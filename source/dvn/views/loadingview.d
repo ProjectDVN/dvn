@@ -10,6 +10,8 @@ import dvn.views.settingsview;
 import dvn.views.actview;
 import dvn.views.loadgameview;
 import dvn.views.videoloadingview;
+import dvn.views.galleryview;
+import dvn.views.photoview;
 import dvn.music;
 import dvn.events;
 
@@ -188,6 +190,8 @@ public final class LoadingView : View
 			mainWindow.addView!ActView("ActView");
 			mainWindow.addView!LoadGameView("LoadGameView");
 			mainWindow.addView!VideoLoadingView("VideoLoadingView");
+			mainWindow.addView!GalleryView("GalleryView");
+			mainWindow.addView!PhotoView("PhotoView");
 
 			DvnEvents.getEvents().loadingViews(mainWindow);
 			

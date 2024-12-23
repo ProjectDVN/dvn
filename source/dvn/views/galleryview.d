@@ -1,15 +1,17 @@
-module dvn.views.loadgameview;
+module dvn.views.galleryview;
 
 import std.conv : to;
 
 import dvn.resources;
 import dvn.gamesettings;
 import dvn.views.gameview;
+import dvn.views.photoview;
 import dvn.events;
+import dvn.gallery;
 
 import dvn.ui;
 
-public final class LoadGameView : View
+public final class GalleryView : View
 {
 	public:
 	final:
@@ -88,7 +90,7 @@ public final class LoadGameView : View
             renderLoadPage();
         }));
 
-        DvnEvents.getEvents().renderLoadGameViewPrevLabel(prevLabel);
+        //DvnEvents.getEvents().renderLoadGameViewPrevLabel(prevLabel);
 
         auto nextLabel = new Label(window);
         addComponent(nextLabel);
@@ -111,66 +113,37 @@ public final class LoadGameView : View
             renderLoadPage();
         }));
 
-        DvnEvents.getEvents().renderLoadGameViewNextLabel(nextLabel);
+        //DvnEvents.getEvents().renderLoadGameViewNextLabel(nextLabel);
 
-        auto saveFiles = getSaveFilesPaged(page);
+        auto galleryFiles = getGalleryPaged(page);
 
-        int saveIndex = 0;
-        int saveX = 0;
-        int saveY = 125;
+        int galleryIndex = 0;
+        int galleryX = 0;
+        int galleryY = 125 + 15;
 
         foreach (y; 0 .. 2)
         {
-            saveX = 120;
+            galleryX = 120;
 
             foreach (x; 0 .. 3)
             {
-                if (saveIndex >= saveFiles.length)
+                if (galleryIndex >= galleryFiles.length)
                 {
                     break;
                 }
 
-                auto saveFile = saveFiles[saveIndex];
+                auto galleryFile = galleryFiles[galleryIndex];
 
-                auto rawImage = new RawImage(window, "data/game/saves/" ~ saveFile.id ~ ".png", IntVector(1280, 720));
+                auto rawImage = new RawImage(window, galleryFile, IntVector(1280, 720));
                 addComponent(rawImage);
                 rawImage.size = IntVector(340, 196);
-                rawImage.position = IntVector(saveX, saveY);
-                
-                auto saveLabel = new Label(window);
-                addComponent(saveLabel);
-                saveLabel.fontName = settings.defaultFont;
-                saveLabel.fontSize = 24;
-                saveLabel.color = "fff".getColorByHex;
-                saveLabel.text = (settings.loadText ~ saveFile.date).to!dstring;
-                saveLabel.shadow = true;
-                saveLabel.isLink = true;
-                saveLabel.position = IntVector(
-                    rawImage.x + ((rawImage.width / 2) - (saveLabel.width / 2)),
-                    rawImage.y + rawImage.height + 6
-                );
-                saveLabel.updateRect();
-
-                auto closure = (Label oLabel, RawImage oImage, SaveFile sFile) { return () {
-                    oLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
-                        window.fadeToView("GameView", getColorByName("black"), false, (view) {
-                            setSaveId(sFile.id);
-
-                            auto gameView = cast(GameView)view;
-                            gameView.loadGame();
-
-                            gameView.initializeGame(sFile.scene, sFile.background, sFile.music);
-                        });
-                    }));
-
+                rawImage.position = IntVector(galleryX, galleryY);
+ 
+                auto closure = (RawImage oImage, string sFile) { return () {
                     oImage.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
-                        window.fadeToView("GameView", getColorByName("black"), false, (view) {
-                            setSaveId(sFile.id);
-
-                            auto gameView = cast(GameView)view;
-                            gameView.loadGame();
-
-                            gameView.initializeGame(sFile.scene, sFile.background, sFile.music);
+                        window.fadeToView("PhotoView", getColorByName("black"), false, (view) {
+                            auto photoView = cast(PhotoView)view;
+                            photoView.showPhoto(sFile);
                         });
                     }));
 
@@ -191,15 +164,15 @@ public final class LoadGameView : View
                     }));
                 };};
 
-                closure(saveLabel, rawImage, saveFile)();
+                closure(rawImage, galleryFile)();
 
-                DvnEvents.getEvents().renderLoadGameViewLoadEntry(saveFile, rawImage, saveLabel);
+                //DvnEvents.getEvents().renderLoadGameViewLoadEntry(saveFile, rawImage, saveLabel);
 
-                saveIndex++;
-                saveX += 340 + 16;
+                galleryIndex++;
+                galleryX += 340 + 16;
             }
 
-            saveY += 196 + 16 + 30;
+            galleryY += 196 + 16;
         }
     }
 }
