@@ -2,7 +2,7 @@ module dvn.gallery;
 
 string[] getGalleryPaged(int page)
 {
-    import std.file : dirEntries, SpanMode;
+    import std.file : dirEntries, SpanMode, exists;
     import std.algorithm : filter, endsWith;
 
     string[] s = [];
@@ -11,6 +11,11 @@ string[] getGalleryPaged(int page)
     int take = 6;
 
     string[] images = [];
+
+    if (!exists("data/game/gallery"))
+    {
+        return [];
+    }
 
     auto imageFiles = dirEntries("data/game/gallery", SpanMode.shallow).filter!(f => f.name.endsWith(".png"));
     foreach (imageFile; imageFiles)
