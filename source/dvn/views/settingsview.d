@@ -42,6 +42,14 @@ public final class SettingsView : View
             (window.height / 2) - (bgImage.height / 2));
         bgImage.show();
 
+        if (settings.mainBackgroundVideo && settings.mainBackgroundVideo.length)
+        {
+            auto video = new Video(window, settings.mainBackgroundVideo);
+            addComponent(video);
+            video.size = IntVector(1280, 720);
+            video.position = IntVector(0, 0);
+        }
+
         void saveSettings()
         {
             saveGameSettings("data/settings.json");

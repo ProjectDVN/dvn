@@ -58,6 +58,8 @@ public final class GameSettings
 
   string loadingMusic;
   string mainMusic;
+
+  string mainBackgroundVideo;
 }
 
 public final class SettingsImage
