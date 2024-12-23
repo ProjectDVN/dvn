@@ -1336,6 +1336,25 @@ public final class GameView : View
 					DvnEvents.getEvents().renderGameViewTextFinished(textLabel);
 				}
 			}
+			else if (s == "s" || s == "S")
+			{
+				import std.file : exists, mkdir, remove;
+
+				import std.uuid : randomUUID;
+				
+				auto photoId = randomUUID().toString;
+
+				if (!exists("data/game/gallery"))
+				{
+					mkdir("data/game/gallery");
+				}
+				else if (exists("data/game/gallery/" ~ photoId ~ ".png"))
+				{
+					remove("data/game/gallery/" ~ photoId ~ ".png");
+				}
+
+				takeScreenshot(window, "data/game/gallery/" ~ photoId ~ ".png");
+			}
 		}), true);
 
 		Component[] safeComponents = [saveButton, exitButton, settingsButton, autoButton];
