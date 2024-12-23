@@ -88,6 +88,8 @@ public final class LoadGameView : View
             renderLoadPage();
         }));
 
+        DvnEvents.getEvents().renderLoadGameViewPrevLabel(prevLabel);
+
         auto nextLabel = new Label(window);
         addComponent(nextLabel);
         nextLabel.fontName = settings.defaultFont;
@@ -108,6 +110,8 @@ public final class LoadGameView : View
 
             renderLoadPage();
         }));
+
+        DvnEvents.getEvents().renderLoadGameViewNextLabel(nextLabel);
 
         auto saveFiles = getSaveFilesPaged(page);
 
@@ -190,6 +194,8 @@ public final class LoadGameView : View
                 };};
 
                 closure(saveLabel, rawImage, saveFile)();
+
+                DvnEvents.getEvents().renderLoadGameViewLoadEntry(saveFile, rawImage, saveLabel);
 
                 saveIndex++;
                 saveX += 340 + 16;

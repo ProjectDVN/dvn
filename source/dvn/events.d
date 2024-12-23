@@ -72,6 +72,11 @@ public class DvnEvents
     // Video Loading View
     void renderVideoLoadingView(Video video) {}
 
+    // Load Game View
+    void renderLoadGameViewPrevLabel(Label label) {}
+    void renderLoadGameViewNextLabel(Label label) {}
+    void renderLoadGameViewLoadEntry(SaveFile saveFile, RawImage image, Label saveLabel) {}
+
     static:
     final:
     void setEvents(DvnEvents events)
