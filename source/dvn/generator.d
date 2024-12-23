@@ -130,7 +130,7 @@ public final class UIItemEntry
   string fontName;
   size_t fontSize;
 
-  // image, video & animation
+  // button, image, video & animation
   string source;
 
   // video & animation
@@ -152,6 +152,8 @@ public final class UIItemEntry
 
   // button
   bool fitToSize;
+  string sourceHover;
+  int[] sourceSize;
 }
 
 private UIGenerator[string] _generators;
@@ -346,6 +348,7 @@ private void parseGUIItems(string language, Window window, View view, UIGenerato
 
       Component component = null;
       Panel panel = null;
+      Button button = null;
 
       switch (itemType)
       {
@@ -447,7 +450,7 @@ private void parseGUIItems(string language, Window window, View view, UIGenerato
           break;
 
         case "button":
-          auto button = new Button(window);
+          button = new Button(window);
           component = button;
           button.fontName = fontName;
           button.fontSize = fontSize;
@@ -655,6 +658,16 @@ private void parseGUIItems(string language, Window window, View view, UIGenerato
       if (item.margin && item.margin.length == 2)
       {
         component.position = IntVector(component.position.x + item.margin[0], component.position.y + item.margin[1]);
+      }
+
+      if (button)
+      {
+        if (item.source && item.source.length &&
+            item.sourceHover && item.sourceHover.length &&
+            item.sourceSize && item.sourceSize.length == 2)
+          {
+            button.renderButtonImage(item.source, IntVector(item.sourceSize[0],item.sourceSize[1]), item.sourceHover, IntVector(item.sourceSize[0],item.sourceSize[1]));
+          }
       }
 
       if (item.name && item.name.length)
