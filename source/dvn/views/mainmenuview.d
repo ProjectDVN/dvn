@@ -40,6 +40,7 @@ public final class MainMenuView : View
 		Component titleLabel;
 		Component playLabel;
 		Component loadLabel;
+		Component historyLabel;
 		Component settingsLabel;
 		Component galleryLabel;
 		Component exitLabel;
@@ -131,6 +132,35 @@ public final class MainMenuView : View
 									loadLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p)
 									{
 										window.fadeToView("LoadGameView", getColorByName("black"), false);
+									}));
+								}
+								break;
+
+							default: break;
+						}
+						break;
+
+					case "historyLabel":
+						historyLabel = component;
+						switch (eventName)
+						{
+							case "initialize":
+								break;
+
+							case "mouseUp":
+								if (button)
+								{
+									button.onButtonClick(new MouseButtonEventHandler((b,p)
+									{
+										window.fadeToView("HistoryView", getColorByName("black"), false);
+										return false;
+									}));
+								}
+								else
+								{
+									historyLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p)
+									{
+										window.fadeToView("HistoryView", getColorByName("black"), false);
 									}));
 								}
 								break;
@@ -231,6 +261,6 @@ public final class MainMenuView : View
 			});
 		}
 
-		DvnEvents.getEvents().renderMainMenuView(window, titleLabel, playLabel, loadLabel, settingsLabel, galleryLabel, exitLabel);
+		DvnEvents.getEvents().renderMainMenuView(window, titleLabel, playLabel, loadLabel, historyLabel, settingsLabel, galleryLabel, exitLabel);
 	}
 }

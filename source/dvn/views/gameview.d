@@ -8,6 +8,7 @@ import dvn.music;
 import dvn.views.settingsview : backToScene;
 import dvn.views.actview;
 import dvn.events;
+import dvn.history;
 
 import dvn.ui;
 
@@ -899,32 +900,23 @@ public final class GameView : View
 
 		if (scene.text)
 		{
-			if (settings.dialogueHistory && _saveId && _saveId.length)
+			auto historyText = scene.text;
+
+			if (scene.characterNames && scene.characterNames.length)
 			{
-				import std.file : exists, mkdir, append;
 				import std.array : join;
+				
+				string[] names = [];
 
-				if (!exists("data/history"))
+				foreach (name; scene.characterNames)
 				{
-					mkdir("data/history");
+					names ~= name.name;
 				}
 
-				auto historyText = scene.text;
-
-				if (scene.characterNames && scene.characterNames.length)
-				{
-					string[] names = [];
-
-					foreach (name; scene.characterNames)
-					{
-						names ~= name.name;
-					}
-
-					historyText = names.join(",") ~ ": " ~ historyText;
-				}
-
-				append("data/history/" ~ _saveId ~ ".txt", historyText ~ "\r\n");
+				historyText = names.join(",") ~ ": " ~ historyText;
 			}
+
+			addDialogueHistory(historyText, null, scene.name, _lastBackgroundSource, _lastMusic);
 
 			textLabel = new Label(window);
 			textPanel.addComponent(textLabel);
@@ -1002,29 +994,14 @@ public final class GameView : View
 
 			DvnEvents.getEvents().renderGameViewOptionsStart();
 
-			if (settings.dialogueHistory && _saveId && _saveId.length)
+			string[] optionHistory = [];
+
+			foreach (option; scene.options)
 			{
-				import std.file : exists, mkdir, append;
-				import std.array : join;
-
-				if (!exists("data/history"))
-				{
-					mkdir("data/history");
-				}
-
-				string[] optionHistory = ["----"];
-
-				foreach (option; scene.options)
-				{
-					optionHistory ~= "<" ~ option.text ~ ">";
-				}
-
-				optionHistory ~= "----";
-
-				auto historyText = optionHistory.join("\r\n");
-
-				append("data/history/" ~ _saveId ~ ".txt", historyText ~ "\r\n");
+				optionHistory ~= option.text;
 			}
+
+			addDialogueHistory(null, optionHistory, scene.name, _lastBackgroundSource, _lastMusic);
 
 			int lastY = 50;
 			foreach (option; scene.options)

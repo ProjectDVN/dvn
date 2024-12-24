@@ -10,4 +10,5 @@ public
   import dvn.views.videoloadingview;
   import dvn.views.galleryview;
   import dvn.views.photoview;
+  import dvn.views.historyview;
 }

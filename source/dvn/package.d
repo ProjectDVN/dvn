@@ -12,6 +12,7 @@ public
   import dvn.music;
   import dvn.events;
   import dvn.gallery;
+  import dvn.history;
 
   import dvn.application;
   import dvn.atlas;

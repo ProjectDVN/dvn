@@ -12,8 +12,10 @@ import dvn.views.loadgameview;
 import dvn.views.videoloadingview;
 import dvn.views.galleryview;
 import dvn.views.photoview;
+import dvn.views.historyview;
 import dvn.music;
 import dvn.events;
+import dvn.history;
 
 import dvn.ui;
 
@@ -174,6 +176,8 @@ public final class LoadingView : View
 
 			loadMusic("data/game/music.json");
 
+			loadDialogueHistory();
+
 			loaded = true;
 
 			DvnEvents.getEvents().loadedGame();
@@ -192,6 +196,7 @@ public final class LoadingView : View
 			mainWindow.addView!VideoLoadingView("VideoLoadingView");
 			mainWindow.addView!GalleryView("GalleryView");
 			mainWindow.addView!PhotoView("PhotoView");
+			mainWindow.addView!HistoryView("HistoryView");
 
 			DvnEvents.getEvents().loadingViews(mainWindow);
 			
