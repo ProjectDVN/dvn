@@ -60,6 +60,19 @@ public final class GameSettings
   string mainMusic;
 
   string mainBackgroundVideo;
+
+  string buttonTextColor;
+  string buttonBackgroundColor;
+  string buttonBackgroundBottomColor;
+  string buttonBorderColor;
+  string dropdownTextColor;
+  string dropDownBackgroundColor;
+  string dropDownBorderColor;
+  string checkBoxBackgroundColor;
+  string checkBoxBorderColor;
+  string textBoxColor;
+  string textBoxTextColor;
+  string textBoxBorderColor;
 }
 
 public final class SettingsImage

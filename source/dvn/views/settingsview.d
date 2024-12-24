@@ -85,6 +85,50 @@ public final class SettingsView : View
         int settingsOffsetY = 104;
         int settingsOffsetYSmall = 52;
 
+        void restyleDropdown(DropDown dropdown, GameSettings gameSettings)
+        {
+            if (!gameSettings.dropDownBackgroundColor ||
+                !gameSettings.dropDownBorderColor ||
+                !gameSettings.dropdownTextColor)
+            {
+                return;
+            }
+
+            auto dropdownTextColor = gameSettings.dropdownTextColor;
+            auto dropDownBackgroundColor = gameSettings.dropDownBackgroundColor;
+            auto dropDownBorderColor = gameSettings.dropDownBorderColor;
+
+            dropdown.textColor = dropdownTextColor.getColorByHex;
+
+            dropdown.defaultPaint.backgroundColor = dropDownBackgroundColor.getColorByHex;
+            dropdown.defaultPaint.backgroundBottomColor = dropDownBackgroundColor.getColorByHex;
+            dropdown.defaultPaint.borderColor = dropDownBorderColor.getColorByHex;
+            dropdown.defaultPaint.shadowColor = dropDownBackgroundColor.getColorByHex;
+
+            dropdown.hoverPaint.backgroundColor = dropdown.defaultPaint.backgroundColor.changeAlpha(220);
+            dropdown.hoverPaint.backgroundBottomColor = dropdown.defaultPaint.backgroundBottomColor.changeAlpha(220);
+            dropdown.hoverPaint.borderColor = dropdown.defaultPaint.borderColor.changeAlpha(220);
+            dropdown.hoverPaint.shadowColor = dropDownBackgroundColor.getColorByHex.changeAlpha(220);
+
+            dropdown.restyle();
+            dropdown.show();
+        }
+
+        void restyleCheckbox(CheckBox checkbox, GameSettings gameSettings)
+        {
+            if (!gameSettings.checkBoxBackgroundColor ||
+                !gameSettings.checkBoxBorderColor)
+            {
+                return;
+            }
+
+            auto checkBoxBackgroundColor = gameSettings.checkBoxBackgroundColor;
+            auto checkBoxBorderColor = gameSettings.checkBoxBorderColor;
+
+            checkbox.fillColor = checkBoxBackgroundColor.getColorByHex;
+            checkbox.borderColor = checkBoxBorderColor.getColorByHex;
+        }
+
         // full screen
         {
             auto label = new Label(window);
@@ -101,6 +145,8 @@ public final class SettingsView : View
             checkbox.fillColor = "e5e7e9".getColorByHex;
             checkbox.borderColor = "000".getColorByHex;
             addComponent(checkbox);
+
+            restyleCheckbox(checkbox, settings);
             
             DvnEvents.getEvents().renderSettingsCheckBox(checkbox);
 
@@ -147,6 +193,8 @@ public final class SettingsView : View
             checkbox.fillColor = "e5e7e9".getColorByHex;
             checkbox.borderColor = "000".getColorByHex;
             addComponent(checkbox);
+
+            restyleCheckbox(checkbox, settings);
             
             DvnEvents.getEvents().renderSettingsCheckBox(checkbox);
 
@@ -194,6 +242,8 @@ public final class SettingsView : View
             checkbox.fillColor = "e5e7e9".getColorByHex;
             checkbox.borderColor = "000".getColorByHex;
             addComponent(checkbox);
+
+            restyleCheckbox(checkbox, settings);
             
             DvnEvents.getEvents().renderSettingsCheckBox(checkbox);
 
@@ -246,6 +296,8 @@ public final class SettingsView : View
             dropdown.fontSize = 18;
             dropdown.textColor = "000".getColorByHex;
 
+            restyleDropdown(dropdown ,settings);
+
             DvnEvents.getEvents().renderSettingsDropDown(dropdown);
             dropdown.restyle();
 
@@ -297,6 +349,8 @@ public final class SettingsView : View
             dropdown.fontName = settings.defaultFont;
             dropdown.fontSize = 18;
             dropdown.textColor = "000".getColorByHex;
+
+            restyleDropdown(dropdown ,settings);
 
             DvnEvents.getEvents().renderSettingsDropDown(dropdown);
             dropdown.restyle();

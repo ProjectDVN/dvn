@@ -1064,6 +1064,43 @@ public final class GameView : View
 			DvnEvents.getEvents().renderGameViewOptionsFinished();
 		}
 
+		void restyleButton(Button button, GameSettings gameSettings)
+        {
+			if (!gameSettings.buttonTextColor ||
+				!gameSettings.buttonBackgroundColor ||
+				!gameSettings.buttonBackgroundBottomColor ||
+				!gameSettings.buttonBorderColor)
+			{
+				return;
+			}
+
+			auto buttonTextColor = gameSettings.buttonTextColor;
+			auto buttonBackgroundColor = gameSettings.buttonBackgroundColor;
+			auto buttonBackgroundBottomColor = gameSettings.buttonBackgroundBottomColor;
+			auto buttonBorderColor = gameSettings.buttonBorderColor;
+
+			button.textColor = buttonTextColor.getColorByHex;
+
+            button.defaultPaint.backgroundColor = buttonBackgroundColor.getColorByHex;
+            button.defaultPaint.backgroundBottomColor = buttonBackgroundBottomColor.getColorByHex;
+            button.defaultPaint.borderColor = buttonBorderColor.getColorByHex;
+            button.defaultPaint.shadowColor = buttonBackgroundColor.getColorByHex;
+
+            button.hoverPaint.backgroundColor = button.defaultPaint.backgroundColor.changeAlpha(220);
+            button.hoverPaint.backgroundBottomColor = button.defaultPaint.backgroundBottomColor.changeAlpha(220);
+            button.hoverPaint.borderColor = button.defaultPaint.borderColor.changeAlpha(220);
+            button.hoverPaint.shadowColor = buttonBackgroundColor.getColorByHex.changeAlpha(220);
+
+            button.clickPaint.backgroundColor = button.defaultPaint.backgroundColor.changeAlpha(240);
+            button.clickPaint.backgroundBottomColor = button.defaultPaint.backgroundBottomColor.changeAlpha(240);
+            button.clickPaint.borderColor = button.defaultPaint.borderColor.changeAlpha(240);
+            button.clickPaint.shadowColor = buttonBackgroundColor.getColorByHex.changeAlpha(240);
+
+            button.restyle();
+
+            button.show();
+        }
+
 		auto saveButton = new Button(window);
 		addComponent(saveButton);
 		saveButton.size = IntVector(208, 28);
@@ -1104,6 +1141,8 @@ public final class GameView : View
 			return false;
 		}));
 
+		restyleButton(saveButton, settings);
+
 		DvnEvents.getEvents().renderGameViewSaveButton(saveButton);
 
 		if (scene.hideButtons) saveButton.hide();
@@ -1130,6 +1169,8 @@ public final class GameView : View
 			return false;
 		}));
 
+		restyleButton(exitButton, settings);
+
 		DvnEvents.getEvents().renderGameViewExitButton(exitButton);
 
 		if (scene.hideButtons) exitButton.hide();
@@ -1155,6 +1196,8 @@ public final class GameView : View
 			window.fadeToView("SettingsView", getColorByName("black"), false);
 			return false;
 		}));
+
+		restyleButton(settingsButton, settings);
 
 		DvnEvents.getEvents().renderGameViewSettingsButton(settingsButton);
 
@@ -1190,6 +1233,8 @@ public final class GameView : View
 
 			return false;
 		}));
+
+		restyleButton(autoButton, settings);
 
 		DvnEvents.getEvents().renderGameViewAutoButton(autoButton);
 

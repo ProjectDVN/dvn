@@ -74,12 +74,45 @@ public final class HistoryView : View
         searchTextBox.position = IntVector(
             (window.width / 2) - (searchTextBox.width / 2),
             42);
-        searchTextBox.textColor = "fff".getColorByHex;
-        searchTextBox.maxCharacters = 128;
+        searchTextBox.textColor = settings.textBoxTextColor ? settings.textBoxTextColor.getColorByHex : "000".getColorByHex;
+        searchTextBox.maxCharacters = 32;
         searchTextBox.textPadding = 8;
         searchTextBox.text = input.to!dstring;
+        
+        searchTextBox.defaultPaint.backgroundColor = (settings.textBoxColor ? settings.textBoxColor : "fff").getColorByHex;
+        searchTextBox.hoverPaint.backgroundColor = (settings.textBoxColor ? settings.textBoxColor : "fff").getColorByHex.changeAlpha(220);
+        searchTextBox.focusPaint.backgroundColor = (settings.textBoxColor ? settings.textBoxColor : "fff").getColorByHex.changeAlpha(150);
+
+        if (settings.textBoxBorderColor && settings.textBoxBorderColor.length)
+        {
+            searchTextBox.defaultPaint.borderColor = settings.textBoxBorderColor.getColorByHex;
+            searchTextBox.hoverPaint.borderColor = settings.textBoxBorderColor.getColorByHex;
+            searchTextBox.focusPaint.borderColor = settings.textBoxBorderColor.getColorByHex;
+        }
 
         searchTextBox.restyle();
+
+        void restyleButton(Button button, string buttonBackgroundColor, string buttonBackgroundBottomColor, string buttonBorderColor)
+        {
+            button.defaultPaint.backgroundColor = buttonBackgroundColor.getColorByHex;
+            button.defaultPaint.backgroundBottomColor = buttonBackgroundBottomColor.getColorByHex;
+            button.defaultPaint.borderColor = buttonBorderColor.getColorByHex;
+            button.defaultPaint.shadowColor = buttonBackgroundColor.getColorByHex;
+
+            button.hoverPaint.backgroundColor = button.defaultPaint.backgroundColor.changeAlpha(220);
+            button.hoverPaint.backgroundBottomColor = button.defaultPaint.backgroundBottomColor.changeAlpha(220);
+            button.hoverPaint.borderColor = button.defaultPaint.borderColor.changeAlpha(220);
+            button.hoverPaint.shadowColor = buttonBackgroundColor.getColorByHex.changeAlpha(220);
+
+            button.clickPaint.backgroundColor = button.defaultPaint.backgroundColor.changeAlpha(240);
+            button.clickPaint.backgroundBottomColor = button.defaultPaint.backgroundBottomColor.changeAlpha(240);
+            button.clickPaint.borderColor = button.defaultPaint.borderColor.changeAlpha(240);
+            button.clickPaint.shadowColor = buttonBackgroundColor.getColorByHex.changeAlpha(240);
+
+            button.restyle();
+
+            button.show();
+        }
 
 		auto searchButton = new Button(window);
 		addComponent(searchButton);
@@ -89,9 +122,19 @@ public final class HistoryView : View
             searchTextBox.y + searchTextBox.height + 16);
 		searchButton.fontName = settings.defaultFont;
 		searchButton.fontSize = 24;
-		searchButton.textColor = "000".getColorByHex;
+		searchButton.textColor = settings.buttonTextColor ? settings.buttonTextColor.getColorByHex : "000".getColorByHex;
 		searchButton.text = "Search";
 		searchButton.fitToSize = false;
+
+        if (settings.buttonBackgroundColor &&
+            settings.buttonBackgroundBottomColor &&
+            settings.buttonBorderColor)
+        {
+            restyleButton(searchButton,
+                settings.buttonBackgroundColor,
+                settings.buttonBackgroundBottomColor,
+                settings.buttonBorderColor);
+        }
 
 		searchButton.restyle();
 
