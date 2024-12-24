@@ -137,8 +137,8 @@ public final class Video : Component
         auto rect1 = new EXT_RectangleNative;
         rect1.x = 0;
         rect1.y = 0;
-        rect1.w = width;
-        rect1.h = height;
+        rect1.w = 1280;
+        rect1.h = 720;
 
         auto rect2 = new EXT_RectangleNative;
         rect2.x = x;

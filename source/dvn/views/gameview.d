@@ -26,6 +26,7 @@ public final class SceneEntry
 	SceneCharacter[] characters;
 	SceneCharacterName[] characterNames;
 	SceneImage[] images;
+	SceneVideo[] videos;
 	SceneAnimation[] animations;
 	string textColor;
 	string textFont;
@@ -82,6 +83,18 @@ public final class SceneImage
 	string source;
 	int x;
 	int y;
+	string position;
+}
+
+public final class SceneVideo
+{
+	public:
+	final:
+	string source;
+	int x;
+	int y;
+	int width;
+	int height;
 	string position;
 }
 
@@ -290,6 +303,25 @@ public final class GameView : View
 							}
 
 							entry.images ~= image;
+							break;
+
+						case "video":
+							auto video = new SceneVideo;
+							video.source = value;
+							auto videoPos = keyData[1].split(",");
+							video.x = videoPos[0].to!int;
+							video.y = videoPos[1].to!int;
+
+							auto videoSize = keyData[2].split(",");
+							video.width = videoSize[0].to!int;
+							video.height = videoSize[1].to!int;
+
+							if (keyData.length == 4)
+							{
+								video.position = keyData[3];
+							}
+
+							entry.videos ~= video;
 							break;
 
 						case "animation":
@@ -676,6 +708,83 @@ public final class GameView : View
 				imageComponent.show();
 
 				DvnEvents.getEvents().renderGameViewImage(image, imageComponent);
+			}
+		}
+
+		if (scene.videos && scene.videos.length)
+		{
+			foreach (video; scene.videos)
+			{
+				auto videoComponent = new Video(window, video.source, true);
+				addComponent(videoComponent);
+				videoComponent.position = IntVector(video.x, video.y);
+				videoComponent.size = IntVector(video.width, video.height);
+
+				if (video.position && video.position.length)
+				{
+					switch (video.position)
+					{
+						case "center":
+							videoComponent.position = IntVector(
+								(window.width / 2) - (videoComponent.width / 2),
+								(window.height / 2) - (videoComponent.height / 2));
+							break;
+
+						case "left":
+							videoComponent.position = IntVector(
+								0,
+								(window.height / 2) - (videoComponent.height / 2));
+							break;
+							
+						case "right":
+							videoComponent.position = IntVector(
+								(window.width - videoComponent.width),
+								(window.height / 2) - (videoComponent.height / 2));
+							break;
+
+						case "bottomCenter":
+							videoComponent.position = IntVector(
+								(window.width / 2) - (videoComponent.width / 2),
+								(window.height - videoComponent.height));
+							break;
+
+						case "bottomRight":
+							videoComponent.position = IntVector(
+								(window.width - videoComponent.width),
+								(window.height - videoComponent.height));
+							break;
+
+						case "bottomLeft":
+							videoComponent.position = IntVector(
+								0,
+								(window.height - videoComponent.height));
+							break;
+
+						case "topCenter":
+							videoComponent.position = IntVector(
+								(window.width / 2) - (videoComponent.width / 2),
+								0);
+							break;
+
+						case "topRight":
+							videoComponent.position = IntVector(
+								(window.width - videoComponent.width),
+								0);
+							break;
+
+						case "topLeft":
+							videoComponent.position = IntVector(
+								0,
+								0);
+							break;
+
+						default: break;
+					}
+				}
+
+				videoComponent.show();
+
+				DvnEvents.getEvents().renderGameViewVideo(video, videoComponent);
 			}
 		}
 
