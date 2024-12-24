@@ -28,11 +28,13 @@ if (isSomeString!S)
   S escapeJsonString(S text)
   {
     return text
+      .replace("\\", "\\\\")
       .replace("\t", "\\t")
       .replace("\b", "\\b")
       .replace("\r", "\\r")
       .replace("\n", "\\n")
-      .replace("\f", "\\f");
+      .replace("\f", "\\f")
+      .replace("\"", "\\\"");
   }
 
   public:
