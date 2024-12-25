@@ -1007,6 +1007,43 @@ public final class GameView : View
 
 		bool disableEvents = false;
 
+		void restyleButton(Button button, GameSettings gameSettings)
+        {
+			if (!gameSettings.buttonTextColor ||
+				!gameSettings.buttonBackgroundColor ||
+				!gameSettings.buttonBackgroundBottomColor ||
+				!gameSettings.buttonBorderColor)
+			{
+				return;
+			}
+
+			auto buttonTextColor = gameSettings.buttonTextColor;
+			auto buttonBackgroundColor = gameSettings.buttonBackgroundColor;
+			auto buttonBackgroundBottomColor = gameSettings.buttonBackgroundBottomColor;
+			auto buttonBorderColor = gameSettings.buttonBorderColor;
+
+			button.textColor = buttonTextColor.getColorByHex;
+
+            button.defaultPaint.backgroundColor = buttonBackgroundColor.getColorByHex;
+            button.defaultPaint.backgroundBottomColor = buttonBackgroundBottomColor.getColorByHex;
+            button.defaultPaint.borderColor = buttonBorderColor.getColorByHex;
+            button.defaultPaint.shadowColor = buttonBackgroundColor.getColorByHex;
+
+            button.hoverPaint.backgroundColor = button.defaultPaint.backgroundColor.changeAlpha(220);
+            button.hoverPaint.backgroundBottomColor = button.defaultPaint.backgroundBottomColor.changeAlpha(220);
+            button.hoverPaint.borderColor = button.defaultPaint.borderColor.changeAlpha(220);
+            button.hoverPaint.shadowColor = buttonBackgroundColor.getColorByHex.changeAlpha(220);
+
+            button.clickPaint.backgroundColor = button.defaultPaint.backgroundColor.changeAlpha(240);
+            button.clickPaint.backgroundBottomColor = button.defaultPaint.backgroundBottomColor.changeAlpha(240);
+            button.clickPaint.borderColor = button.defaultPaint.borderColor.changeAlpha(240);
+            button.clickPaint.shadowColor = buttonBackgroundColor.getColorByHex.changeAlpha(240);
+
+            button.restyle();
+
+            button.show();
+        }
+
 		if (scene.text)
 		{
 			auto historyText = scene.text;
@@ -1097,7 +1134,7 @@ public final class GameView : View
 				return loaded;
 			}, true);
 		}
-		else if (scene.options && scene.options.length)
+		if ((!scene.text || settings.displayOptionsAsButtons) && scene.options && scene.options.length)
 		{
 			hasOptions = true;
 
@@ -1112,103 +1149,141 @@ public final class GameView : View
 
 			addDialogueHistory(null, optionHistory, scene.name, _lastBackgroundSource, _lastMusic);
 
-			int lastY = 50;
-			foreach (option; scene.options)
+			if (settings.displayOptionsAsButtons)
 			{
-				auto optionLabel = new Label(window);
-				textPanel.addComponent(optionLabel);
-				optionLabel.fontName = settings.defaultFont;
-				optionLabel.fontSize = 22;
-				optionLabel.color = getColorByHex("fff");
-				optionLabel.text = option.text.to!dstring;
-				optionLabel.position = IntVector(
-					((textPanel.width / 2) - (optionLabel.width / 2)),
-					lastY);
-				optionLabel.isLink = true;
-				optionLabel.shadow = true;
-				optionLabel.updateRect();
+				if (!scene.text)
+				{
+					textPanel.hide();
+				}
 
-				auto optionNextScene = _scenes.get(option.nextScene, null);
+				int lastY = 168;
+				foreach (option; scene.options)
+				{
+					auto optionButton = new Button(window);
+					addComponent(optionButton);
+					optionButton.size = IntVector(window.width / 3, 32);
+					optionButton.position = IntVector(
+						(window.width / 2) - (optionButton.width / 2),
+						lastY);
+					optionButton.fontName = settings.defaultFont;
+					optionButton.fontSize = 22;
+					optionButton.textColor = "000".getColorByHex;
+					optionButton.text = option.text.to!dstring;
+					optionButton.fitToSize = false;
 
-				auto closure = (Label oLabel, SceneEntry nScene, bool isEnding) { return () {
-					oLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
-						if (switchingScene)
-						{
-							return;
-						}
+					optionButton.restyle();
 
-						switchingScene = true;
+					optionButton.show();
 
-						if (isEnding)
-						{
-							window.fadeToView("MainMenu", getColorByName("black"), false);
-						}
-						else if (nScene)
-						{
-							if (nScene.background == scene.background)
+					restyleButton(optionButton, settings);
+
+					auto optionNextScene = _scenes.get(option.nextScene, null);
+
+					auto closure = (Button oButton, SceneEntry nScene, bool isEnding) { return () {
+						oButton.onButtonClick(new MouseButtonEventHandler((b,p) {
+							if (switchingScene)
 							{
-								initializeGame(nScene.name);
+								return false;
 							}
-							else
-							{
-								runDelayedTask(0, {
-									window.fadeToView("GameView", getColorByName("black"), false, (view) {
-										auto gameView = cast(GameView)view;
 
-										gameView.initializeGame(nScene.name);
+							switchingScene = true;
+
+							if (isEnding)
+							{
+								window.fadeToView("MainMenu", getColorByName("black"), false);
+							}
+							else if (nScene)
+							{
+								if (nScene.background == scene.background || !nScene.background || !nScene.background.length)
+								{
+									initializeGame(nScene.name);
+								}
+								else
+								{
+									runDelayedTask(0, {
+										window.fadeToView("GameView", getColorByName("black"), false, (view) {
+											auto gameView = cast(GameView)view;
+
+											gameView.initializeGame(nScene.name);
+										});
 									});
-								});
+								}
 							}
-						}
-					}));
-				};};
 
-				closure(optionLabel, optionNextScene, option.nextScene == "end")();
+							return false;
+						}));
+					};};
 
-				lastY += 12 + optionLabel.height;
+					closure(optionButton, optionNextScene, option.nextScene == "end")();
 
-				DvnEvents.getEvents().renderGameViewOption(optionLabel);
+					lastY += 12 + optionButton.height;
+
+					DvnEvents.getEvents().renderGameViewOption(optionButton);
+				}
+			}
+			else
+			{
+				int lastY = 50;
+				foreach (option; scene.options)
+				{
+					auto optionLabel = new Label(window);
+					textPanel.addComponent(optionLabel);
+					optionLabel.fontName = settings.defaultFont;
+					optionLabel.fontSize = 22;
+					optionLabel.color = getColorByHex("fff");
+					optionLabel.text = option.text.to!dstring;
+					optionLabel.position = IntVector(
+						((textPanel.width / 2) - (optionLabel.width / 2)),
+						lastY);
+					optionLabel.isLink = true;
+					optionLabel.shadow = true;
+					optionLabel.updateRect();
+
+					auto optionNextScene = _scenes.get(option.nextScene, null);
+
+					auto closure = (Label oLabel, SceneEntry nScene, bool isEnding) { return () {
+						oLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
+							if (switchingScene)
+							{
+								return;
+							}
+
+							switchingScene = true;
+
+							if (isEnding)
+							{
+								window.fadeToView("MainMenu", getColorByName("black"), false);
+							}
+							else if (nScene)
+							{
+								if (nScene.background == scene.background || !nScene.background || !nScene.background.length)
+								{
+									initializeGame(nScene.name);
+								}
+								else
+								{
+									runDelayedTask(0, {
+										window.fadeToView("GameView", getColorByName("black"), false, (view) {
+											auto gameView = cast(GameView)view;
+
+											gameView.initializeGame(nScene.name);
+										});
+									});
+								}
+							}
+						}));
+					};};
+
+					closure(optionLabel, optionNextScene, option.nextScene == "end")();
+
+					lastY += 12 + optionLabel.height;
+
+					DvnEvents.getEvents().renderGameViewOption(optionLabel);
+				}
 			}
 
 			DvnEvents.getEvents().renderGameViewOptionsFinished();
 		}
-
-		void restyleButton(Button button, GameSettings gameSettings)
-        {
-			if (!gameSettings.buttonTextColor ||
-				!gameSettings.buttonBackgroundColor ||
-				!gameSettings.buttonBackgroundBottomColor ||
-				!gameSettings.buttonBorderColor)
-			{
-				return;
-			}
-
-			auto buttonTextColor = gameSettings.buttonTextColor;
-			auto buttonBackgroundColor = gameSettings.buttonBackgroundColor;
-			auto buttonBackgroundBottomColor = gameSettings.buttonBackgroundBottomColor;
-			auto buttonBorderColor = gameSettings.buttonBorderColor;
-
-			button.textColor = buttonTextColor.getColorByHex;
-
-            button.defaultPaint.backgroundColor = buttonBackgroundColor.getColorByHex;
-            button.defaultPaint.backgroundBottomColor = buttonBackgroundBottomColor.getColorByHex;
-            button.defaultPaint.borderColor = buttonBorderColor.getColorByHex;
-            button.defaultPaint.shadowColor = buttonBackgroundColor.getColorByHex;
-
-            button.hoverPaint.backgroundColor = button.defaultPaint.backgroundColor.changeAlpha(220);
-            button.hoverPaint.backgroundBottomColor = button.defaultPaint.backgroundBottomColor.changeAlpha(220);
-            button.hoverPaint.borderColor = button.defaultPaint.borderColor.changeAlpha(220);
-            button.hoverPaint.shadowColor = buttonBackgroundColor.getColorByHex.changeAlpha(220);
-
-            button.clickPaint.backgroundColor = button.defaultPaint.backgroundColor.changeAlpha(240);
-            button.clickPaint.backgroundBottomColor = button.defaultPaint.backgroundBottomColor.changeAlpha(240);
-            button.clickPaint.borderColor = button.defaultPaint.borderColor.changeAlpha(240);
-            button.clickPaint.shadowColor = buttonBackgroundColor.getColorByHex.changeAlpha(240);
-
-            button.restyle();
-
-            button.show();
-        }
 
 		auto saveButton = new Button(window);
 		addComponent(saveButton);

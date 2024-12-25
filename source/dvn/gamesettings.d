@@ -73,6 +73,8 @@ public final class GameSettings
   string textBoxColor;
   string textBoxTextColor;
   string textBoxBorderColor;
+
+  bool displayOptionsAsButtons;
 }
 
 public final class SettingsImage
