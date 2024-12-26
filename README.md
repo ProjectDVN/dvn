@@ -1,6 +1,6 @@
 # Project DVN - Visual Novel Engine
 
-![Project DVN](https://i.imgur.com/GD8pxbE.png "DVN")
+![Project DVN](https://i.imgur.com/dgzGwsK.png "DVN")
 
 [![DONATE](https://img.shields.io/badge/Support%20Project%20DVN-Donate-brightgreen.svg)](https://buymeacoffee.com/projectdvn)
 [![OS](https://img.shields.io/badge/os-windows%20%7C%20linux%20%7C%20macos-ff69b4.svg)](https://code.dlang.org/packages/dvn)
@@ -39,7 +39,17 @@ To create your first visual novel see: https://dvn-docs.readthedocs.io/en/latest
 
 ### Preview
 
-![DVN Preview](https://i.imgur.com/667CtoQ.png "DVN Preview")
+![DVN Preview](https://i.imgur.com/eKZccW8.png "DVN Preview")
+
+![DVN Preview](https://i.imgur.com/AS2G6mc.png "DVN Preview")
+
+![DVN Preview](https://i.imgur.com/PWTJ6aw.png "DVN Preview")
+
+![DVN Preview](https://i.imgur.com/dCMMrKr.png "DVN Preview")
+
+![DVN Preview](https://i.imgur.com/x99noiO.png "DVN Preview")
+
+![DVN Preview](https://i.imgur.com/kXSUwPT.png "DVN Preview")
 
 ---
 
@@ -53,6 +63,8 @@ To create your first visual novel see: https://dvn-docs.readthedocs.io/en/latest
 * Visual novel features like characters, dialogues, options, animations, music, sound effects etc.
 * Eventhandling to allow more flexibility
 * Fast and light-weight
+* Allows rapid development
+* Develop without coding or compiling
 * And much more ...
 
 ### Building
@@ -71,4 +83,4 @@ See: https://dvn-docs.readthedocs.io/en/latest/events.html
 
 If you wish to contribute just go ahead and do a pull-request or create an issue if you wish to discuss the design of a feature further.
 
-![Project DVN](https://i.imgur.com/l2iw53C.png "DVN")
+![Project DVN](https://i.imgur.com/gjygrkN.png "DVN")
