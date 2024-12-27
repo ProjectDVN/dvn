@@ -20,6 +20,7 @@ public final class RawImage : Component
     bool _cleaned;
     EXT_RectangleNative* _rect1;
     EXT_RectangleNative* _rect2;
+    int _opacity;
 
     public:
     final:
@@ -37,6 +38,29 @@ public final class RawImage : Component
         _rect1.y = 0;
         _rect1.w = originalSize.x;
         _rect1.h = originalSize.y;
+
+        opacity = 255;
+    }
+
+    @property
+    {
+        int opacity() { return _opacity; }
+        void opacity(int newOpacity)
+        {
+            if (!_texture)
+            {
+                return;
+            }
+
+            if (newOpacity >= 255)
+            {
+                newOpacity = 255;
+            }
+
+            _opacity = newOpacity;
+
+            EXT_SetTextureAlphaMod(_texture, cast(ubyte)_opacity);
+        }
     }
 
     override void repaint()

@@ -59,6 +59,7 @@ public final class SceneCharacter
 	int y;
 	string movement;
 	int movementSpeed;
+	bool characterFadeIn;
 }
 
 public final class SceneCharacterName
@@ -224,6 +225,11 @@ public final class GameView : View
 
 							case "hideButtons":
 								entry.hideButtons = true;
+								break;
+
+							case "characterFadeIn":
+							case "cf":
+								character.characterFadeIn = true;
 								break;
 
 							default: break;
@@ -565,6 +571,26 @@ public final class GameView : View
 					auto chImage = new Image(window, character.image);
 					addComponent(chImage);
 
+					if (character.characterFadeIn)
+					{
+						chImage.opacity = 0;
+
+						bool faded = false;
+
+						runDelayedTask(32, (d) {
+							if (faded)
+							{
+								return true;
+							}
+
+							chImage.opacity = chImage.opacity + 12;
+
+							faded = chImage.opacity >= 255;
+
+							return faded;
+						}, true);
+					}
+
 					IntVector charPosition;
 
 					switch (character.position)
@@ -694,6 +720,7 @@ public final class GameView : View
 								chImage.position = charPosition;
 								break;
 						}
+
 						runDelayedTask(32, (d) {
 							if (moved)
 							{

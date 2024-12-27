@@ -41,6 +41,8 @@ public alias EXT_RenderReadPixels = SDL_RenderReadPixels;
 
 public alias EXT_IMG_SavePNG = IMG_SavePNG;
 
+public alias EXT_SetTextureAlphaMod = SDL_SetTextureAlphaMod;
+
 void EXT_Initialize()
 {
   if (_initialized) return;

@@ -11,6 +11,7 @@ public final class Image : Component
   EXT_SheetRender* _sheetRender;
   string _renderName;
   bool _coverMode;
+  int _opacity;
 
   public:
   final:
@@ -27,6 +28,8 @@ public final class Image : Component
     {
       _sheetRender = sheetRender;
     }
+    
+    opacity = 255;
   }
 
   this(Window window, EXT_SheetRender* sheetRender)
@@ -44,6 +47,29 @@ public final class Image : Component
       _name = newName;
 
       updateRect(true);
+    }
+
+    int opacity() { return _opacity; }
+    void opacity(int newOpacity)
+    {
+      if (!_sheetRender)
+      {
+        return;
+      }
+
+      if (!_sheetRender.texture)
+      {
+        return;
+      }
+
+      if (newOpacity >= 255)
+      {
+        newOpacity = 255;
+      }
+
+      _opacity = newOpacity;
+
+      EXT_SetTextureAlphaMod(_sheetRender.texture, cast(ubyte)_opacity);
     }
   }
 
