@@ -58,8 +58,6 @@ public final class RawImage : Component
             }
 
             _opacity = newOpacity;
-
-            EXT_SetTextureAlphaMod(_texture, cast(ubyte)_opacity);
         }
     }
 
@@ -88,7 +86,8 @@ public final class RawImage : Component
         {
             return;
         }
-
+        
+        EXT_SetTextureAlphaMod(_texture, cast(ubyte)_opacity);
         EXT_RenderCopy(window.nativeScreen, _texture, _rect1, _rect2);
     }
 }

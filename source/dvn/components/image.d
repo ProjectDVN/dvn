@@ -68,8 +68,6 @@ public final class Image : Component
       }
 
       _opacity = newOpacity;
-
-      EXT_SetTextureAlphaMod(_sheetRender.texture, cast(ubyte)_opacity);
     }
   }
 
@@ -213,6 +211,7 @@ public final class Image : Component
 
     if (_sheetRender && _sheetRender.texture)
     {
+      EXT_SetTextureAlphaMod(_sheetRender.texture, cast(ubyte)_opacity);
       EXT_RenderCopy(screen, _sheetRender.texture, _sheetRender.entry.textureRect, _sheetRender.entry.rect);
     }
   }
