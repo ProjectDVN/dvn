@@ -57,6 +57,8 @@ public final class SceneCharacter
 	string position;
 	int x;
 	int y;
+	string movement;
+	int movementSpeed;
 }
 
 public final class SceneCharacterName
@@ -256,6 +258,17 @@ public final class GameView : View
 							character.image = value;
 							character.position = "bottomCenter";
 							entry.characters ~= character;
+							break;
+
+						case "charMovement":
+						case "cm":
+							character.movement = value;
+							character.movementSpeed  = 42;
+							break;
+
+						case "charMovementSpeed":
+						case "cms":
+							character.movementSpeed = value.to!int;
 							break;
 
 						case "charName":
@@ -552,94 +565,96 @@ public final class GameView : View
 					auto chImage = new Image(window, character.image);
 					addComponent(chImage);
 
+					IntVector charPosition;
+
 					switch (character.position)
 					{
 						case "center":
-							chImage.position = IntVector(
+							charPosition = IntVector(
 								(window.width / 2) - (chImage.width / 2),
 								(window.height / 2) - (chImage.height / 2));
 							break;
 
 						case "left":
-							chImage.position = IntVector(
+							charPosition = IntVector(
 								0,
 								(window.height / 2) - (chImage.height / 2));
 							break;
 							
 						case "right":
-							chImage.position = IntVector(
+							charPosition = IntVector(
 								(window.width - chImage.width),
 								(window.height / 2) - (chImage.height / 2));
 							break;
 
 						case "bottomCenter":
-							chImage.position = IntVector(
+							charPosition = IntVector(
 								(window.width / 2) - (chImage.width / 2),
 								(window.height - chImage.height));
 							break;
 
 						case "bottomRight":
-							chImage.position = IntVector(
+							charPosition = IntVector(
 								(window.width - chImage.width),
 								(window.height - chImage.height));
 							break;
 
 						case "bottomLeft":
-							chImage.position = IntVector(
+							charPosition = IntVector(
 								0,
 								(window.height - chImage.height));
 							break;
 
 						case "topCenter":
-							chImage.position = IntVector(
+							charPosition = IntVector(
 								(window.width / 2) - (chImage.width / 2),
 								0);
 							break;
 
 						case "topRight":
-							chImage.position = IntVector(
+							charPosition = IntVector(
 								(window.width - chImage.width),
 								0);
 							break;
 
 						case "topLeft":
-							chImage.position = IntVector(
+							charPosition = IntVector(
 								0,
 								0);
 							break;
 
 						case "topSlightLeft":
-							chImage.position = IntVector(
+							charPosition = IntVector(
 								((window.width / 2) - (chImage.width / 2)) -
 								chImage.width / 2,
 								0);
 							break;
 						case "topSlightRight":
-							chImage.position = IntVector(
+							charPosition = IntVector(
 								((window.width / 2) - (chImage.width / 2)) +
 								chImage.width / 2,
 								0);
 							break;
 						case "slightLeft":
-							chImage.position = IntVector(
+							charPosition = IntVector(
 								((window.width / 2) - (chImage.width / 2)) -
 								chImage.width / 2,
 								(window.height / 2) - (chImage.height / 2));
 							break;
 						case "slightRight":
-							chImage.position = IntVector(
+							charPosition = IntVector(
 								((window.width / 2) - (chImage.width / 2)) +
 								chImage.width / 2,
 								(window.height / 2) - (chImage.height / 2));
 							break;
 						case "bottomSlightLeft":
-							chImage.position = IntVector(
+							charPosition = IntVector(
 								((window.width / 2) - (chImage.width / 2)) -
 								chImage.width / 2,
 								window.height - chImage.height);
 							break;
 						case "bottomSlightRight":
-							chImage.position = IntVector(
+							charPosition = IntVector(
 								((window.width / 2) - (chImage.width / 2)) +
 								chImage.width / 2,
 								window.height - chImage.height);
@@ -648,9 +663,95 @@ public final class GameView : View
 						default:
 							if (character.position == "")
 							{
-								chImage.position = IntVector(character.x, character.y);
+								charPosition = IntVector(character.x, character.y);
 							}
 							break;
+					}
+
+					if (character.movement && character.movement.length)
+					{
+						bool moved = false;
+						int movementSpeed = character.movementSpeed;
+						switch (character.movement)
+						{
+							case "top":
+								chImage.position = IntVector(charPosition.x, 0 - chImage.height);
+								break;
+
+							case "bottom":
+								chImage.position = IntVector(charPosition.x, window.height + chImage.height);
+								break;
+
+							case "left":
+								chImage.position = IntVector(0 - chImage.width, charPosition.y);
+								break;
+
+							case "right":
+								chImage.position = IntVector(window.width + chImage.width, charPosition.y);
+								break;
+
+							default:
+								chImage.position = charPosition;
+								break;
+						}
+						runDelayedTask(32, (d) {
+							if (moved)
+							{
+								return true;
+							}
+
+							switch (character.movement)
+							{
+								case "top":
+									chImage.position = IntVector(charPosition.x, chImage.y + movementSpeed);
+									
+									if (chImage.y >= charPosition.y)
+									{
+										chImage.position = IntVector(charPosition.x, charPosition.y);
+									}
+									break;
+
+								case "bottom":
+									chImage.position = IntVector(charPosition.x, chImage.y - movementSpeed);
+									
+									if (chImage.y <= charPosition.y)
+									{
+										chImage.position = IntVector(charPosition.x, charPosition.y);
+									}
+									break;
+
+								case "left":
+									chImage.position = IntVector(chImage.x + movementSpeed, charPosition.y);
+
+									if (chImage.x >= charPosition.x)
+									{
+										chImage.position = IntVector(charPosition.x, charPosition.y);
+									}
+									break;
+
+								case "right":
+									chImage.position = IntVector(chImage.x - movementSpeed, charPosition.y);
+
+									if (chImage.x <= charPosition.x)
+									{
+										chImage.position = IntVector(charPosition.x, charPosition.y);
+									}
+									break;
+
+								default:
+									chImage.position = charPosition;
+									break;
+							}
+							
+							moved = chImage.x == charPosition.x &&
+								chImage.y == charPosition.y;
+
+							return moved;
+						}, true);
+					}
+					else
+					{
+						chImage.position = charPosition;
 					}
 
 					chImage.show();
