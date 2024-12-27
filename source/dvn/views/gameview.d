@@ -236,18 +236,22 @@ public final class GameView : View
 					switch (key)
 					{
 						case "background":
+						case "bg":
 							entry.background = value;
 							break;
 
 						case "music":
+						case "m":
 							entry.music = value;
 							break;
 
 						case "sound":
+						case "s":
 							entry.sound = value;
 							break;
 
 						case "char":
+						case "c":
 							character = new SceneCharacter;
 							character.image = value;
 							character.position = "bottomCenter";
@@ -255,6 +259,7 @@ public final class GameView : View
 							break;
 
 						case "charName":
+						case "n":
 							charName = new SceneCharacterName;
 							charName.name = value;
 							charName.color = "fff";
@@ -267,10 +272,12 @@ public final class GameView : View
 							break;
 
 						case "charColor":
+						case "cc":
 							charName.color = value;
 							break;
 
 						case "charPos":
+						case "cp":
 							character.position = value;
 							auto charXYPos = value.split(",");
 							
@@ -283,14 +290,17 @@ public final class GameView : View
 							break;
 
 						case "charNamePos":
+						case "np":
 							charName.position = value;
 							break;
 
 						case "textColor":
+						case "tc":
 							entry.textColor = value;
 							break;
 
 						case "image":
+						case "i":
 							auto image = new SceneImage;
 							image.source = value;
 							auto imagePos = keyData[1].split(",");
@@ -306,6 +316,7 @@ public final class GameView : View
 							break;
 
 						case "video":
+						case "v":
 							auto video = new SceneVideo;
 							video.source = value;
 							auto videoPos = keyData[1].split(",");
@@ -325,6 +336,7 @@ public final class GameView : View
 							break;
 
 						case "animation":
+						case "ani":
 							auto animation = new SceneAnimation;
 							animation.source = value;
 							auto aniPos = keyData[1].split(",");
@@ -344,6 +356,7 @@ public final class GameView : View
 							break;
 							
 						case "label":
+						case "l":
 							auto label = new SceneLabel;
 							label.text = value;
 							label.fontSize = keyData[1].to!size_t;
@@ -356,21 +369,25 @@ public final class GameView : View
 							break;
 
 						case "font":
+						case "f":
 							entry.textFont = value;
 							break;
 
 						case "text":
+						case "t":
 							entry.text = value;
 							entry.nextScene = keyData[1];
 							break;
 
 						case "act":
+						case "a":
 							entry.act = value;
 							entry.nextScene = keyData[1];
 							entry.actContinueButton = keyData[2];
 							break;
 
 						case "option":
+						case "o":
 							auto option = new SceneOption;
 							option.text = value;
 							option.nextScene = keyData[1];
