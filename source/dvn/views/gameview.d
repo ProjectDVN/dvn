@@ -12,6 +12,8 @@ import dvn.history;
 
 import dvn.ui;
 
+private int _customSceneIdCounter;
+
 public final class SceneEntry
 {
 	public:
@@ -414,16 +416,16 @@ public final class GameView : View
 
 						case "text":
 						case "t":
-							import std.uuid : randomUUID;
+							import std.conv : to;
 							
-							auto randomSceneId = randomUUID().toString;
+							_customSceneIdCounter++;
 
 							if (lastEntry && lastEntry.text && lastEntry.text.length)
 							{
-								lastEntry.nextScene = randomSceneId;
+								lastEntry.nextScene = "??????????-" ~ _customSceneIdCounter.to!string;
 
 								entry = new SceneEntry;
-								entry.name = randomSceneId;
+								entry.name = "??????????-" ~ _customSceneIdCounter.to!string;
 
 								entry.music = lastEntry.music;
 								entry.sound = lastEntry.sound;
@@ -451,7 +453,7 @@ public final class GameView : View
 							}
 							else
 							{
-								entry.nextScene = randomSceneId;
+								entry.nextScene = "??????????-" ~ _customSceneIdCounter.to!string;
 							}
 							
 							break;
