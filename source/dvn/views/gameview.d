@@ -36,6 +36,24 @@ public final class SceneEntry
 	string view;
 	bool hideDialogue;
 	bool hideButtons;
+
+	SceneCharacter[] copyCharacters()
+	{
+		SceneCharacter[] chs = [];
+
+		foreach (character; characters)
+		{
+			auto ch = new SceneCharacter;
+			ch.image = character.image;
+			ch.position = character.position;
+			ch.x = character.x;
+			ch.y = character.y;
+
+			chs ~= ch;
+		}
+
+		return chs;
+	}
 }
 
 public final class SceneLabel
@@ -183,6 +201,7 @@ public final class GameView : View
 				.split("\n");
 
 			SceneEntry entry;
+			SceneEntry lastEntry;
 			SceneCharacter character;
 			SceneCharacterName charName;
 			string textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
@@ -206,6 +225,7 @@ public final class GameView : View
 					entry.name = line[1 .. $-1];
 					character = null;
 					charName = null;
+					lastEntry = entry;
 					textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
 					entry.textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
 
@@ -394,6 +414,36 @@ public final class GameView : View
 
 						case "text":
 						case "t":
+							import std.uuid : randomUUID;
+							
+							auto randomSceneId = randomUUID().toString;
+
+							if (lastEntry && lastEntry.text && lastEntry.text.length)
+							{
+								lastEntry.nextScene = randomSceneId;
+
+								entry = new SceneEntry;
+								entry.name = randomSceneId;
+
+								entry.music = lastEntry.music;
+								entry.sound = lastEntry.sound;
+								entry.background = lastEntry.background;
+								entry.labels = lastEntry.labels;
+								entry.characters = lastEntry.copyCharacters;
+								entry.characterNames = lastEntry.characterNames;
+								entry.images = lastEntry.images;
+								entry.videos = lastEntry.videos;
+								entry.animations = lastEntry.animations;
+								entry.textColor = lastEntry.textColor;
+								entry.textFont = lastEntry.textFont;
+								entry.hideDialogue = lastEntry.hideDialogue;
+								entry.hideButtons = lastEntry.hideButtons;
+
+								lastEntry = entry;
+
+								_scenes[entry.name] = entry;
+							}
+							
 							entry.text = value;
 							if (keyData.length == 2)
 							{
@@ -401,7 +451,7 @@ public final class GameView : View
 							}
 							else
 							{
-								entry.nextScene = "????????????????????";
+								entry.nextScene = randomSceneId;
 							}
 							
 							break;
