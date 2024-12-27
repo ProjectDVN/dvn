@@ -376,7 +376,7 @@ public final class GameView : View
 						case "text":
 						case "t":
 							entry.text = value;
-							if (keyData.Length == 2)
+							if (keyData.length == 2)
 							{
 								entry.nextScene = keyData[1];
 							}
