@@ -376,7 +376,15 @@ public final class GameView : View
 						case "text":
 						case "t":
 							entry.text = value;
-							entry.nextScene = keyData[1];
+							if (keyData.Length == 2)
+							{
+								entry.nextScene = keyData[1];
+							}
+							else
+							{
+								entry.nextScene = "????????????????????";
+							}
+							
 							break;
 
 						case "act":
