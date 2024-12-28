@@ -206,6 +206,8 @@ public final class GameView : View
 			SceneEntry lastEntry;
 			SceneCharacter character;
 			SceneCharacterName charName;
+			SceneCharacterName[] charNames = [];
+
 			string textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
 			foreach (l; lines)
 			{
@@ -227,6 +229,7 @@ public final class GameView : View
 					entry.name = line[1 .. $-1];
 					character = null;
 					charName = null;
+					charNames = [];
 					lastEntry = entry;
 					textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
 					entry.textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
@@ -309,7 +312,7 @@ public final class GameView : View
 								charName.color = settings.defaultCharacterNameColors.get(charName.name, "fff");
 							}
 							charName.position = "left";
-							entry.characterNames ~= charName;
+							charNames ~= charName;
 							break;
 
 						case "charColor":
@@ -432,7 +435,7 @@ public final class GameView : View
 								entry.background = lastEntry.background;
 								entry.labels = lastEntry.labels;
 								entry.characters = lastEntry.copyCharacters;
-								entry.characterNames = lastEntry.characterNames;
+								//entry.characterNames = lastEntry.characterNames;
 								entry.images = lastEntry.images;
 								entry.videos = lastEntry.videos;
 								entry.animations = lastEntry.animations;
@@ -445,6 +448,9 @@ public final class GameView : View
 
 								_scenes[entry.name] = entry;
 							}
+
+							entry.characterNames = charNames;
+							charNames = [];
 							
 							entry.text = value;
 							if (keyData.length == 2)
