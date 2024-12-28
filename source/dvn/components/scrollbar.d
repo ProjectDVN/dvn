@@ -584,4 +584,10 @@ public final class ScrollBar : Component
   {
     renderChildren();
   }
+
+  void updateScrollView()
+  {
+    restyle();
+    updateRect(false);
+  }
 }
