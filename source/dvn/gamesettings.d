@@ -44,8 +44,7 @@ public final class GameSettings
   string settingsButtonText;
   string autoButtonTextOn;
   string autoButtonTextOff;
-
-  bool dialogueHistory;
+  string quickSaveButtonText;
   
   string customStartView;
 
@@ -75,6 +74,7 @@ public final class GameSettings
   string textBoxBorderColor;
 
   bool displayOptionsAsButtons;
+  bool enableAutoSave;
 }
 
 public final class SettingsImage
@@ -155,8 +155,16 @@ void updateSaveFiles(GameSettings settings)
 {
   SaveFile[] s = [];
 
+  auto autoSave = settings.saves ? settings.saves.get("auto", null) : null;
+  if (autoSave) s ~= autoSave;
+
+  auto quickSave = settings.saves ? settings.saves.get("quick", null) : null;
+  if (quickSave) s ~= quickSave;
+
   foreach (k,v; settings.saves)
   {
+    if (k == "auto") continue;
+    if (k == "quick") continue;
     s ~= v;
   }
 

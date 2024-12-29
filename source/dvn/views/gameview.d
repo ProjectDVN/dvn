@@ -1254,6 +1254,26 @@ public final class GameView : View
 
             button.show();
         }
+		
+		void saveCurrentScene(string idToSave)
+		{
+			import std.file : exists, mkdir, remove;
+
+			if (!exists("data/game/saves"))
+			{
+				mkdir("data/game/saves");
+			}
+			else if (exists("data/game/saves/" ~ idToSave ~ ".png"))
+			{
+				remove("data/game/saves/" ~ idToSave ~ ".png");
+			}
+
+			takeScreenshot(window, "data/game/saves/" ~ idToSave ~ ".png");
+
+			saveGame(settings, idToSave, scene.name, _lastBackgroundSource, _lastMusic);
+
+			saveGameSettings("data/settings.json");
+		}
 
 		if (scene.text)
 		{
@@ -1314,6 +1334,12 @@ public final class GameView : View
 
 				if (loaded)
 				{
+					if (settings.enableAutoSave)
+					{
+						runDelayedTask(0, {
+							saveCurrentScene("auto");
+						});
+					}
 					DvnEvents.getEvents().renderGameViewTextFinished(textLabel);
 				}
 
@@ -1513,26 +1539,7 @@ public final class GameView : View
 		saveButton.show();
 
 		saveButton.onButtonClick(new MouseButtonEventHandler((b,p) {
-			//settings.saveScene = scene.name;
-			//settings.saveBackground = _lastBackgroundSource;
-			//settings.saveMusic = _lastMusic;
-
-			import std.file : exists, mkdir, remove;
-
-			if (!exists("data/game/saves"))
-			{
-				mkdir("data/game/saves");
-			}
-			else if (exists("data/game/saves/" ~ _saveId ~ ".png"))
-			{
-				remove("data/game/saves/" ~ _saveId ~ ".png");
-			}
-
-			takeScreenshot(window, "data/game/saves/" ~ _saveId ~ ".png");
-
-			saveGame(settings, _saveId, scene.name, _lastBackgroundSource, _lastMusic);
-
-			saveGameSettings("data/settings.json");
+			saveCurrentScene(_saveId);
 			return false;
 		}));
 
@@ -1635,6 +1642,33 @@ public final class GameView : View
 
 		if (scene.hideButtons) autoButton.hide();
 
+		auto quickSaveButton = new Button(window);
+		addComponent(quickSaveButton);
+		quickSaveButton.size = IntVector(autoButton.width, autoButton.height);
+		quickSaveButton.position = IntVector(
+			autoButton.x,
+			autoButton.y + autoButton.height + 12);
+		quickSaveButton.fontName = settings.defaultFont;
+		quickSaveButton.fontSize = 18;
+		quickSaveButton.textColor = "000".getColorByHex;
+		quickSaveButton.text = (settings.quickSaveButtonText ? settings.quickSaveButtonText : "Q-Save").to!dstring;
+		quickSaveButton.fitToSize = false;
+
+		quickSaveButton.restyle();
+
+		quickSaveButton.show();
+
+		quickSaveButton.onButtonClick(new MouseButtonEventHandler((b,p) {
+			saveCurrentScene("quick");
+			return false;
+		}));
+
+		restyleButton(quickSaveButton, settings);
+
+		DvnEvents.getEvents().renderGameViewQuickSaveButton(quickSaveButton);
+
+		if (scene.hideButtons) quickSaveButton.hide();
+
 		bool intersectsWith(int x1, int y1, int x2, int y2, int w2, int h2)
 		{
 			return (x1 > x2) &&
@@ -1695,6 +1729,13 @@ public final class GameView : View
 					loaded = true;
 					textLabel.text = finalText;
 
+					if (settings.enableAutoSave)
+					{
+						runDelayedTask(0, {
+							saveCurrentScene("auto");
+						});
+					}
+
 					DvnEvents.getEvents().renderGameViewTextFinished(textLabel);
 				}
 			}
@@ -1750,6 +1791,13 @@ public final class GameView : View
 					loaded = true;
 					textLabel.text = finalText;
 
+					if (settings.enableAutoSave)
+					{
+						runDelayedTask(0, {
+							saveCurrentScene("auto");
+						});
+					}
+
 					DvnEvents.getEvents().renderGameViewTextFinished(textLabel);
 				}
 			}
@@ -1774,7 +1822,7 @@ public final class GameView : View
 			}
 		}), true);
 
-		Component[] safeComponents = [saveButton, exitButton, settingsButton, autoButton];
+		Component[] safeComponents = [saveButton, exitButton, settingsButton, autoButton, quickSaveButton];
 
 		DvnEvents.getEvents().addClickSafeComponents(safeComponents);
 
@@ -1853,6 +1901,13 @@ public final class GameView : View
 			{
 				loaded = true;
 				textLabel.text = finalText;
+
+				if (settings.enableAutoSave)
+				{
+					runDelayedTask(0, {
+						saveCurrentScene("auto");
+					});
+				}
 			}
 		}));
 

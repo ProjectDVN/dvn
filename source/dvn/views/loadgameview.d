@@ -150,7 +150,19 @@ public final class LoadGameView : View
                 saveLabel.fontName = settings.defaultFont;
                 saveLabel.fontSize = 24;
                 saveLabel.color = "fff".getColorByHex;
-                saveLabel.text = (settings.loadText ~ saveFile.date).to!dstring;
+
+                auto loadingText = settings.loadText ~ saveFile.date;
+
+                if (saveFile.id == "auto")
+                {
+                    loadingText = "(A) " ~ loadingText;
+                }
+                else if (saveFile.id == "quick")
+                {
+                    loadingText = "(Q) " ~ loadingText;
+                }
+
+                saveLabel.text = (loadingText).to!dstring;
                 saveLabel.shadow = true;
                 saveLabel.isLink = true;
                 saveLabel.position = IntVector(
@@ -162,7 +174,17 @@ public final class LoadGameView : View
                 auto closure = (Label oLabel, RawImage oImage, SaveFile sFile) { return () {
                     oLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
                         window.fadeToView("GameView", getColorByName("black"), false, (view) {
-                            setSaveId(sFile.id);
+                            if (sFile.id == "auto" || sFile.id == "quick")
+                            {
+                                import std.uuid : randomUUID;
+											
+                                auto id = randomUUID().toString;
+                                setSaveId(id);
+                            }
+                            else
+                            {
+                                setSaveId(sFile.id);
+                            }
 
                             auto gameView = cast(GameView)view;
                             gameView.loadGame();

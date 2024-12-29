@@ -59,6 +59,7 @@ public class DvnEvents
     void renderGameViewExitButton(Button button) {}
     void renderGameViewSettingsButton(Button button) {}
     void renderGameViewAutoButton(Button button) {}
+    void renderGameViewQuickSaveButton(Button button) {}
     void renderGameViewOverplayEnd(Panel overlay) {}
     void renderGameViewTextFinished(Label textLabel) {}
 
