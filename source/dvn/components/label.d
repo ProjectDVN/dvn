@@ -340,7 +340,7 @@ public final class Label : Component
 
       if (_shadow)
       {
-        EXT_Surface shadowSurface = EXT_RenderUnicodeText(rawFont, utf16Buffer.ptr, "000".getColorByHex);
+        EXT_Surface shadowSurface = EXT_RenderUnicodeText(rawFont, utf16Buffer.ptr, "000".getColorByHex.changeAlpha(_color.a));
 
         if (!shadowSurface)
         {

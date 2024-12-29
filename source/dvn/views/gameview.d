@@ -1310,6 +1310,38 @@ public final class GameView : View
 			textLabel.position = IntVector(16, 16);
 			textLabel.updateRect();
 
+			if (settings.fadeInText)
+			{
+				int textFadeInSpeed = 42;
+				auto faded = false;
+
+				textLabel.color = textLabel.color.changeAlpha(0);
+				
+				runDelayedTask(textFadeInSpeed, (d) {
+					if (textLabel.color.a >= 255)
+					{
+						faded = true;
+						return faded;
+					}
+
+					int newAlpha = textLabel.color.a + 10;
+
+					if (newAlpha >= 255)
+					{
+						newAlpha = 255;
+					}
+
+					textLabel.color = textLabel.color.changeAlpha(cast(ubyte)newAlpha);
+
+					if (textLabel.color.a >= 255)
+					{
+						faded = true;
+					}
+
+					return faded;
+				}, true);
+			}
+
 			runDelayedTask(settings.textSpeed, (d) {
 				if (loaded)
 				{
@@ -1334,6 +1366,8 @@ public final class GameView : View
 
 				if (loaded)
 				{
+					textLabel.color = textLabel.color.changeAlpha(255);
+
 					if (settings.enableAutoSave)
 					{
 						runDelayedTask(0, {
@@ -1728,6 +1762,7 @@ public final class GameView : View
 				{
 					loaded = true;
 					textLabel.text = finalText;
+					textLabel.color = textLabel.color.changeAlpha(255);
 
 					if (settings.enableAutoSave)
 					{
@@ -1790,6 +1825,7 @@ public final class GameView : View
 				{
 					loaded = true;
 					textLabel.text = finalText;
+					textLabel.color = textLabel.color.changeAlpha(255);
 
 					if (settings.enableAutoSave)
 					{
@@ -1901,6 +1937,7 @@ public final class GameView : View
 			{
 				loaded = true;
 				textLabel.text = finalText;
+				textLabel.color = textLabel.color.changeAlpha(255);
 
 				if (settings.enableAutoSave)
 				{

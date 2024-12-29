@@ -75,6 +75,7 @@ public final class GameSettings
 
   bool displayOptionsAsButtons;
   bool enableAutoSave;
+  bool fadeInText;
 }
 
 public final class SettingsImage
