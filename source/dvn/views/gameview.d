@@ -38,6 +38,9 @@ public final class SceneEntry
 	string view;
 	bool hideDialogue;
 	bool hideButtons;
+	bool isNarrator;
+	int narratorX;
+	int narratorY;
 
 	SceneCharacter[] copyCharacters()
 	{
@@ -207,6 +210,9 @@ public final class GameView : View
 			SceneCharacter character;
 			SceneCharacterName charName;
 			SceneCharacterName[] charNames = [];
+			bool isNarrator = false;
+			int narratorX = 0;
+			int narratorY = 0;
 
 			string textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
 			foreach (l; lines)
@@ -230,6 +236,9 @@ public final class GameView : View
 					character = null;
 					charName = null;
 					charNames = [];
+					isNarrator = false;
+					narratorX = 0;
+					narratorY = 0;
 					lastEntry = entry;
 					textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
 					entry.textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
@@ -268,6 +277,13 @@ public final class GameView : View
 
 					switch (key)
 					{
+						case "narrator":
+							isNarrator = true;
+							auto narratorXY = value.split(",");
+							narratorX = narratorXY[0].to!int;
+							narratorY = narratorXY[1].to!int;
+							break;
+
 						case "background":
 						case "bg":
 							entry.background = value;
@@ -450,7 +466,13 @@ public final class GameView : View
 							}
 
 							entry.characterNames = charNames;
+							entry.isNarrator = isNarrator;
+							entry.narratorX = narratorX;
+							entry.narratorY = narratorY;
 							charNames = [];
+							isNarrator = false;
+							narratorX = 0;
+							narratorY = 0;
 							
 							entry.text = value;
 							if (keyData.length == 2)
@@ -1124,7 +1146,7 @@ public final class GameView : View
 			window.height - (textPanel.height + 14)
 		);
 		textPanel.show();
-		if (scene.hideDialogue)
+		if (scene.hideDialogue || scene.isNarrator)
 		{
 			textPanel.hide();
 		}
@@ -1137,72 +1159,75 @@ public final class GameView : View
 			textPanel.borderColor = textPanel.borderColor.changeAlpha(0);
 		}
 
-		foreach (charNameAndPos; scene.characterNames)
+		if (!scene.isNarrator)
 		{
-			auto charNameLabel = new Label(window);
-			charNameLabel.fontName = settings.defaultFont;
-			charNameLabel.fontSize = 22;
-			charNameLabel.color = charNameAndPos.color.getColorByHex;
-			charNameLabel.text = charNameAndPos.name.to!dstring;
-			charNameLabel.shadow = true;
-			charNameLabel.position = IntVector(16, 4);
-			charNameLabel.updateRect();
-
-			RawImage namePanelImage;
-			if (settings.namePanelImage)
+			foreach (charNameAndPos; scene.characterNames)
 			{
-				auto rawImage = new RawImage(window,
-					settings.namePanelImage.path,
-					IntVector(settings.namePanelImage.size.width,
-						settings.namePanelImage.size.height));
-				addComponent(rawImage);
-				rawImage.size = IntVector(charNameLabel.width + 32, charNameLabel.height + 8);
-				namePanelImage = rawImage;
+				auto charNameLabel = new Label(window);
+				charNameLabel.fontName = settings.defaultFont;
+				charNameLabel.fontSize = 22;
+				charNameLabel.color = charNameAndPos.color.getColorByHex;
+				charNameLabel.text = charNameAndPos.name.to!dstring;
+				charNameLabel.shadow = true;
+				charNameLabel.position = IntVector(16, 4);
+				charNameLabel.updateRect();
+
+				RawImage namePanelImage;
+				if (settings.namePanelImage)
+				{
+					auto rawImage = new RawImage(window,
+						settings.namePanelImage.path,
+						IntVector(settings.namePanelImage.size.width,
+							settings.namePanelImage.size.height));
+					addComponent(rawImage);
+					rawImage.size = IntVector(charNameLabel.width + 32, charNameLabel.height + 8);
+					namePanelImage = rawImage;
+				}
+
+				auto charNamePanel = new Panel(window);
+				addComponent(charNamePanel);
+				charNamePanel.fillColor = settings.namePanelBackgroundColor.getColorByHex.changeAlpha(150);
+				charNamePanel.borderColor = settings.namePanelBorderColor.getColorByHex;
+				charNamePanel.size = IntVector(charNameLabel.width + 32, charNameLabel.height + 8);
+				
+				switch (charNameAndPos.position)
+				{
+					case "center":
+						charNamePanel.position = IntVector(
+							((window.width / 2) - (charNamePanel.width / 2)),
+							(textPanel.y - charNamePanel.height) + 1
+						);
+						break;
+
+					case "right":
+						charNamePanel.position = IntVector(
+							(textPanel.x + textPanel.width) - charNamePanel.width,
+							(textPanel.y - charNamePanel.height) + 1
+						);
+						break;
+
+					case "left":
+					default:
+						charNamePanel.position = IntVector(
+							textPanel.x,
+							(textPanel.y - charNamePanel.height) + 1
+						);
+						break;
+				}
+
+				charNamePanel.addComponent(charNameLabel);
+				charNamePanel.show();
+				
+				if (settings.namePanelImage)
+				{
+					charNamePanel.fillColor = charNamePanel.fillColor.changeAlpha(0);
+					charNamePanel.borderColor = charNamePanel.borderColor.changeAlpha(0);
+
+					namePanelImage.position = IntVector(charNamePanel.x, charNamePanel.y - 1);
+				}
+
+				DvnEvents.getEvents().renderGameViewCharacterName(charNameAndPos, charNameLabel, charNamePanel, namePanelImage);
 			}
-
-			auto charNamePanel = new Panel(window);
-			addComponent(charNamePanel);
-			charNamePanel.fillColor = settings.namePanelBackgroundColor.getColorByHex.changeAlpha(150);
-			charNamePanel.borderColor = settings.namePanelBorderColor.getColorByHex;
-			charNamePanel.size = IntVector(charNameLabel.width + 32, charNameLabel.height + 8);
-			
-			switch (charNameAndPos.position)
-			{
-				case "center":
-					charNamePanel.position = IntVector(
-						((window.width / 2) - (charNamePanel.width / 2)),
-						(textPanel.y - charNamePanel.height) + 1
-					);
-					break;
-
-				case "right":
-					charNamePanel.position = IntVector(
-						(textPanel.x + textPanel.width) - charNamePanel.width,
-						(textPanel.y - charNamePanel.height) + 1
-					);
-					break;
-
-				case "left":
-				default:
-					charNamePanel.position = IntVector(
-						textPanel.x,
-						(textPanel.y - charNamePanel.height) + 1
-					);
-					break;
-			}
-
-			charNamePanel.addComponent(charNameLabel);
-			charNamePanel.show();
-			
-			if (settings.namePanelImage)
-			{
-				charNamePanel.fillColor = charNamePanel.fillColor.changeAlpha(0);
-				charNamePanel.borderColor = charNamePanel.borderColor.changeAlpha(0);
-
-				namePanelImage.position = IntVector(charNamePanel.x, charNamePanel.y - 1);
-			}
-
-			DvnEvents.getEvents().renderGameViewCharacterName(charNameAndPos, charNameLabel, charNamePanel, namePanelImage);
 		}
 
 		bool hasOptions = false;
@@ -1296,7 +1321,16 @@ public final class GameView : View
 			addDialogueHistory(historyText, null, scene.name, _lastBackgroundSource, _lastMusic);
 
 			textLabel = new Label(window);
-			textPanel.addComponent(textLabel);
+
+			if (scene.isNarrator)
+			{
+				addComponent(textLabel);
+			}
+			else
+			{
+				textPanel.addComponent(textLabel);
+			}
+
 			textLabel.fontName = settings.defaultFont;
 			if (scene.textFont && scene.textFont.length)
 			{
@@ -1308,6 +1342,12 @@ public final class GameView : View
 			textLabel.shadow = true;
 			textLabel.wrapText(textPanel.width - 16);
 			textLabel.position = IntVector(16, 16);
+
+			if (scene.isNarrator)
+			{
+				textLabel.position = IntVector(scene.narratorX, scene.narratorY);
+			}
+
 			textLabel.updateRect();
 
 			if (settings.fadeInText)
