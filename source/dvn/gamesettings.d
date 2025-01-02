@@ -76,6 +76,10 @@ public final class GameSettings
   bool displayOptionsAsButtons;
   bool enableAutoSave;
   bool fadeInText;
+
+  int textMargin;
+  int textWrapSize;
+  bool fadeInCharacters;
 }
 
 public final class SettingsImage

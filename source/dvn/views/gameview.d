@@ -139,6 +139,7 @@ private SceneEntry[string] _scenes;
 
 private string _lastBackgroundSource;
 private string _lastMusic;
+private string _lastCharacter;
 
 private string _saveId;
 
@@ -651,7 +652,16 @@ public final class GameView : View
 					auto chImage = new Image(window, character.image);
 					addComponent(chImage);
 
-					if (character.characterFadeIn)
+					auto shouldFadeIn = false;
+
+					if (settings.fadeInCharacters)
+					{
+						shouldFadeIn = !_lastCharacter || !_lastCharacter.length || _lastCharacter != character.image;
+					}
+
+					_lastCharacter = character.image;
+
+					if (character.characterFadeIn || shouldFadeIn)
 					{
 						chImage.opacity = 0;
 
@@ -1131,6 +1141,11 @@ public final class GameView : View
 				window.height - (rawImage.height + 14)
 			);
 
+			if (scene.hideDialogue || scene.isNarrator)
+			{
+				rawImage.hide();
+			}
+
 			DvnEvents.getEvents().renderGameViewDialoguePanelImage(rawImage);
 		}
 
@@ -1159,7 +1174,7 @@ public final class GameView : View
 			textPanel.borderColor = textPanel.borderColor.changeAlpha(0);
 		}
 
-		if (!scene.isNarrator)
+		if (!scene.isNarrator || !scene.hideDialogue)
 		{
 			foreach (charNameAndPos; scene.characterNames)
 			{
@@ -1340,8 +1355,10 @@ public final class GameView : View
 			textLabel.color = scene.textColor.getColorByHex;
 			textLabel.text = "";
 			textLabel.shadow = true;
-			textLabel.wrapText(textPanel.width - 16);
-			textLabel.position = IntVector(16, 16);
+			auto textMargin = settings.textMargin > 0 ? settings.textMargin : 16;
+			auto textWrapSize = settings.textWrapSize > 0 ? settings.textWrapSize : textPanel.width;
+			textLabel.wrapText(textWrapSize - textMargin);
+			textLabel.position = IntVector(textMargin, textMargin);
 
 			if (scene.isNarrator)
 			{
