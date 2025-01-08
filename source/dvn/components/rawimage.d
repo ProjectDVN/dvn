@@ -21,10 +21,11 @@ public final class RawImage : Component
     EXT_RectangleNative* _rect1;
     EXT_RectangleNative* _rect2;
     int _opacity;
+    IntVector _originalSize;
 
     public:
     final:
-    this(Window window, string path, IntVector originalSize)
+    this(Window window, string path)
     {
         import std.string : toStringz;
 
@@ -32,18 +33,42 @@ public final class RawImage : Component
         
         _temp = EXT_IMG_Load(path.toStringz);
         _texture = EXT_CreateTextureFromSurface(window.nativeScreen, _temp);
+        auto originalSize = EXT_QueryTextureSize(_texture);
+        _originalSize = IntVector(originalSize.x, originalSize.y);
 
         _rect1 = new EXT_RectangleNative;
         _rect1.x = 0;
         _rect1.y = 0;
-        _rect1.w = originalSize.x;
-        _rect1.h = originalSize.y;
+        _rect1.w = _originalSize.x;
+        _rect1.h = _originalSize.y;
+
+        opacity = 255;
+    }
+
+    this(Window window, string path, IntVector originalSize)
+    {
+        import std.string : toStringz;
+
+        super(window, false);
+
+        _originalSize = originalSize;
+        
+        _temp = EXT_IMG_Load(path.toStringz);
+        _texture = EXT_CreateTextureFromSurface(window.nativeScreen, _temp);
+
+        _rect1 = new EXT_RectangleNative;
+        _rect1.x = 0;
+        _rect1.y = 0;
+        _rect1.w = _originalSize.x;
+        _rect1.h = _originalSize.y;
 
         opacity = 255;
     }
 
     @property
     {
+        IntVector originalSize() { return _originalSize; }
+
         int opacity() { return _opacity; }
         void opacity(int newOpacity)
         {

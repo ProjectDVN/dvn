@@ -43,6 +43,17 @@ public alias EXT_IMG_SavePNG = IMG_SavePNG;
 
 public alias EXT_SetTextureAlphaMod = SDL_SetTextureAlphaMod;
 
+public alias EXT_QueryTexture = SDL_QueryTexture;
+
+public alias EXT_Point = SDL_Point;
+
+EXT_Point EXT_QueryTextureSize(EXT_Texture texture)
+{
+    EXT_Point size;
+    EXT_QueryTexture(texture, null, null, &size.x, &size.y);
+    return size;
+}
+
 void EXT_Initialize()
 {
   if (_initialized) return;

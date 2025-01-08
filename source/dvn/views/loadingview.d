@@ -152,7 +152,27 @@ public final class LoadingView : View
 						v.path = v.randomPath[uniform(0,v.randomPath.length)];
 					}
 
-					mainWindow.addSheet(k, v.path, IntVector(v.size.width, v.size.height), v.columns ? v.columns : 1);
+					ResourceSize size;
+					if (v.size)
+					{
+						size = v.size;
+					}
+					else
+					{
+						import std.string : toStringz;
+
+						auto temp1 = EXT_IMG_Load(v.path.toStringz);
+						auto temp2 = EXT_CreateTextureFromSurface(window.nativeScreen, temp1);
+						auto originalSize = EXT_QueryTextureSize(temp2);
+        				size = new ResourceSize;
+						size.width = originalSize.x;
+						size.height = originalSize.y;
+
+						EXT_DestroyTexture(temp2);
+        				EXT_FreeSurface(temp1);
+					}
+
+					mainWindow.addSheet(k, v.path, IntVector(size.width, size.height), v.columns ? v.columns : 1);
 
 					if (v.entries && v.entries.length)
 					{
