@@ -254,7 +254,7 @@ public abstract class Component
     updateEvents();
   }
 
-  package(dvn) void updateRect(bool updateParent)
+  public void updateRect(bool updateParent)
   {
     if (_cleaned || _forceRender)
     {
