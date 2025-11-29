@@ -35,6 +35,10 @@ public
 
   import dvn.network;
 
+  import dvn.css;
+  import dvn.dom;
+  import dvn.collections;
+
   void displayView(string name)
   {
     runDelayedTask(0, {
