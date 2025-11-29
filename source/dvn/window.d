@@ -328,6 +328,7 @@ public final class Window
     _isFading = true;
     _fadeColor = Color(fadeColor.r, fadeColor.g, fadeColor.b, 0);
     _nativeRectangle = EXT_CreateRectangle(Rectangle(0,0,_size.x, _size.y));
+    _lastFadeTime = 0;
   }
 
   void fadeIn(void delegate() fadedInHandler = null)
@@ -344,6 +345,7 @@ public final class Window
     _isFadingOut = false;
     _isFadingIn = true;
     _isFading = true;
+    _lastFadeTime = 0;
   }
 
   void addComponent(Component component)
@@ -462,6 +464,7 @@ public final class Window
             if (_fadedOutHandler) _fadedOutHandler();
 
             _fadedOutHandler = null;
+            _lastFadeTime = 0;
           }
 
           _fadeColor.a = cast(ubyte)a;
@@ -508,6 +511,9 @@ public final class Window
             _fadedInHandler = null;
             _fadeColor = Color(0,0,0,0);
             _nativeRectangle = null;
+            _isFadingIn = false;
+            _isFading = false;
+            _lastFadeTime = 0;
           }
           else
           {
