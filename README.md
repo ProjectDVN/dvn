@@ -55,16 +55,44 @@ To create your first visual novel see: https://dvn-docs.readthedocs.io/en/latest
 
 ### Current Features
 
-* Proper unicode support - Ex. Japanese, Chinese etc.
-* Fully integrated UI components
-* Lots of game configurations and customization
+* User-friendly - dive in without coding knowledge
+* Custom script engine - write your scripts in a simple format that requires zero coding knowledge
 * Flexible and dynamic *"game scripting"* for creative story creation
-* Native compilation using D
+* Proper unicode support - Ex. Japanese, Chinese etc.
+* Backup Font System (Automatic Fallback Fonts)
+* Fully integrated UI components
+  * Panels
+  * Buttons
+  * Textboxes
+  * Dropdowns
+  * Checkboxes
+  * Scrollbars
+  * Images
+  * Videos
+  * Animations
+  * Can all be used outside of VN mode...
+* Themes + Layout Generator
+* Localization / i18n with template functions
+* Multiple Windows Support (You can open multiple windows with application instances or even multiple vn instances)
+* Hot reloading of scripts (Requires you to enter main menu however)
+* Custom render functions with low-level access (OpenGL or custom rendering)
+  * Allows custom render hooks for ex. 3D, 2D, custom pipelines etc.
+* Lots of game configurations and customization
+* Native compilation using D (Can run on anything D and SDL2 builds for - Ex. Windows, Linux, macOS etc.)
 * Visual novel features like characters, dialogues, options, animations, music, sound effects etc.
 * Eventhandling to allow more flexibility
+  * All steps of the engine allows eventhandling, even dialogues and each dialogue component
+* Develop without coding or compiling
+* Networking (Allowing multiplayer VN, asset streaming etc.)
+* Custom views - allowing minigames, custom UI, special game mechanics etc.
+* Texture aliases - not default, but can be used
+* Dynamic character models (actions, states, directions) - not default, but can be used
+* Gallery
+* History (Searchable) with jumping to ANY scene node (including options)
+* Saving, loading, auto-save
+* Auto-skipping
 * Fast and light-weight
 * Allows rapid development
-* Develop without coding or compiling
 * And much more ...
 
 ### Building
