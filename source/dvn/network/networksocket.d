@@ -10,21 +10,29 @@ import std.datetime : Clock;
 
 import dvn.network.networkpacket;
 
-private __gshared NetworkSocket _socket;
-private __gshared bool _disconnected;
-private __gshared void delegate(NetworkPacket) _packetHandler;
-private __gshared void delegate(Throwable) _errorHandler;
-
 public final class NetworkSocket
 {
     private:
     Socket _socket;
+    bool _disconnected;
+    void delegate(NetworkPacket) _packetHandler;
+    void delegate(Throwable) _errorHandler;
 
     public:
     final:
-    this()
+    this(void delegate(Throwable) errorHandler, void delegate(NetworkPacket) packetHandler = null)
     {
         _socket = new Socket(AddressFamily.INET, SocketType.STREAM, ProtocolType.TCP);
+
+        _packetHandler = packetHandler;
+        _errorHandler = errorHandler;
+    }
+
+    @property
+    {
+        Socket socket() { return _socket; }
+
+        bool isDisconnected() { return _disconnected; }
     }
 
     void connect(string ip, ushort port)
@@ -63,14 +71,14 @@ public final class NetworkSocket
     {
         auto sourceIndex = 0;
 
-        foreach (i; destOffset .. destOffset + cast(int)destLength)
+        foreach (i; cast(ptrdiff_t)destOffset .. cast(ptrdiff_t)destOffset + cast(ptrdiff_t)destLength)
         {
             dest[i] = src[sourceIndex];
             sourceIndex++;
         }
     }
-    
-    ubyte[] receive()
+
+    private ubyte[] receive()
     {
         synchronized
         {
@@ -141,56 +149,38 @@ public final class NetworkSocket
     }
 }
 
-private void handleSocket(string ip, ushort port)
+private void handleSocket(string ip, ushort port, shared NetworkSocket s)
 {
+    if (!s) return;
+    auto socket = cast(NetworkSocket)s;
+
     try
     {
-         _socket = new NetworkSocket;
-
-         _socket.connect(ip, port);
+        socket.connect(ip, port);
 
         while (true)
         {
-            auto packet = new NetworkPacket(_socket.receive());
+            auto packet = new NetworkPacket(socket.receive());
 
-            if (_packetHandler) _packetHandler(packet);
+            if (socket._packetHandler) socket._packetHandler(packet);
         }
     }
     catch (Throwable e)
     {
         synchronized
         {
-            _disconnected = true;
+            socket._disconnected = true;
         }
 
-        if (_errorHandler) _errorHandler(e);
+        if (socket._errorHandler) socket._errorHandler(e);
     }
 }
 
-public void createSocket(string ip, ushort port, void delegate(NetworkPacket) packetHandler, void delegate(Throwable) errorHandler)
+NetworkSocket handle(string ip, ushort port, void delegate(Throwable) errorHandler, void delegate(NetworkPacket) packetHandler = null)
 {
-    if (_socket)
-    {
-        _socket.close();
-    }
+    auto socket = new NetworkSocket(errorHandler, packetHandler);
+    
+    spawn(&handleSocket, ip, port, cast(shared)socket);
 
-    synchronized
-    {
-        _disconnected = false;
-    }
-
-    _packetHandler = packetHandler;
-    _errorHandler = errorHandler;
-
-    spawn(&handleSocket, ip, port);
-}
-
-void sendPacket(NetworkPacket packet, bool log = true)
-{
-    _socket.send(packet);
-}
-
-public void closeSocket()
-{
-    _socket.close();
+    return socket;
 }
