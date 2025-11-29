@@ -313,6 +313,7 @@ public final class Window
     fadeOut(fadeColor,
     {
       changeView(name, saveCurrentView, onInitialized);
+
       fadeIn();
     });
   }
@@ -420,6 +421,8 @@ public final class Window
         component.render();
       }
     }
+    
+    void delegate() tempFadedOutHandler;
 
     if (_isFading)
     {
@@ -461,7 +464,7 @@ public final class Window
           {
             a = 255;
 
-            if (_fadedOutHandler) _fadedOutHandler();
+            tempFadedOutHandler = _fadedOutHandler;
 
             _fadedOutHandler = null;
             _lastFadeTime = 0;
@@ -522,11 +525,16 @@ public final class Window
         }
       }
 
-      if (_nativeRectangle)
+      if (_isFading && _nativeRectangle)
       {
         EXT_SetScreenDrawColor(_nativeScreen, _fadeColor);
 
         EXT_FillRectangle(_nativeScreen, _nativeRectangle);
+      }
+
+      if (tempFadedOutHandler)
+      {
+        tempFadedOutHandler();
       }
     }
 
