@@ -21,39 +21,7 @@ Discord: https://discord.gg/UhetecF4US
 
 Project DVN is a powerful, user-friendly and flexible free open-source visual novel engine written in the D programming language. It's designed to help creators craft immersive, interactive narrative experiences. Whether you're a solo storyteller, an indie developer, or a studio, Project DVN provides the tools and flexibility needed to bring your stories to life. No advanced technical skills required. Start your journey today!
 
-## Who It's For
-
-Project DVN is perfect for writers and developers of all experience levels. Whether you're creating a personal passion project or a commercial release, Project DVN empowers you to build engaging stories across all genres imaginable.
-
-## Why Project DVN?
-
-Project DVN combines ease of use with powerful features, making it the ideal choice for creating visual novels. With its innovation, expansive capabilities and flexibility, Project DVN helps you focus on storytelling, while providing all the support you need to deliver a polished, professional product.
-
-## Unleash Your Creativity
-
-With Project DVN, the power to create unforgettable narrative experiences is in your hands. Start your journey and bring your stories to life today!
-
-To create your first visual novel see: https://dvn-docs.readthedocs.io/en/latest/getting-started.html
-
----
-
-### Preview
-
-![DVN Preview](https://i.imgur.com/eKZccW8.png "DVN Preview")
-
-![DVN Preview](https://i.imgur.com/AS2G6mc.png "DVN Preview")
-
-![DVN Preview](https://i.imgur.com/PWTJ6aw.png "DVN Preview")
-
-![DVN Preview](https://i.imgur.com/dCMMrKr.png "DVN Preview")
-
-![DVN Preview](https://i.imgur.com/x99noiO.png "DVN Preview")
-
-![DVN Preview](https://i.imgur.com/kXSUwPT.png "DVN Preview")
-
----
-
-### Current Features
+## Current Features
 
 * User-friendly - dive in without coding knowledge
 * Custom script engine - write your scripts in a simple format that requires zero coding knowledge
@@ -94,6 +62,38 @@ To create your first visual novel see: https://dvn-docs.readthedocs.io/en/latest
 * Fast and light-weight
 * Allows rapid development
 * And much more ...
+
+## Who It's For
+
+Project DVN is perfect for writers and developers of all experience levels. Whether you're creating a personal passion project or a commercial release, Project DVN empowers you to build engaging stories across all genres imaginable.
+
+## Why Project DVN?
+
+Project DVN combines ease of use with powerful features, making it the ideal choice for creating visual novels. With its innovation, expansive capabilities and flexibility, Project DVN helps you focus on storytelling, while providing all the support you need to deliver a polished, professional product.
+
+## Unleash Your Creativity
+
+With Project DVN, the power to create unforgettable narrative experiences is in your hands. Start your journey and bring your stories to life today!
+
+To create your first visual novel see: https://dvn-docs.readthedocs.io/en/latest/getting-started.html
+
+---
+
+### Preview
+
+![DVN Preview](https://i.imgur.com/eKZccW8.png "DVN Preview")
+
+![DVN Preview](https://i.imgur.com/AS2G6mc.png "DVN Preview")
+
+![DVN Preview](https://i.imgur.com/PWTJ6aw.png "DVN Preview")
+
+![DVN Preview](https://i.imgur.com/dCMMrKr.png "DVN Preview")
+
+![DVN Preview](https://i.imgur.com/x99noiO.png "DVN Preview")
+
+![DVN Preview](https://i.imgur.com/kXSUwPT.png "DVN Preview")
+
+---
 
 ### Building
 
