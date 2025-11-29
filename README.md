@@ -60,6 +60,9 @@ Project DVN is a powerful, user-friendly and flexible free open-source visual no
 * History (Searchable) with jumping to ANY scene node (including options)
 * Saving, loading, auto-save
 * Auto-skipping
+* Dom Parser (html, xml, svg etc.)
+* CSS3 Selector Parser
+* Markdown Parser
 * Fast and light-weight
 * Allows rapid development
 * And much more ...
