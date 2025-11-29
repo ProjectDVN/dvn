@@ -33,6 +33,8 @@ public
   import dvn.unorderedlist;
   import dvn.window;
 
+  import dvn.network;
+
   void displayView(string name)
   {
     runDelayedTask(0, {
