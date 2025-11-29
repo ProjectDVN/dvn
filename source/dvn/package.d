@@ -38,6 +38,7 @@ public
   import dvn.css;
   import dvn.dom;
   import dvn.collections;
+  import dvn.markdown;
 
   void displayView(string name)
   {
