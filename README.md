@@ -29,6 +29,7 @@ Project DVN is a powerful, user-friendly and flexible free open-source visual no
 * Proper unicode support - Ex. Japanese, Chinese etc.
 * Backup Font System (Automatic Fallback Fonts)
 * Fully integrated UI components
+  * Labels
   * Panels
   * Buttons
   * Textboxes
