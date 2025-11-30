@@ -35,6 +35,7 @@ DVN is the opposite
 
 ## Current Features
 
+* No coding or compiling required - scripts run instantly.
 * User-friendly - dive in without coding knowledge
 * Custom script engine - write your scripts in a simple format that requires zero coding knowledge
 * Flexible and dynamic *"game scripting"* for creative story creation
@@ -80,13 +81,15 @@ DVN is the opposite
 * Allows rapid development
 * And much more ...
 
+(For a full list and documentation, see the wiki or docs.)
+
 ## Scripting
 
 See: https://dvn-docs.readthedocs.io/en/latest/scripting.html
 
-#### Example
+#### DVN Scripting Is This Simple
 
-Taken from an actual VN (The Classroom Where Tomorrow Never Comes) made with Project DVN.
+Example taken from an actual VN (The Classroom Where Tomorrow Never Comes) made with Project DVN.
 
 ```
 [act-8-rooftop-conversation]
@@ -103,7 +106,7 @@ n=Yume
 t=We also bloom best when we're being cared for.
 ```
 
-#### Branching example (Not from an actual VN)
+Branching example (Not from an actual VN)
 
 ```
 [choice-scene]
