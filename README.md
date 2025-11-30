@@ -91,7 +91,7 @@ See: https://dvn-docs.readthedocs.io/en/latest/scripting.html
 
 Example taken from an actual VN (The Classroom Where Tomorrow Never Comes) made with Project DVN.
 
-```
+```ini
 [act-8-rooftop-conversation]
 c=Yume_Uni_Smile
 n=Yume
@@ -108,7 +108,7 @@ t=We also bloom best when we're being cared for.
 
 Branching example (Not from an actual VN)
 
-```
+```ini
 [choice-scene]
 t=What should I do?
 o:StayWithYume=Stay with Yume.
