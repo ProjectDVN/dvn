@@ -39,6 +39,7 @@ public final class Animation : Component
     _originalRect = _rect;
     _angle = 0;
     _flip = false;
+    _scale = 1;
   }
 
   @property
@@ -49,6 +50,7 @@ public final class Animation : Component
       auto size = IntVector(cast(int)(_originalRect.w * newScale), cast(int)(_originalRect.h * newScale));
       _rect.w = size.x;
       _rect.h = size.y;
+      _scale = newScale;
     }
     double angle() { return _angle; }
     void angle(double newAngle)
@@ -156,6 +158,13 @@ public final class Animation : Component
     }
   }
 
+  void restart()
+  {
+      _frameIndex = 0;
+      _finished = false;
+      _lastMS = 0;
+  }
+
   override void renderNativeComponent()
   {
     if (!_frames || !_frames.length || _finished)
@@ -186,23 +195,15 @@ public final class Animation : Component
 
     auto frame = _frames[_frameIndex];
 
-    if (frame && frame.texture)
+    if (_angle != 0 || _flip)
     {
-      if (_angle >= 1)
-      { 
-        if (_flip)
-        {
-          EXT_RenderCopyEx(screen, frame.texture, frame.entry.textureRect, _rect, _angle, null, EXT_RendererFlip.SDL_FLIP_HORIZONTAL);
-        }
-        else
-        {
-          EXT_RenderCopyEx(screen, frame.texture, frame.entry.textureRect, _rect, _angle, null, EXT_RendererFlip.SDL_FLIP_NONE);
-        }
-      }
-      else
-      {
+        auto flipFlag = _flip ? EXT_RendererFlip.SDL_FLIP_HORIZONTAL
+                              : EXT_RendererFlip.SDL_FLIP_NONE;
+        EXT_RenderCopyEx(screen, frame.texture, frame.entry.textureRect, _rect, _angle, null, flipFlag);
+    }
+    else
+    {
         EXT_RenderCopy(screen, frame.texture, frame.entry.textureRect, _rect);
-      }
     }
   }
 }
