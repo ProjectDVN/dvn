@@ -80,39 +80,7 @@ DVN is the opposite
 * Allows rapid development
 * And much more ...
 
-## Who It's For
-
-Project DVN is perfect for writers and developers of all experience levels. Whether you're creating a personal passion project or a commercial release, Project DVN empowers you to build engaging stories across all genres imaginable.
-
-## Why Project DVN?
-
-Project DVN combines ease of use with powerful features, making it the ideal choice for creating visual novels. With its innovation, expansive capabilities and flexibility, Project DVN helps you focus on storytelling, while providing all the support you need to deliver a polished, professional product.
-
-## Unleash Your Creativity
-
-With Project DVN, the power to create unforgettable narrative experiences is in your hands. Start your journey and bring your stories to life today!
-
-To create your first visual novel see: https://dvn-docs.readthedocs.io/en/latest/getting-started.html
-
----
-
-### Preview
-
-![DVN Preview](https://tcwtnc.com/images/menu.png "DVN Preview")
-
-![DVN Preview](https://tcwtnc.com/images/rooftop_scene.png "DVN Preview")
-
-![DVN Preview](https://tcwtnc.com/images/classroom_scene.png "DVN Preview")
-
-![DVN Preview](https://tcwtnc.com/images/bench.png "DVN Preview")
-
----
-
-### Building
-
-See: https://dvn-docs.readthedocs.io/en/latest/getting-started.html
-
-### Scripting
+## Scripting
 
 See: https://dvn-docs.readthedocs.io/en/latest/scripting.html
 
@@ -149,6 +117,38 @@ t=I decide to stay with her.
 [LeaveYume]
 t=I can't stay here any longer.
 ```
+
+## Who It's For
+
+Project DVN is perfect for writers and developers of all experience levels. Whether you're creating a personal passion project or a commercial release, Project DVN empowers you to build engaging stories across all genres imaginable.
+
+## Why Project DVN?
+
+Project DVN combines ease of use with powerful features, making it the ideal choice for creating visual novels. With its innovation, expansive capabilities and flexibility, Project DVN helps you focus on storytelling, while providing all the support you need to deliver a polished, professional product.
+
+## Unleash Your Creativity
+
+With Project DVN, the power to create unforgettable narrative experiences is in your hands. Start your journey and bring your stories to life today!
+
+To create your first visual novel see: https://dvn-docs.readthedocs.io/en/latest/getting-started.html
+
+---
+
+### Preview
+
+![DVN Preview](https://tcwtnc.com/images/menu.png "DVN Preview")
+
+![DVN Preview](https://tcwtnc.com/images/rooftop_scene.png "DVN Preview")
+
+![DVN Preview](https://tcwtnc.com/images/classroom_scene.png "DVN Preview")
+
+![DVN Preview](https://tcwtnc.com/images/bench.png "DVN Preview")
+
+---
+
+### Building
+
+See: https://dvn-docs.readthedocs.io/en/latest/getting-started.html
 
 ### Events
 
