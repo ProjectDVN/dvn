@@ -97,17 +97,13 @@ To create your first visual novel see: https://dvn-docs.readthedocs.io/en/latest
 
 ### Preview
 
-![DVN Preview](https://i.imgur.com/eKZccW8.png "DVN Preview")
+![DVN Preview](https://tcwtnc.com/images/menu.png "DVN Preview")
 
-![DVN Preview](https://i.imgur.com/AS2G6mc.png "DVN Preview")
+![DVN Preview](https://tcwtnc.com/images/rooftop_scene.png "DVN Preview")
 
-![DVN Preview](https://i.imgur.com/PWTJ6aw.png "DVN Preview")
+![DVN Preview](https://tcwtnc.com/images/classroom_scene.png "DVN Preview")
 
-![DVN Preview](https://i.imgur.com/dCMMrKr.png "DVN Preview")
-
-![DVN Preview](https://i.imgur.com/x99noiO.png "DVN Preview")
-
-![DVN Preview](https://i.imgur.com/kXSUwPT.png "DVN Preview")
+![DVN Preview](https://tcwtnc.com/images/bench.png "DVN Preview")
 
 ---
 
