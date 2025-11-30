@@ -1,4 +1,10 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.network.networkpacket;
+
+import std.system : Endian;
+import std.bitmanip : bigEndianToNative, nativeToBigEndian, littleEndianToNative, nativeToLittleEndian;
 
 public class NetworkPacket
 {
@@ -7,6 +13,7 @@ public class NetworkPacket
     size_t _offset;
     int _packetId;
     int _packetVirtualSize;
+    Endian _packetEndian;
 
     public:
     final:
@@ -16,10 +23,13 @@ public class NetworkPacket
         _offset = 0;
         _packetId = packet._packetId;
         _packetVirtualSize = packet._packetVirtualSize;
+        _packetEndian = Endian.bigEndian;
     }
     
-    this(ubyte[] buffer)
+    this(ubyte[] buffer, Endian endian = Endian.bigEndian)
     {
+        _packetEndian = endian;
+
         _buffer = buffer ? buffer : [];
         _offset = 0;
 
@@ -30,8 +40,10 @@ public class NetworkPacket
         }
     }
 
-    this(int id, int size)
+    this(int id, int size, Endian endian = Endian.bigEndian)
     {
+        _packetEndian = endian;
+        
         _packetId = id;
         _packetVirtualSize = size + 4 + 4;
 
@@ -44,6 +56,9 @@ public class NetworkPacket
 
     @property
     {
+        Endian packetEndian() const { return _packetEndian; }
+        void packetEndian(Endian e) { _packetEndian = e; }
+
         int packetId()
         {
             return _packetId;
@@ -74,17 +89,38 @@ public class NetworkPacket
         writeBuffer(stringBuffer);
     }
 
-    void write(T)(inout(T) value)
+    void write(T)(T value)
     {
-        static if (is(T == float) || is(T == double) || is(T == real))
+        import std.bitmanip : bitwiseCast;
+
+        static if (is(T == float))
         {
-            (*cast(T*)(_buffer.ptr + _offset)) = value;
+            int bits = bitwiseCast!int(value);
+            write!int(bits);
         }
-        else
+        else static if (is(T == double))
         {
-            (*cast(T*)(_buffer.ptr + _offset)) = value;
+            long bits = bitwiseCast!long(value);
+            write!long(bits);
         }
-        _offset += T.sizeof;
+        else static if (isIntegral!T)
+        {
+            final switch (_packetEndian)
+            {
+                case Endian.bigEndian:
+                    value = nativeToBigEndian(value);
+                    break;
+                case Endian.littleEndian:
+                    value = nativeToLittleEndian(value);
+                    break;
+                case Endian.native:
+                    // no conversion
+                    break;
+            }
+
+            (*cast(T*)(_buffer.ptr + _offset)) = value;
+            _offset += T.sizeof;
+        }
     }
 
     void writeStringList(dstring[] list)
@@ -106,18 +142,50 @@ public class NetworkPacket
         }
     }
 
+    void writeStaticBuffer(ubyte[] value)
+    {
+        foreach (v; value)
+        {
+            write!ubyte(v);
+        }
+    }
+
     T read(T)()
     {
-        auto value = (*cast(T*)(_buffer.ptr + _offset));
+        import std.bitmanip : bitwiseCast;
 
-        _offset += T.sizeof;
-
-        static if (is(T == float) || is(T == double) || is(T == real))
+        static if (is(T == float))
         {
-            return value;
+            int bits = read!int();
+
+            return bitwiseCast!float(bits);
+        }
+        else static if (is(T == double))
+        {
+            long bits = read!long();
+            
+            return bitwiseCast!double(bits);
         }
         else
         {
+            T value = (*cast(T*)(_buffer.ptr + _offset));
+            _offset += T.sizeof;
+
+            static if (isIntegral!T)
+            {
+                final switch (_packetEndian)
+                {
+                    case Endian.bigEndian:
+                        value = bigEndianToNative(value);
+                        break;
+                    case Endian.littleEndian:
+                        value = littleEndianToNative(value);
+                        break;
+                    case Endian.native:
+                        break;
+                }
+            }
+
             return value;
         }
     }
@@ -152,6 +220,18 @@ public class NetworkPacket
     {
         auto length = read!int;
 
+        ubyte[] buff = new ubyte[length];
+        
+        foreach (i; 0 .. length)
+        {
+            buff[i] = read!ubyte;
+        }
+
+        return buff;
+    }
+
+    ubyte[] readStaticBuffer(int length)
+    {
         ubyte[] buff = new ubyte[length];
         
         foreach (i; 0 .. length)
