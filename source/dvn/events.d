@@ -5,6 +5,7 @@ import dvn.gamesettings;
 import dvn.external;
 import dvn.ui;
 
+private DvnEvents[] _eventsHub;
 private DvnEvents _events;
 
 public class DvnEvents
@@ -14,10 +15,17 @@ public class DvnEvents
 
     public:
     // Global
+    void preFrameLoop(Window[] windows) {}
+    void preRenderFrameLoop(Window[] windows) {}
+    void postRenderFrameLoop(Window[] windows) {}
+    void postFrameLoop(Window[] windows) {}
+    void preRenderContent(Window window) {}
+    void postRenderContent(Window window) {}
     void loadingGame() {}
     void loadedGame() {}
     void savingGame(SaveFile[string] saves, SaveFile saveFile) {}
     void loadingViews(Window window) {}
+    void onViewChange(View oldView, View newView, string oldViewName, string newViewName) {}
 
     // Act View
     void beginActView(string actName, string continueText, string background, string sceneName) {}
@@ -30,6 +38,7 @@ public class DvnEvents
 
     // Game View
     void loadingGameScripts() {}
+    bool injectGameScript(SceneEntry scene, string key, string[] keyData, string value) { return true; }
     void loadedGameScripts(SceneEntry[string] scenes) {}
     
     void beginGameView(string sceneName, string loadBackground, string loadMusic) {}
@@ -40,6 +49,11 @@ public class DvnEvents
     void playingSound(string sound) {}
 
     void addClickSafeComponents(ref Component[] components) {}
+
+    // Background has been rendered, nothing else
+    void onEffectPre(SceneEffect effect) {}
+    // Every component has been or is being rendered (text is delayed so it might not be finished)
+    void onEffectPost(SceneEffect effect) {}
 
     void renderGameViewOverplayBegin(Panel overlay) {}
     void renderGameViewBackground(Image background) {}
@@ -61,7 +75,11 @@ public class DvnEvents
     void renderGameViewAutoButton(Button button) {}
     void renderGameViewQuickSaveButton(Button button) {}
     void renderGameViewOverplayEnd(Panel overlay) {}
+    void renderGameViewTextStart(SceneEntry scene) {}
     void renderGameViewTextFinished(Label textLabel) {}
+
+    bool onGameViewOptionClick(Label option) { return true; }
+    bool onGameViewOptionClick(Button option) { return true; }
 
     void endGameView() {}
 
@@ -84,7 +102,499 @@ public class DvnEvents
     final:
     void setEvents(DvnEvents events)
     {
-        _events = events;
+        _eventsHub ~= events;
+
+        class EventBuilder : DvnEvents
+        {
+            public override void preFrameLoop(Window[] windows)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.preFrameLoop(windows);
+                }
+            }
+
+            public override void preRenderFrameLoop(Window[] windows)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.preRenderFrameLoop(windows);
+                }
+            }
+
+            public override void postRenderFrameLoop(Window[] windows)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.postRenderFrameLoop(windows);
+                }
+            }
+
+            public override void postFrameLoop(Window[] windows)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.postFrameLoop(windows);
+                }
+            }
+
+            public override void preRenderContent(Window window)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.preRenderContent(window);
+                }
+            }
+
+            public override void postRenderContent(Window window)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.postRenderContent(window);
+                }
+            }
+
+            public override void loadingGame()
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.loadingGame();
+                }
+            }
+
+            public override void loadedGame()
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.loadedGame();
+                }
+            }
+
+            public override void savingGame(SaveFile[string] saves, SaveFile saveFile)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.savingGame(saves, saveFile);
+                }
+            }
+
+            public override void loadingViews(Window window)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.loadingViews(window);
+                }
+            }
+
+            public override void onViewChange(View oldView, View newView, string oldViewName, string newViewName)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.onViewChange(oldView, newView, oldViewName, newViewName);
+                }
+            }
+
+            // Act View
+            public override void beginActView(string actName, string continueText, string background, string sceneName)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.beginActView(actName, continueText, background, sceneName);
+                }
+            }
+
+            public override void renderActBackgroundImage(Image image)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderActBackgroundImage(image);
+                }
+            }
+
+            public override void renderActTitleLabel(Label label)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderActTitleLabel(label);
+                }
+            }
+
+            public override void renderActBeginLabel(Label label)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderActBeginLabel(label);
+                }
+            }
+
+            public override void endActView()
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.endActView();
+                }
+            }
+
+            // Game View
+            public override void loadingGameScripts()
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.loadingGameScripts();
+                }
+            }
+
+            public override bool injectGameScript(SceneEntry scene, string key, string[] keyData, string value)
+            {
+                bool handled = false;
+                foreach (ev; _eventsHub)
+                {
+                    if (ev.injectGameScript(scene, key, keyData, value))
+                    {
+                        handled = true;
+                    }
+                }
+                return handled;
+            }
+
+            public override void loadedGameScripts(SceneEntry[string] scenes)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.loadedGameScripts(scenes);
+                }
+            }
+
+            public override void beginGameView(string sceneName, string loadBackground, string loadMusic)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.beginGameView(sceneName, loadBackground, loadMusic);
+                }
+            }
+
+            public override void beginHandleScene(SceneEntry scene, SceneEntry nextScene, bool isEnding)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.beginHandleScene(scene, nextScene, isEnding);
+                }
+            }
+
+            public override void playingMusic(string music)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.playingMusic(music);
+                }
+            }
+
+            public override void playingSound(string sound)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.playingSound(sound);
+                }
+            }
+
+            public override void addClickSafeComponents(ref Component[] components)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.addClickSafeComponents(components);
+                }
+            }
+
+            // Background has been rendered, nothing else
+            public override void onEffectPre(SceneEffect effect)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.onEffectPre(effect);
+                }
+            }
+
+            // Every component has been or is being rendered (text is delayed so it might not be finished)
+            public override void onEffectPost(SceneEffect effect)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.onEffectPost(effect);
+                }
+            }
+
+            public override void renderGameViewOverplayBegin(Panel overlay)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewOverplayBegin(overlay);
+                }
+            }
+
+            public override void renderGameViewBackground(Image background)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewBackground(background);
+                }
+            }
+
+            public override void renderGameViewCharacter(SceneCharacter character, Image image)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewCharacter(character, image);
+                }
+            }
+
+            public override void renderGameViewImage(SceneImage image, Image imageComponent)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewImage(image, imageComponent);
+                }
+            }
+
+            public override void renderGameViewVideo(SceneVideo video, Video videoComponent)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewVideo(video, videoComponent);
+                }
+            }
+
+            public override void renderGameViewAnimation(SceneAnimation animation, Animation animationComponent)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewAnimation(animation, animationComponent);
+                }
+            }
+
+            public override void renderGameViewLabel(SceneLabel label, Label labelComponent)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewLabel(label, labelComponent);
+                }
+            }
+
+            public override void renderGameViewDialoguePanelImage(RawImage image)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewDialoguePanelImage(image);
+                }
+            }
+
+            public override void renderGameViewDialoguePanel(Panel panel)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewDialoguePanel(panel);
+                }
+            }
+
+            public override void renderGameViewCharacterName(SceneCharacterName characterName, Label label, Panel panel, RawImage namePanelImage)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewCharacterName(characterName, label, panel, namePanelImage);
+                }
+            }
+
+            public override void renderGameViewOption(Label option)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewOption(option);
+                }
+            }
+
+            public override void renderGameViewOption(Button option)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewOption(option);
+                }
+            }
+
+            public override void renderGameViewOptionsStart()
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewOptionsStart();
+                }
+            }
+
+            public override void renderGameViewOptionsFinished()
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewOptionsFinished();
+                }
+            }
+
+            public override void renderGameViewSaveButton(Button button)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewSaveButton(button);
+                }
+            }
+
+            public override void renderGameViewExitButton(Button button)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewExitButton(button);
+                }
+            }
+
+            public override void renderGameViewSettingsButton(Button button)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewSettingsButton(button);
+                }
+            }
+
+            public override void renderGameViewAutoButton(Button button)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewAutoButton(button);
+                }
+            }
+
+            public override void renderGameViewQuickSaveButton(Button button)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewQuickSaveButton(button);
+                }
+            }
+
+            public override void renderGameViewOverplayEnd(Panel overlay)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewOverplayEnd(overlay);
+                }
+            }
+
+            public override void renderGameViewTextStart(SceneEntry scene)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewTextStart(scene);
+                }
+            }
+
+            public override void renderGameViewTextFinished(Label textLabel)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewTextFinished(textLabel);
+                }
+            }
+
+            public override bool onGameViewOptionClick(Label option)
+            {
+                bool result = true;
+                foreach (ev; _eventsHub)
+                {
+                    if (!ev.onGameViewOptionClick(option))
+                    {
+                        result = false;
+                    }
+                }
+                return result;
+            }
+
+            public override bool onGameViewOptionClick(Button option)
+            {
+                bool result = true;
+                foreach (ev; _eventsHub)
+                {
+                    if (!ev.onGameViewOptionClick(option))
+                    {
+                        result = false;
+                    }
+                }
+                return result;
+            }
+
+            public override void endGameView()
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.endGameView();
+                }
+            }
+
+            // Settings View
+            public override void renderSettingsDropDown(DropDown dropdown)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderSettingsDropDown(dropdown);
+                }
+            }
+
+            public override void renderSettingsCheckBox(CheckBox checkbox)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderSettingsCheckBox(checkbox);
+                }
+            }
+
+            // Main Menu View
+            public override void renderMainMenuView(Window window, Component titleLabel, Component playLabel, Component loadLabel, Component historyLabel, Component settingsLabel, Component galleryLabel, Component exitLabel)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderMainMenuView(window, titleLabel, playLabel, loadLabel, historyLabel, settingsLabel, galleryLabel, exitLabel);
+                }
+            }
+
+            // Video Loading View
+            public override void renderVideoLoadingView(Video video)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderVideoLoadingView(video);
+                }
+            }
+
+            // Load Game View
+            public override void renderLoadGameViewPrevLabel(Label label)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderLoadGameViewPrevLabel(label);
+                }
+            }
+
+            public override void renderLoadGameViewNextLabel(Label label)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderLoadGameViewNextLabel(label);
+                }
+            }
+
+            public override void renderLoadGameViewLoadEntry(SaveFile saveFile, RawImage image, Label saveLabel)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderLoadGameViewLoadEntry(saveFile, image, saveLabel);
+                }
+            }
+        }
+
+        _events = new EventBuilder;
     }
 
     DvnEvents getEvents()

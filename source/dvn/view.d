@@ -45,6 +45,11 @@ public abstract class View
       size_t componentsLength() { return _components ? _components.length : 0; }
     }
 
+    Component[] getComponents()
+    {
+      return _components.dup;
+    }
+
     void disableUpdate()
     {
       _updateDisabled = true;

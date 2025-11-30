@@ -1,6 +1,7 @@
 module dvn.views.gameview;
 
 import std.conv : to;
+import std.string : format;
 
 import dvn.resources;
 import dvn.gamesettings;
@@ -10,7 +11,7 @@ import dvn.views.actview;
 import dvn.events;
 import dvn.history;
 import dvn.views.consoleview;
-
+import dvn.effects;
 import dvn.ui;
 
 private int _customSceneIdCounter;
@@ -31,6 +32,7 @@ public final class SceneEntry
 	SceneImage[] images;
 	SceneVideo[] videos;
 	SceneAnimation[] animations;
+	SceneEffect[] effects;
 	string textColor;
 	string textFont;
 	string text;
@@ -83,6 +85,15 @@ public final class SceneEntry
 			logInfo("Scene-Entry: %s", info);
 		}
 	}
+}
+
+public final class SceneEffect
+{
+	public:
+	final:
+	string id;
+	string[] values;
+	string render;
 }
 
 public final class SceneLabel
@@ -226,335 +237,389 @@ public final class GameView : View
 
     void loadGame()
     {
-		logInfo("Parsing scripts ...");
-
-		import std.file : dirEntries, SpanMode, readText;
-		import std.string : strip;
-		import std.array : replace, split;
-
-		DvnEvents.getEvents().loadingGameScripts();
-		
-		auto settings = getGlobalSettings();
-
-		auto scriptFiles = dirEntries("data/game/scripts","*.{vns}",SpanMode.depth);
-		foreach (scriptFile; scriptFiles)
+		string lastScriptFile = "";
+		int lineCount = 0;
+		SceneEntry lastEntry;
+		try
 		{
-			auto scriptText = readText(scriptFile);
+			logInfo("Parsing scripts ...");
 
-			auto lines = scriptText
-				.replace("\r", "")
-				.split("\n");
+			import std.file : dirEntries, SpanMode, readText;
+			import std.string : strip;
+			import std.array : replace, split;
 
-			SceneEntry entry;
-			SceneEntry lastEntry;
-			SceneCharacter character;
-			SceneCharacterName charName;
-			SceneCharacterName[] charNames = [];
-			bool isNarrator = false;
-			int narratorX = 0;
-			int narratorY = 0;
+			DvnEvents.getEvents().loadingGameScripts();
+			
+			auto settings = getGlobalSettings();
 
-			string textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
-			foreach (l; lines)
+			auto scriptFiles = dirEntries("data/game/scripts","*.{vns}",SpanMode.depth);
+			foreach (scriptFile; scriptFiles)
 			{
-				if (!l || !l.strip.length)
+				lastScriptFile = scriptFile;
+
+				auto scriptText = readText(scriptFile);
+
+				auto lines = scriptText
+					.replace("\r", "")
+					.split("\n");
+
+				SceneEntry entry;
+				SceneCharacter character;
+				SceneCharacterName charName;
+				SceneCharacterName[] charNames = [];
+				lastEntry = null;
+				bool isNarrator = false;
+				int narratorX = 0;
+				int narratorY = 0;
+
+				string textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
+				lineCount = 0;
+				foreach (l; lines)
 				{
-					continue;
-				}
-
-				auto line = l.strip;
-
-				if (line[0] == '#')
-				{
-					continue;
-				}
-
-				if (line[0] == '[' && line[$-1] == ']')
-				{
-					entry = new SceneEntry;
-					entry.name = line[1 .. $-1];
-					character = null;
-					charName = null;
-					charNames = [];
-					isNarrator = false;
-					narratorX = 0;
-					narratorY = 0;
-					lastEntry = entry;
-					textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
-					entry.textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
-
-					_scenes[entry.name] = entry;
-				}
-				else
-				{
-					auto kv = line.split("=");
-
-					if (kv.length != 2)
+					lineCount++;
+					if (!l || !l.strip.length)
 					{
-						switch (line)
-						{
-							case "hideDialogue":
-								entry.hideDialogue = true;
-								break;
-
-							case "hideButtons":
-								entry.hideButtons = true;
-								break;
-
-							case "characterFadeIn":
-							case "cf":
-								character.characterFadeIn = true;
-								break;
-
-							default: break;
-						}
 						continue;
 					}
 
-					auto keyData = kv[0].split(":");
-					auto key = keyData[0];
-					auto value = kv[1];
+					auto line = l.strip;
 
-					switch (key)
+					if (line[0] == '#')
 					{
-						case "narrator":
-							isNarrator = true;
-							auto narratorXY = value.split(",");
-							narratorX = narratorXY[0].to!int;
-							narratorY = narratorXY[1].to!int;
-							break;
+						continue;
+					}
 
-						case "background":
-						case "bg":
-							entry.background = value;
-							break;
+					if (line[0] == '[' && line[$-1] == ']')
+					{
+						entry = new SceneEntry;
+						entry.name = line[1 .. $-1];
+						character = null;
+						charName = null;
+						charNames = [];
+						isNarrator = false;
+						narratorX = 0;
+						narratorY = 0;
+						lastEntry = entry;
+						textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
+						entry.textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
 
-						case "music":
-						case "m":
-							entry.music = value;
-							break;
+						_scenes[entry.name] = entry;
+					}
+					else
+					{
+						auto kv = line.split("=");
 
-						case "sound":
-						case "s":
-							entry.sound = value;
-							break;
-
-						case "char":
-						case "c":
-							character = new SceneCharacter;
-							character.image = value;
-							character.position = "bottomCenter";
-							entry.characters ~= character;
-							break;
-
-						case "charMovement":
-						case "cm":
-							character.movement = value;
-							character.movementSpeed  = 42;
-							break;
-
-						case "charMovementSpeed":
-						case "cms":
-							character.movementSpeed = value.to!int;
-							break;
-
-						case "charName":
-						case "n":
-							charName = new SceneCharacterName;
-							charName.name = value;
-							charName.color = "fff";
-							if (settings.defaultCharacterNameColors)
+						if (kv.length != 2)
+						{
+							switch (line)
 							{
-								charName.color = settings.defaultCharacterNameColors.get(charName.name, "fff");
+								case "hideDialogue":
+									entry.hideDialogue = true;
+									break;
+
+								case "hideButtons":
+									entry.hideButtons = true;
+									break;
+
+								case "characterFadeIn":
+								case "cf":
+									character.characterFadeIn = true;
+									break;
+
+								default: break;
 							}
-							charName.position = "left";
-							charNames ~= charName;
-							break;
+							continue;
+						}
 
-						case "charColor":
-						case "cc":
-							charName.color = value;
-							break;
+						auto keyData = kv[0].split(":");
+						auto key = keyData[0];
+						auto value = kv[1];
 
-						case "charPos":
-						case "cp":
-							character.position = value;
-							auto charXYPos = value.split(",");
-							
-							if (charXYPos.length == 2)
-							{
-								character.position = "";
-								character.x = charXYPos[0].to!int;
-								character.y = charXYPos[1].to!int;
-							}
-							break;
+						switch (key)
+						{
+							case "narrator":
+								isNarrator = true;
+								auto narratorXY = value.split(",");
+								narratorX = narratorXY[0].to!int;
+								narratorY = narratorXY[1].to!int;
+								break;
 
-						case "charNamePos":
-						case "np":
-							charName.position = value;
-							break;
+							case "background":
+							case "bg":
+								entry.background = value;
+								break;
 
-						case "textColor":
-						case "tc":
-							entry.textColor = value;
-							break;
+							case "music":
+							case "m":
+								entry.music = value;
+								break;
 
-						case "image":
-						case "i":
-							auto image = new SceneImage;
-							image.source = value;
-							auto imagePos = keyData[1].split(",");
-							image.x = imagePos[0].to!int;
-							image.y = imagePos[1].to!int;
+							case "sound":
+							case "s":
+								entry.sound = value;
+								break;
 
-							if (keyData.length == 3)
-							{
-								image.position = keyData[2];
-							}
+							case "effect":
+							case "e":
+								auto effect = new SceneEffect;
+								if (keyData && keyData.length > 1)
+								{
+									effect.render = keyData[1];
+								}
+								auto effectValues = value.split(",");
+								effect.id = effectValues[0];
+								if (effectValues.length > 1)
+								{
+									effect.values = effectValues[1 .. $];
+								}
+								entry.effects ~= effect;
+								break;
 
-							entry.images ~= image;
-							break;
+							case "char":
+							case "c":
+								character = new SceneCharacter;
+								character.image = value;
+								character.position = "bottomCenter";
+								entry.characters ~= character;
+								break;
 
-						case "video":
-						case "v":
-							auto video = new SceneVideo;
-							video.source = value;
-							auto videoPos = keyData[1].split(",");
-							video.x = videoPos[0].to!int;
-							video.y = videoPos[1].to!int;
+							case "charMovement":
+							case "cm":
+								character.movement = value;
+								character.movementSpeed  = 42;
+								break;
 
-							auto videoSize = keyData[2].split(",");
-							video.width = videoSize[0].to!int;
-							video.height = videoSize[1].to!int;
+							case "charMovementSpeed":
+							case "cms":
+								character.movementSpeed = value.to!int;
+								break;
 
-							if (keyData.length == 4)
-							{
-								video.position = keyData[3];
-							}
+							case "charName":
+							case "n":
+								charName = new SceneCharacterName;
+								charName.name = value;
+								charName.color = "fff";
+								if (settings.defaultCharacterNameColors)
+								{
+									charName.color = settings.defaultCharacterNameColors.get(charName.name, "fff");
+								}
+								charName.position = "left";
+								charNames ~= charName;
+								break;
 
-							entry.videos ~= video;
-							break;
+							case "charColor":
+							case "cc":
+								charName.color = value;
+								break;
 
-						case "animation":
-						case "ani":
-							auto animation = new SceneAnimation;
-							animation.source = value;
-							auto aniPos = keyData[1].split(",");
-							animation.x = aniPos[0].to!int;
-							animation.y = aniPos[1].to!int;
+							case "charPos":
+							case "cp":
+								character.position = value;
+								auto charXYPos = value.split(",");
+								
+								if (charXYPos.length == 2)
+								{
+									character.position = "";
+									character.x = charXYPos[0].to!int;
+									character.y = charXYPos[1].to!int;
+								}
+								break;
 
-							if (keyData.length >= 3)
-							{
-								animation.repeat = keyData[2].to!bool;
-							}
-							if (keyData.length >= 4)
-							{
-								animation.position = keyData[3];
-							}
+							case "charNamePos":
+							case "np":
+								charName.position = value;
+								break;
 
-							entry.animations ~= animation;
-							break;
-							
-						case "label":
-						case "l":
-							auto label = new SceneLabel;
-							label.text = value;
-							label.fontSize = keyData[1].to!size_t;
-							auto labelPosition = keyData[2].split(",");
-							label.x = labelPosition[0].to!int;
-							label.y = labelPosition[1].to!int;
-							label.color = keyData[3];
+							case "textColor":
+							case "tc":
+								entry.textColor = value;
+								break;
 
-							entry.labels ~= label;
-							break;
+							case "image":
+							case "i":
+								auto image = new SceneImage;
+								image.source = value;
+								auto imagePos = keyData[1].split(",");
+								image.x = imagePos[0].to!int;
+								image.y = imagePos[1].to!int;
 
-						case "font":
-						case "f":
-							entry.textFont = value;
-							break;
+								if (keyData.length == 3)
+								{
+									image.position = keyData[2];
+								}
 
-						case "text":
-						case "t":
-							import std.conv : to;
-							
-							_customSceneIdCounter++;
+								entry.images ~= image;
+								break;
 
-							if (lastEntry && lastEntry.text && lastEntry.text.length)
-							{
-								lastEntry.nextScene = "??????????-" ~ _customSceneIdCounter.to!string;
+							case "video":
+							case "v":
+								auto video = new SceneVideo;
+								video.source = value;
+								auto videoPos = keyData[1].split(",");
+								video.x = videoPos[0].to!int;
+								video.y = videoPos[1].to!int;
 
-								entry = new SceneEntry;
-								entry.name = "??????????-" ~ _customSceneIdCounter.to!string;
+								auto videoSize = keyData[2].split(",");
+								video.width = videoSize[0].to!int;
+								video.height = videoSize[1].to!int;
 
-								entry.music = lastEntry.music;
-								entry.sound = lastEntry.sound;
-								entry.background = lastEntry.background;
-								entry.labels = lastEntry.labels;
-								entry.characters = lastEntry.copyCharacters;
-								//entry.characterNames = lastEntry.characterNames;
-								entry.images = lastEntry.images;
-								entry.videos = lastEntry.videos;
-								entry.animations = lastEntry.animations;
-								entry.textColor = lastEntry.textColor;
-								entry.textFont = lastEntry.textFont;
-								entry.hideDialogue = lastEntry.hideDialogue;
-								entry.hideButtons = lastEntry.hideButtons;
+								if (keyData.length == 4)
+								{
+									video.position = keyData[3];
+								}
 
-								lastEntry = entry;
+								entry.videos ~= video;
+								break;
 
-								_scenes[entry.name] = entry;
-							}
+							case "animation":
+							case "ani":
+								auto animation = new SceneAnimation;
+								animation.source = value;
+								auto aniPos = keyData[1].split(",");
+								animation.x = aniPos[0].to!int;
+								animation.y = aniPos[1].to!int;
 
-							entry.characterNames = charNames;
-							entry.isNarrator = isNarrator;
-							entry.narratorX = narratorX;
-							entry.narratorY = narratorY;
-							charNames = [];
-							isNarrator = false;
-							narratorX = 0;
-							narratorY = 0;
-							
-							entry.text = value;
-							if (keyData.length == 2)
-							{
+								if (keyData.length >= 3)
+								{
+									animation.repeat = keyData[2].to!bool;
+								}
+								if (keyData.length >= 4)
+								{
+									animation.position = keyData[3];
+								}
+
+								entry.animations ~= animation;
+								break;
+								
+							case "label":
+							case "l":
+								auto label = new SceneLabel;
+								label.text = value;
+								label.fontSize = keyData[1].to!size_t;
+								auto labelPosition = keyData[2].split(",");
+								label.x = labelPosition[0].to!int;
+								label.y = labelPosition[1].to!int;
+								label.color = keyData[3];
+
+								entry.labels ~= label;
+								break;
+
+							case "font":
+							case "f":
+								entry.textFont = value;
+								break;
+
+							case "text":
+							case "t":
+								import std.conv : to;
+								
+								_customSceneIdCounter++;
+
+								if (lastEntry && lastEntry.text && lastEntry.text.length)
+								{
+									lastEntry.nextScene = "??????????-" ~ _customSceneIdCounter.to!string;
+
+									entry = new SceneEntry;
+									entry.name = "??????????-" ~ _customSceneIdCounter.to!string;
+
+									entry.music = lastEntry.music;
+									entry.sound = lastEntry.sound;
+									entry.background = lastEntry.background;
+									entry.labels = lastEntry.labels;
+									entry.characters = lastEntry.copyCharacters;
+									//entry.characterNames = lastEntry.characterNames;
+									entry.images = lastEntry.images;
+									entry.videos = lastEntry.videos;
+									entry.animations = lastEntry.animations;
+									entry.textColor = lastEntry.textColor;
+									entry.textFont = lastEntry.textFont;
+									entry.hideDialogue = lastEntry.hideDialogue;
+									entry.hideButtons = lastEntry.hideButtons;
+
+									lastEntry = entry;
+
+									_scenes[entry.name] = entry;
+								}
+
+								entry.characterNames = charNames;
+								entry.isNarrator = isNarrator;
+								entry.narratorX = narratorX;
+								entry.narratorY = narratorY;
+								charNames = [];
+								isNarrator = false;
+								narratorX = 0;
+								narratorY = 0;
+								
+								entry.text = value;
+								if (keyData.length == 2)
+								{
+									entry.nextScene = keyData[1];
+								}
+								else
+								{
+									entry.nextScene = "??????????-" ~ _customSceneIdCounter.to!string;
+								}
+								
+								break;
+
+							case "act":
+							case "a":
+								entry.act = value;
 								entry.nextScene = keyData[1];
-							}
-							else
-							{
-								entry.nextScene = "??????????-" ~ _customSceneIdCounter.to!string;
-							}
-							
-							break;
+								entry.actContinueButton = keyData[2];
+								break;
 
-						case "act":
-						case "a":
-							entry.act = value;
-							entry.nextScene = keyData[1];
-							entry.actContinueButton = keyData[2];
-							break;
+							case "option":
+							case "o":
+								auto option = new SceneOption;
+								option.text = value;
+								option.nextScene = keyData[1];
+								entry.options ~= option;
+								break;
 
-						case "option":
-						case "o":
-							auto option = new SceneOption;
-							option.text = value;
-							option.nextScene = keyData[1];
-							entry.options ~= option;
-							break;
+							case "view":
+								entry.view = value;
+								break;
 
-						case "view":
-							entry.view = value;
-							break;
-
-						default: break;
+							default:
+								if (!DvnEvents.getEvents().injectGameScript(entry, key, keyData, value))
+								{
+									break;
+								}
+								logScriptError(scriptFile, lineCount,
+									format("Unknown command \"%s\"", key),
+									entry);
+								break;
+						}
 					}
 				}
 			}
+
+			DvnEvents.getEvents().loadedGameScripts(_scenes);
+
+			logInfo("Parsed scripts ...");
 		}
-
-		DvnEvents.getEvents().loadedGameScripts(_scenes);
-
-		logInfo("Parsed scripts ...");
+		catch (Throwable t)
+		{
+			logScriptError(lastScriptFile, lineCount,
+				format("Exception thrown: \"%s\"", t.msg),
+				lastEntry);
+		}
     }
+
+	private void logScriptError(string scriptFile, int line, string message, SceneEntry entry = null)
+	{
+		if (entry)
+		{
+			logError("Script error in \"%s\" (%s: line %d): %s",
+				entry.name, scriptFile, line, message);
+		}
+		else
+		{
+			logError("Script error in (%s: line %d): %s",
+				scriptFile, line, message);
+		}
+	}
 
     void initializeGame(string sceneName, string loadBackground = "", string loadMusic = "")
     {
@@ -687,6 +752,17 @@ public final class GameView : View
         bgImage.show();
 
 		DvnEvents.getEvents().renderGameViewBackground(bgImage);
+
+		if (scene.effects)
+		{
+			foreach (effect; scene.effects)
+			{
+				if (effect.render && effect.render != "pre") continue;
+				auto e = getEffect(effect.id);
+				if (e) e.handle(effect.values);
+				DvnEvents.getEvents().onEffectPre(effect);
+			}
+		}
 
 		_lastBackgroundSource = backgroundSource;
 
@@ -1414,6 +1490,8 @@ public final class GameView : View
 
 			textLabel.updateRect();
 
+			DvnEvents.getEvents().renderGameViewTextStart(scene);
+
 			if (settings.fadeInText)
 			{
 				int textFadeInSpeed = 42;
@@ -1556,6 +1634,11 @@ public final class GameView : View
 
 					auto closure = (Button oButton, SceneEntry nScene, bool isEnding) { return () {
 						oButton.onButtonClick(new MouseButtonEventHandler((b,p) {
+							if (!DvnEvents.getEvents().onGameViewOptionClick(oButton))
+							{
+								return false;
+							}
+
 							if (switchingScene)
 							{
 								return false;
@@ -1618,6 +1701,11 @@ public final class GameView : View
 
 					auto closure = (Label oLabel, SceneEntry nScene, bool isEnding) { return () {
 						oLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
+							if (!DvnEvents.getEvents().onGameViewOptionClick(oLabel))
+							{
+								return;
+							}
+
 							if (switchingScene)
 							{
 								return;
@@ -2051,6 +2139,17 @@ public final class GameView : View
 				}
 			}
 		}));
+
+		if (scene.effects)
+		{
+			foreach (effect; scene.effects)
+			{
+				if (effect.render && effect.render != "post") continue;
+				auto e = getEffect(effect.id);
+				if (e) e.handle(effect.values);
+				DvnEvents.getEvents().onEffectPost(effect);
+			}
+		}
 
 		DvnEvents.getEvents().renderGameViewOverplayEnd(overlay);
 

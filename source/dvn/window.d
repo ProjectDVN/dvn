@@ -287,6 +287,13 @@ public final class Window
     return view;
   }
 
+  View getCurrentActiveView()
+  {
+    if (!_activeViews || !_activeViews.length) return null;
+
+    return _activeViews.values[0];
+  }
+
   void changeView(string name, bool saveCurrentView = false, void delegate(View) onInitialized = null)
   {
     logInfo("Changing view: %s", name);
@@ -307,6 +314,8 @@ public final class Window
     if (!_viewCreators) return;
     
     auto view = _activeViews.get(name, null);
+
+    DvnEvents.getEvents().onViewChange(_currentView, view, _currentViewName, name);
 
     if (!view)
     {
@@ -426,6 +435,8 @@ public final class Window
     EXT_SetScreenDrawColor(_nativeScreen, _backgroundColor);
 
     EXT_ClearScreen(_nativeScreen);
+
+    DvnEvents.getEvents().preRenderContent(this);
 
     if (_renderHandler)
     {
@@ -569,6 +580,8 @@ public final class Window
         tempFadedOutHandler();
       }
     }
+
+    DvnEvents.getEvents().postRenderContent(this);
 
     EXT_PresentScreen(_nativeScreen);
   }

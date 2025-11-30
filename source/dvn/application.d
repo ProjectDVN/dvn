@@ -6,6 +6,7 @@ import dvn.fonts;
 import dvn.colors;
 import dvn.window;
 import dvn.delayedtask;
+import dvn.events;
 
 import std.concurrency : spawn, thisTid, send, receive, receiveTimeout;
 public import std.concurrency : Tid;
@@ -271,6 +272,7 @@ public final class Application
     while (_running && _windows && _windows.length)
     {
       EXT_PreAplicationLoop(_fps);
+      DvnEvents.getEvents().preFrameLoop(_windows);
 
       if (!EXT_ProcessEvents(_windows))
       {
@@ -296,12 +298,18 @@ public final class Application
         window.executePreRender();
       }
 
+      DvnEvents.getEvents().preRenderFrameLoop(_windows);
+
       foreach (window; _windows)
       {
         window.render();
       }
 
+      DvnEvents.getEvents().postRenderFrameLoop(_windows);
+
       EXT_PostApplicationLoop(_fps);
+
+      DvnEvents.getEvents().postFrameLoop(_windows);
     }
   }
 

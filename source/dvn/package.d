@@ -40,6 +40,8 @@ public
   import dvn.collections;
   import dvn.markdown;
 
+  import dvn.effects;
+
   void displayView(string name)
   {
     runDelayedTask(0, {
@@ -121,6 +123,8 @@ public
         logInfo("Running in debug mode ...");
       });
     }
+
+    initializeStandardEffects();
 
     app.start();
   }
