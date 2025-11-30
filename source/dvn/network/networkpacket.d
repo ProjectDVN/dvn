@@ -5,6 +5,8 @@ module dvn.network.networkpacket;
 
 import std.system : Endian;
 import std.bitmanip : bigEndianToNative, nativeToBigEndian, littleEndianToNative, nativeToLittleEndian;
+import std.traits : isIntegral, isSomeFloat;
+import std.bitmanip : bitwiseCast;
 
 public class NetworkPacket
 {
@@ -90,9 +92,8 @@ public class NetworkPacket
     }
 
     void write(T)(T value)
+        if (isIntegral!T || isSomeFloat!T)
     {
-        import std.bitmanip : bitwiseCast;
-
         static if (is(T == float))
         {
             int bits = bitwiseCast!int(value);
@@ -152,8 +153,6 @@ public class NetworkPacket
 
     T read(T)()
     {
-        import std.bitmanip : bitwiseCast;
-
         static if (is(T == float))
         {
             int bits = read!int();
