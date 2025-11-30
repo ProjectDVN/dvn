@@ -11,7 +11,7 @@
 [![License](https://img.shields.io/dub/l/dvn.svg)](https://code.dlang.org/packages/dvn)
 
 
-Website: (Coming Soon)
+Website: https://projectdvn.com/
 
 Wiki: https://github.com/ProjectDVN/dvn/wiki
 
