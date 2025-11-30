@@ -14,4 +14,5 @@ public
   import dvn.dom.html;
   import dvn.dom.xhtml;
   import dvn.dom.xml;
+  import dvn.dom.svg;
 }
