@@ -116,6 +116,40 @@ See: https://dvn-docs.readthedocs.io/en/latest/getting-started.html
 
 See: https://dvn-docs.readthedocs.io/en/latest/scripting.html
 
+#### Example
+
+Taken from an actual VN (The Classroom Where Tomorrow Never Comes) made with Project DVN.
+
+```
+[act-8-rooftop-conversation]
+c=Yume_Uni_Smile
+n=Yume
+t=...Yume.
+n=Yume
+t=Have you noticed how the flowers bloom in April?
+narrator=250,250
+t=What does she mean? We're not in April.
+n=Yume
+t=I think flowers and humans are alike.
+n=Yume
+t=We also bloom best when we're being cared for.
+```
+
+#### Branching example (Not from an actual VN)
+
+```
+[choice-scene]
+t=What should I do?
+o:StayWithYume=Stay with Yume.
+o:LeaveYume=Leave her behind.
+
+[StayWithYume]
+t=I decide to stay with her.
+
+[LeaveYume]
+t=I can't stay here any longer.
+```
+
 ### Events
 
 See: https://dvn-docs.readthedocs.io/en/latest/events.html
