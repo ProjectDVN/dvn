@@ -16,6 +16,21 @@ import dvn.ui;
 
 private int _customSceneIdCounter;
 
+public enum SceneComponentId : size_t
+{
+	none = 0,
+	background,
+	label,
+	character,
+	characterName,
+	image,
+	video,
+	animation,
+	textPanel,
+	text,
+	option
+}
+
 public final class SceneEntry
 {
 	public:
@@ -750,6 +765,7 @@ public final class GameView : View
             (window.width / 2) - (bgImage.width / 2),
             (window.height / 2) - (bgImage.height / 2));
         bgImage.show();
+		bgImage.dataId = SceneComponentId.background;
 
 		DvnEvents.getEvents().renderGameViewBackground(bgImage);
 
@@ -773,6 +789,7 @@ public final class GameView : View
 				if (character.image && character.position)
 				{
 					auto chImage = new Image(window, character.image);
+					chImage.dataId = SceneComponentId.character;
 					addComponent(chImage);
 
 					auto shouldFadeIn = false;
@@ -1006,6 +1023,7 @@ public final class GameView : View
 			foreach (image; scene.images)
 			{
 				auto imageComponent = new Image(window, image.source);
+				imageComponent.dataId = SceneComponentId.image;
 				addComponent(imageComponent);
 				imageComponent.position = IntVector(image.x, image.y);
 
@@ -1082,6 +1100,7 @@ public final class GameView : View
 			foreach (video; scene.videos)
 			{
 				auto videoComponent = new Video(window, video.source, true);
+				videoComponent.dataId = SceneComponentId.video;
 				addComponent(videoComponent);
 				videoComponent.position = IntVector(video.x, video.y);
 				videoComponent.size = IntVector(video.width, video.height);
@@ -1159,6 +1178,7 @@ public final class GameView : View
 			foreach (animation; scene.animations)
 			{
 				auto ani = new Animation(window, animation.source, !animation.repeat);
+				ani.dataId = SceneComponentId.animation;
 				addComponent(ani);
 				ani.position = IntVector(animation.x, animation.y);
 
@@ -1235,6 +1255,7 @@ public final class GameView : View
 			foreach (label; scene.labels)
 			{
 				auto sceneLabel = new Label(window);
+				sceneLabel.dataId = SceneComponentId.label;
 				addComponent(sceneLabel);
 				sceneLabel.fontName = settings.defaultFont;
 				sceneLabel.fontSize = label.fontSize;
@@ -1273,6 +1294,7 @@ public final class GameView : View
 		}
 
 		auto textPanel = new Panel(window);
+		textPanel.dataId = SceneComponentId.textPanel;
 		addComponent(textPanel);
 		textPanel.fillColor = settings.dialoguePanelBackgroundColor.getColorByHex.changeAlpha(150);
 		textPanel.borderColor = settings.dialoguePanelBorderColor.getColorByHex;
@@ -1302,6 +1324,7 @@ public final class GameView : View
 			foreach (charNameAndPos; scene.characterNames)
 			{
 				auto charNameLabel = new Label(window);
+				charNameLabel.dataId = SceneComponentId.characterName;
 				charNameLabel.fontName = settings.defaultFont;
 				charNameLabel.fontSize = 22;
 				charNameLabel.color = charNameAndPos.color.getColorByHex;
@@ -1459,6 +1482,7 @@ public final class GameView : View
 			addDialogueHistory(historyText, null, scene.name, _lastBackgroundSource, _lastMusic);
 
 			textLabel = new Label(window);
+			textLabel.dataId = SceneComponentId.text;
 
 			if (scene.isNarrator)
 			{
@@ -1613,6 +1637,7 @@ public final class GameView : View
 				foreach (option; scene.options)
 				{
 					auto optionButton = new Button(window);
+					optionButton.dataId = SceneComponentId.option;
 					addComponent(optionButton);
 					optionButton.size = IntVector(window.width / 3, 32);
 					optionButton.position = IntVector(
@@ -1685,6 +1710,7 @@ public final class GameView : View
 				foreach (option; scene.options)
 				{
 					auto optionLabel = new Label(window);
+					optionLabel.dataId = SceneComponentId.option;
 					textPanel.addComponent(optionLabel);
 					optionLabel.fontName = settings.defaultFont;
 					optionLabel.fontSize = 22;
