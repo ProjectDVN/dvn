@@ -123,4 +123,8 @@ See: https://dvn-docs.readthedocs.io/en/latest/events.html
 
 If you wish to contribute just go ahead and do a pull-request or create an issue if you wish to discuss the design of a feature further.
 
+### Visual Novels Using Project DVN
+
+* [The Classroom Where Tomorrow Never Comes](https://tcwtnc.com/)
+
 ![Project DVN](https://i.imgur.com/gjygrkN.png "DVN")
