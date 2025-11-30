@@ -47,6 +47,7 @@ public final class Window
   EXT_Rectangle _overlayRectangle;
   Color _overlayColor;
   bool _useOverlay;
+  bool _debugMode;
 
   bool _updateDisabled;
 
@@ -124,6 +125,11 @@ public final class Window
 
   @property
   {
+    bool isDebugMode() { return _debugMode; }
+    void isDebugMode(bool debugMode)
+    {
+      _debugMode = debugMode;
+    }
     bool isRemoved()
     {
       return _removed;
@@ -328,6 +334,8 @@ public final class Window
     _currentView = view;
 
     update();
+
+    EXT_ResetCursor();
 
     logInfo("Changed view: %s", name);
   }

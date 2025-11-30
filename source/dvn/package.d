@@ -43,7 +43,7 @@ public
   void displayView(string name)
   {
     runDelayedTask(0, {
-      getApplication().windows[0].fadeToView(name, getColorByName("black"), false);
+      getApplication().getRealWindow().fadeToView(name, getColorByName("black"), false);
     });
   }
 
@@ -52,7 +52,7 @@ public
     import dvn.views.gameview : getLastScene;
 
     runDelayedTask(0, {
-      getApplication().windows[0].fadeToView("GameView", getColorByName("black"), false, (view) {
+      getApplication().getRealWindow().fadeToView("GameView", getColorByName("black"), false, (view) {
           auto gameView = cast(GameView)view;
           gameView.loadGame();
 
@@ -66,7 +66,7 @@ public
     import dvn.views.settingsview : backToScene;
 
     runDelayedTask(0, {
-      getApplication().windows[0].fadeToView("GameView", getColorByName("black"), false, (view) {
+      getApplication().getRealWindow().fadeToView("GameView", getColorByName("black"), false, (view) {
           auto gameView = cast(GameView)view;
           gameView.loadGame();
 
@@ -113,6 +113,7 @@ public
     if (app.isDebugMode)
     {
       auto consoleWindow = app.createWindow("CONSOLE", IntVector(800, 450), false);
+      consoleWindow.isDebugMode = true;
       consoleWindow.backgroundColor = getColorByName("black");
 
       consoleWindow.addView!ConsoleView("ConsoleView");

@@ -175,6 +175,19 @@ public final class Application
     _windows = newWindows;
   }
 
+  Window getRealWindow()
+  {
+    foreach (window; _windows)
+    {
+      if (!window.isDebugMode)
+      {
+        return window;
+      }
+    }
+
+    return _windows[0];
+  }
+
   void enableKeyboardState()
   {
     EXT_EnableKeyboardState();

@@ -107,6 +107,19 @@ public final class SceneCharacter
 	string movement;
 	int movementSpeed;
 	bool characterFadeIn;
+
+	SceneCharacter copyCharacter()
+	{
+		auto c = new SceneCharacter();
+		c.image = image;
+		c.position = position;
+		c.x = x;
+		c.y = y;
+		c.movement = movement;
+		c.movementSpeed = movementSpeed;
+		c.characterFadeIn = characterFadeIn;
+		return c;
+	}
 }
 
 public final class SceneCharacterName
@@ -555,7 +568,7 @@ public final class GameView : View
 		if (!_scenes)
 		{
 			logError("Scene not found: %s", sceneName);
-			
+
 			DvnEvents.getEvents().endGameView();
 			
 			return;
