@@ -1,0 +1,17 @@
+module dvn.dom.xhtml.xhtmlexception;
+
+final class XHtmlException : Exception
+{
+  public:
+  /**
+  * Creates a new html exception.
+  * Params:
+  *   message =   The message.
+  *   fn =        The file.
+  *   ln =        The line.
+  */
+  this(string message, string fn = __FILE__, size_t ln = __LINE__) @safe
+  {
+    super(message, fn, ln);
+  }
+}
