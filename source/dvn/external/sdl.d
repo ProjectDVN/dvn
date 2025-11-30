@@ -16,6 +16,8 @@ private
 
 private bool _initialized;
 
+public alias EXT_GetWindowFlags = SDL_GetWindowFlags;
+public alias EXT_WindowFlags = SDL_WindowFlags;
 public alias EXT_GetError = SDL_GetError;
 
 public alias EXT_SetWindowBordered = SDL_SetWindowBordered;
@@ -760,6 +762,8 @@ void EXT_EnableEvents()
   }
 }
 
+public alias EXT_GetWindowFromID = SDL_GetWindowFromID;
+
 bool EXT_ProcessEvents(Window[] windows)
 {
   SDL_Event e;
@@ -772,7 +776,12 @@ bool EXT_ProcessEvents(Window[] windows)
 
     switch (e.type)
     {
-      case SDL_EventType.SDL_QUIT: return false;
+      case SDL_EventType.SDL_QUIT:
+        return false;
+
+      case SDL_EventType.SDL_WINDOWEVENT:
+        if (e.window.event == SDL_WINDOWEVENT_CLOSE) return false;
+        break;
 
       case SDL_EventType.SDL_KEYDOWN:
         if (windows)
@@ -781,6 +790,7 @@ bool EXT_ProcessEvents(Window[] windows)
 
           foreach (window; windows)
           {
+            if (!window.isNativeWindow(EXT_GetWindowFromID(e.window.windowID))) continue;
             window.events.fireKeyboardDownEvent(key);
           }
         }
@@ -793,6 +803,7 @@ bool EXT_ProcessEvents(Window[] windows)
 
           foreach (window; windows)
           {
+            if (!window.isNativeWindow(EXT_GetWindowFromID(e.window.windowID))) continue;
             window.events.fireKeyboardUpEvent(key);
           }
         }
@@ -805,6 +816,7 @@ bool EXT_ProcessEvents(Window[] windows)
 
           foreach (window; windows)
           {
+            if (!window.isNativeWindow(EXT_GetWindowFromID(e.window.windowID))) continue;
             window.events.fireMouseButtonDownEvent(button, _mousePosition);
           }
         }
@@ -817,6 +829,7 @@ bool EXT_ProcessEvents(Window[] windows)
 
           foreach (window; windows)
           {
+            if (!window.isNativeWindow(EXT_GetWindowFromID(e.window.windowID))) continue;
             window.events.fireMouseButtonUpEvent(button, _mousePosition);
           }
         }
@@ -829,6 +842,7 @@ bool EXT_ProcessEvents(Window[] windows)
         {
           foreach (window; windows)
           {
+            if (!window.isNativeWindow(EXT_GetWindowFromID(e.window.windowID))) continue;
             window.events.fireMouseMoveEvent(_mousePosition);
           }
         }
@@ -869,6 +883,7 @@ bool EXT_ProcessEvents(Window[] windows)
 
           foreach (window; windows)
           {
+            if (!window.isNativeWindow(EXT_GetWindowFromID(e.window.windowID))) continue;
             window.events.fireTextInputEvent(eventChar,eventText);
           }
         }

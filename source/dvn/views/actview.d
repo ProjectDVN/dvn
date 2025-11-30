@@ -8,6 +8,7 @@ import dvn.music;
 import dvn.views.settingsview : backToScene;
 import dvn.views.gameview;
 import dvn.events;
+import dvn.views.consoleview;
 
 import dvn.ui;
 
@@ -27,6 +28,8 @@ public final class ActView : View
 
     void initialzieAct(string actName, string continueText, string background, string sceneName)
     {
+        logInfo("Act-View: %s", actName);
+
         DvnEvents.getEvents().beginActView(actName, continueText, background, sceneName);
 
 		auto window = super.window;

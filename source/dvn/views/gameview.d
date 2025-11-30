@@ -9,6 +9,7 @@ import dvn.views.settingsview : backToScene;
 import dvn.views.actview;
 import dvn.events;
 import dvn.history;
+import dvn.views.consoleview;
 
 import dvn.ui;
 
@@ -58,6 +59,29 @@ public final class SceneEntry
 		}
 
 		return chs;
+	}
+
+	void log()
+	{
+		string info = "";
+
+		if (text)
+		{
+			info ~= text ~ " ";
+		}
+
+		if (options)
+		{
+			foreach (option; options)
+			{
+				info ~= "[" ~ option.text ~ "] ";
+			}
+		}
+
+		if (info.length)
+		{
+			logInfo("Scene-Entry: %s", info);
+		}
 	}
 }
 
@@ -189,6 +213,8 @@ public final class GameView : View
 
     void loadGame()
     {
+		logInfo("Parsing scripts ...");
+
 		import std.file : dirEntries, SpanMode, readText;
 		import std.string : strip;
 		import std.array : replace, split;
@@ -513,10 +539,14 @@ public final class GameView : View
 		}
 
 		DvnEvents.getEvents().loadedGameScripts(_scenes);
+
+		logInfo("Parsed scripts ...");
     }
 
     void initializeGame(string sceneName, string loadBackground = "", string loadMusic = "")
     {
+		logInfo("Loading scene: '%s' | '%s' | '%s'", sceneName, loadBackground, loadMusic);
+
 		DvnEvents.getEvents().beginGameView(sceneName, loadBackground, loadMusic);
 
 		auto window = super.window;
@@ -524,6 +554,8 @@ public final class GameView : View
 
 		if (!_scenes)
 		{
+			logError("Scene not found: %s", sceneName);
+			
 			DvnEvents.getEvents().endGameView();
 			
 			return;
@@ -537,6 +569,8 @@ public final class GameView : View
 			
 			return;
 		}
+
+		scene.log();
 
 		clean();
 

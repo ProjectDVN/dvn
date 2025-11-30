@@ -81,6 +81,8 @@ public
     setGlobalSettings(gameSettings);
       
     auto app = new Application;
+    import std.file : exists;
+    app.isDebugMode = exists("debug.txt");
     app.messageLevel = 15;
 
     foreach (k,v; gameSettings.fonts)
@@ -107,6 +109,17 @@ public
 
     window.addView!LoadingView("Loading");
 	  window.fadeToView("Loading", getColorByName("black"), false);
+
+    if (app.isDebugMode)
+    {
+      auto consoleWindow = app.createWindow("CONSOLE", IntVector(800, 450), false);
+      consoleWindow.backgroundColor = getColorByName("black");
+
+      consoleWindow.addView!ConsoleView("ConsoleView");
+      consoleWindow.fadeToView("ConsoleView", getColorByName("black"), false, (v) {
+        logInfo("Running in debug mode ...");
+      });
+    }
 
     app.start();
   }

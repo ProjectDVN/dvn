@@ -8,6 +8,7 @@ import dvn.application;
 import dvn.view;
 import dvn.sheetcollection;
 import dvn.colors;
+import dvn.views.consoleview;
 
 private size_t _windowId;
 
@@ -116,11 +117,30 @@ public final class Window
     application.updateWindows();
   }
 
+  bool isNativeWindow(EXT_Window window)
+  {
+    return _nativeWindow == window;
+  }
+
   @property
   {
     bool isRemoved()
     {
       return _removed;
+    }
+
+    bool isActive()
+    {
+        auto flags = EXT_GetWindowFlags(_nativeWindow);
+
+        uint mask =
+            EXT_WindowFlags.SDL_WINDOW_INPUT_FOCUS |
+            EXT_WindowFlags.SDL_WINDOW_MOUSE_FOCUS;
+
+        bool hasAnyFocus = (flags & mask) != 0;
+        bool notMinimized = (flags & EXT_WindowFlags.SDL_WINDOW_MINIMIZED) == 0;
+
+        return hasAnyFocus && notMinimized;
     }
   }
 
@@ -263,6 +283,8 @@ public final class Window
 
   void changeView(string name, bool saveCurrentView = false, void delegate(View) onInitialized = null)
   {
+    logInfo("Changing view: %s", name);
+
     if (!saveCurrentView)
     {
       if (_currentView)
@@ -306,6 +328,8 @@ public final class Window
     _currentView = view;
 
     update();
+
+    logInfo("Changed view: %s", name);
   }
 
   void fadeToView(string name, Color fadeColor, bool saveCurrentView = false, void delegate(View) onInitialized = null)

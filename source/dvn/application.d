@@ -64,6 +64,7 @@ public final class Application
   bool _allowWASDMovement;
   size_t _concurrencyLevel;
   size_t _messageLevel;
+  bool _isDebugMode;
 
   public:
   final:
@@ -141,6 +142,12 @@ public final class Application
       {
         EXT_DisallowWASDMovement();
       }
+    }
+
+    bool isDebugMode() { return _isDebugMode; }
+    void isDebugMode(bool debugMode)
+    {
+      _isDebugMode = debugMode;
     }
   }
 
