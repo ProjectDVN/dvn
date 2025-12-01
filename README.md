@@ -77,6 +77,7 @@ DVN is the opposite
 * CSS3 Selector Parser
 * Markdown Parser
 * Effects (Like screen shake) + Custom Effects
+* Effects can stack
 * Fast and light-weight
 * Allows rapid development
 * And much more ...
