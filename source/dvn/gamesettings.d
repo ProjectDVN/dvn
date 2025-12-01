@@ -1,3 +1,6 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.gamesettings;
 
 import dvn.meta;
@@ -110,11 +113,12 @@ public final class SaveFile
   string background;
   string music;
   string[string] meta;
+  uint seed;
 }
 
 private SaveFile[] saveFiles;
 
-void saveGame(GameSettings settings, string id, string scene, string background, string music)
+void saveGame(GameSettings settings, string id, string scene, string background, string music, uint seed)
 {
   import std.uuid : randomUUID;
   import std.datetime : Clock;
@@ -148,6 +152,7 @@ void saveGame(GameSettings settings, string id, string scene, string background,
   saveFile.scene = scene;
   saveFile.background = background;
   saveFile.music = music;
+  saveFile.seed = seed;
 
   settings.saves[id] = saveFile;
 
