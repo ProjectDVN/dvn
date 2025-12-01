@@ -1,3 +1,6 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.json.jsonobject;
 
 import std.traits : isSomeString, isScalarType;
@@ -300,7 +303,9 @@ if (isSomeString!S)
 
       case JsonType.jsonBoolean: return _booleanValue.to!S;
 
-      case JsonType.jsonNumber: return _number.to!S;
+      case JsonType.jsonNumber:
+        import std.format : format;
+        return format!"%.17g"(_number);
 
       case jsonType.jsonString: return "\"%s\"".format(escapeJsonString(_text)); // TODO: Escape newlines etc.
 
@@ -360,7 +365,9 @@ if (isSomeString!S)
 
         case JsonType.jsonBoolean: return _booleanValue.to!S;
 
-        case JsonType.jsonNumber: return _number.to!S;
+        case JsonType.jsonNumber:
+          import std.format : format;
+          return format!"%.17g"(_number);
 
         case jsonType.jsonString: return "\"%s\"".format(escapeJsonString(_text)); // TODO: Escape newlines etc.
 

@@ -114,11 +114,12 @@ public final class SaveFile
   string music;
   string[string] meta;
   uint seed;
+  int calls;
 }
 
 private SaveFile[] saveFiles;
 
-void saveGame(GameSettings settings, string id, string scene, string background, string music, uint seed)
+void saveGame(GameSettings settings, string id, string scene, string background, string music, uint seed, int calls)
 {
   import std.uuid : randomUUID;
   import std.datetime : Clock;
@@ -153,6 +154,7 @@ void saveGame(GameSettings settings, string id, string scene, string background,
   saveFile.background = background;
   saveFile.music = music;
   saveFile.seed = seed;
+  saveFile.calls = calls;
 
   settings.saves[id] = saveFile;
 

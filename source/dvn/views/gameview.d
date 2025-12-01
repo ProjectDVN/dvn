@@ -212,14 +212,23 @@ private string _lastCharacter;
 
 private string _saveId;
 private uint _seed;
+private Random random;
+private int _calls;
 
-void setSaveState(string id, uint seed = 0)
+void setSaveState(string id, uint seed = 0, int calls = 0)
 {
 	_saveId = id;
 	if (seed == 0)
 	{
 		_seed = getSaveIdSeed();
 	}
+
+	random = Random(_seed);
+	foreach (_; 0 .. calls)
+	{
+		uniform(0,100, random);
+	}
+	_calls = calls;
 }
 
 string getCurrentSaveId()
@@ -1503,16 +1512,16 @@ public final class GameView : View
 
 			takeScreenshot(window, "data/game/saves/" ~ idToSave ~ ".png");
 
-			saveGame(settings, idToSave, scene.name, _lastBackgroundSource, _lastMusic, _seed);
+			saveGame(settings, idToSave, scene.name, _lastBackgroundSource, _lastMusic, _seed, _calls);
 
 			saveGameSettings("data/settings.json");
 		}
 
 		if (scene.text)
 		{
-			Random rnd = Random(_seed);
-			if (uniform(0,100, rnd) > scene.chance)
+			if (uniform(0,100, random) > scene.chance)
 			{
+				_calls++;
 				if (nextScene)
 				{
 					if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)
@@ -1532,6 +1541,8 @@ public final class GameView : View
 				}
 				return;
 			}
+
+			_calls++;
 
 			auto historyText = scene.text;
 
@@ -1704,13 +1715,14 @@ public final class GameView : View
 				}
 
 				int lastY = 168;
-				Random rnd = Random(_seed);
 				foreach (option; scene.options)
 				{
-					if (uniform(0,100,rnd) > option.chance)
+					if (uniform(0,100,random) > option.chance)
 					{
+						_calls++;
 						continue;
 					}
+					_calls++;
 
 					auto optionButton = new Button(window);
 					optionButton.dataId = SceneComponentId.option;
@@ -1783,13 +1795,14 @@ public final class GameView : View
 			else
 			{
 				int lastY = 50;
-				Random rnd = Random(_seed);
 				foreach (option; scene.options)
 				{
-					if (uniform(0,100,rnd) > option.chance)
+					if (uniform(0,100,random) > option.chance)
 					{
+						_calls++;
 						continue;
 					}
+					_calls++;
 					auto optionLabel = new Label(window);
 					optionLabel.dataId = SceneComponentId.option;
 					textPanel.addComponent(optionLabel);
