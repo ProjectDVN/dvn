@@ -334,7 +334,6 @@ if (isSomeString!S)
   int skip;
   alias Ch = typeof(text[0]);
 
-  //foreach (i, c; zip(sequence!"n", text.stride(1)))
   for (size_t i = 0; i < text.length; ++i)
   {
     if (skip) 
@@ -344,7 +343,7 @@ if (isSomeString!S)
     }
 
     Ch c = text[i];
-    
+
     if (escapeNext && inString)
     {
       switch (c)
@@ -360,28 +359,70 @@ if (isSomeString!S)
         case 'r': currentToken ~= '\r'; break;
         case 't': currentToken ~= '\t'; break;
         case 'u':
-          auto digits = text[i+1 .. i+5].to!int(16);
-          dchar codePoint = cast(dchar)digits;
-          skip = 4;
-          static if (is(S == dstring))
-          {
-              dchar[1] buf;
-              auto len = encode(buf, codePoint);
-              currentToken ~= buf[0 .. len];
-          }
-          else static if (is(S == wstring))
-          {
-              wchar[2] buf;
-              auto len = encode(buf, codePoint);
-              currentToken ~= buf[0 .. len];
-          }
-          else static if (is(S == string))
-          {
-              char[4] buf;
-              auto len = encode(buf, codePoint);
-              currentToken ~= buf[0 .. len];
-          }
-          break;
+        {
+            if (i + 4 >= text.length)
+            {
+                errorMessages ~= "Incomplete Unicode escape at index %d".format(i);
+                return false;
+            }
+
+            auto hex1  = text[i + 1 .. i + 5];
+            uint val1  = hex1.to!uint(16);
+            dchar codePoint;
+
+            if (val1 >= 0xD800 && val1 <= 0xDBFF)
+            {
+                if (i + 10 >= text.length ||
+                    text[i + 5] != '\\' ||
+                    text[i + 6] != 'u')
+                {
+                    errorMessages ~= "High surrogate without following low surrogate at index %d".format(i);
+                    return false;
+                }
+
+                auto hex2 = text[i + 7 .. i + 11];
+                uint val2 = hex2.to!uint(16);
+
+                if (val2 < 0xDC00 || val2 > 0xDFFF)
+                {
+                    errorMessages ~= "Invalid low surrogate at index %d".format(i);
+                    return false;
+                }
+
+                uint high = val1 - 0xD800;
+                uint low  = val2 - 0xDC00;
+                uint full = 0x10000 + (high << 10) + low;
+                codePoint = cast(dchar)full;
+
+                skip = 10;
+            }
+            else
+            {
+                codePoint = cast(dchar)val1;
+                skip = 4;
+            }
+
+            static if (is(S == dstring))
+            {
+                dchar[1] buf;
+                auto len = encode(buf, codePoint);
+                currentToken ~= buf[0 .. len];
+            }
+            else static if (is(S == wstring))
+            {
+                wchar[2] buf;
+                auto len = encode(buf, codePoint);
+                currentToken ~= buf[0 .. len];
+            }
+            else static if (is(S == string))
+            {
+                char[4] buf;
+                auto len = encode(buf, codePoint);
+                currentToken ~= buf[0 .. len];
+            }
+
+            break;
+        }
 
         default:
           errorMessages ~= "Expected escape character but found '%s'. (%d)".format(c, i);
