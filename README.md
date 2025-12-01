@@ -71,6 +71,7 @@ DVN is the opposite
 * Dynamic character models (actions, states, directions) - not default, but can be used
 * Gallery
 * History (Searchable) with jumping to ANY scene node (including options)
+* DVN supports deterministic timelines, timeline jumping, and multiverse-based narrative exploration natively.
 * Saving, loading, auto-save
 * Auto-skipping
 * Dom Parser (html, xml, svg etc.)
