@@ -27,7 +27,7 @@ Project DVN is built from what visual novels actually do, not from what engines 
 
 Most engines are built like this:
 
-* Engine -> Featres -> VNs must fit those features
+* Engine -> Features -> VNs must fit those features
 
 DVN is the opposite
 
