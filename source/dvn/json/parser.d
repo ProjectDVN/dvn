@@ -1,9 +1,15 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.json.parser;
 
 import std.traits : isSomeString, isScalarType;
-import std.range : zip, sequence, stride;
+import std.range : zip, sequence, stride, ElementType;
 import std.string : format;
 import std.uni : isWhite;
+import std.utf : encode;
+import std.conv : to;
+import std.array : appender;
 
 import dvn.json.conv;
 
@@ -325,8 +331,15 @@ if (isSomeString!S)
 
   S currentToken;
 
+  int skip;
+
   foreach (i, c; zip(sequence!"n", text.stride(1)))
   {
+    if (skip) 
+    {
+      skip--;
+      continue;
+    }
     if (escapeNext && inString)
     {
       switch (c)
@@ -341,7 +354,30 @@ if (isSomeString!S)
         case 'n': currentToken ~= '\n'; break;
         case 'r': currentToken ~= '\r'; break;
         case 't': currentToken ~= '\t'; break;
-        case 'u': currentToken ~= "\\u"; break;
+        case 'u':
+          skip = 4;
+          auto digits = text[i .. i+4].to!int(16);
+          dchar codePoint = cast(dchar)digits;
+
+          static if (is(S == dstring))
+          {
+              dchar[1] buf;
+              auto len = encode(buf, codePoint);
+              currentToken ~= buf[0 .. len];
+          }
+          else static if (is(S == wstring))
+          {
+              wchar[2] buf;
+              auto len = encode(buf, codePoint);
+              currentToken ~= buf[0 .. len];
+          }
+          else static if (is(S == string))
+          {
+              char[4] buf;
+              auto len = encode(buf, codePoint);
+              currentToken ~= buf[0 .. len];
+          }
+          break;
 
         default:
           errorMessages ~= "Expected escape character but found '%s'. (%d)".format(c, i);
