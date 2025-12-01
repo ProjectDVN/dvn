@@ -332,14 +332,19 @@ if (isSomeString!S)
   S currentToken;
 
   int skip;
+  alias Ch = typeof(text[0]);
 
-  foreach (i, c; zip(sequence!"n", text.stride(1)))
+  //foreach (i, c; zip(sequence!"n", text.stride(1)))
+  for (size_t i = 0; i < text.length; ++i)
   {
     if (skip) 
     {
       skip--;
       continue;
     }
+
+    Ch c = text[i];
+    
     if (escapeNext && inString)
     {
       switch (c)
@@ -355,10 +360,9 @@ if (isSomeString!S)
         case 'r': currentToken ~= '\r'; break;
         case 't': currentToken ~= '\t'; break;
         case 'u':
-          skip = 4;
-          auto digits = text[i .. i+4].to!int(16);
+          auto digits = text[i+1 .. i+5].to!int(16);
           dchar codePoint = cast(dchar)digits;
-
+          skip = 4;
           static if (is(S == dstring))
           {
               dchar[1] buf;
