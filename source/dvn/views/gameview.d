@@ -278,6 +278,33 @@ public string getLastScene()
 	return _lastScene;
 }
 
+public class CoverageNode
+{
+	public:
+	final:
+	string name;
+	string text;
+	bool isOption;
+	string[] children;
+	CoverageOption[] options;
+}
+
+public class CoverageOption
+{
+	public:
+	final:
+	string text;
+	string scene;
+}
+
+public class Coverage
+{
+	public:
+	final:
+	CoverageNode[] nodes;
+	CoverageNode[] endScenes;
+}
+
 public final class GameView : View
 {
 	public:
@@ -677,6 +704,118 @@ public final class GameView : View
 				lastEntry);
 		}
     }
+
+	void coverageTest()
+	{
+		import std.file : exists, readText, write;
+		import std.string : strip, toLower;
+
+		if (!exists("coverage.txt"))
+		{
+			logInfo("Skipping coverage ...");
+			return;
+		}
+		
+		bool isVerbose = readText("coverage.txt").strip().toLower == "verbose";
+
+		logInfo("Running coverage [Verbose: %s]...", isVerbose);
+
+		loadGame();
+
+		auto settings = getGlobalSettings();
+
+		auto main = _scenes[settings.mainScript && settings.mainScript ? settings.mainScript : "main"];
+
+		CoverageNode[] endScenes;
+		CoverageNode[] infiniteScenes;
+		CoverageNode[] nodes;
+
+		bool[string] visited;
+
+		CoverageNode traverseScene(SceneEntry scene)
+		{
+			auto node = new CoverageNode;
+			node.text = scene.text;
+			node.isOption = false;
+			node.children = [];
+			node.name = scene.name;
+
+			if (visited && scene.name in visited)
+			{
+				return null;
+			}
+
+			visited[scene.name] = true;
+			nodes ~= node;
+
+			if (scene.options)
+			{
+				node.options = [];
+				
+				foreach (option; scene.options)
+				{
+					auto optionNode = new CoverageNode;
+					optionNode.name = node.name;
+					optionNode.text = option.text;
+					optionNode.isOption = false;
+					auto ochild = traverseScene(_scenes[option.nextScene]);
+					if (ochild && ochild.text && ochild.text.length)
+					{
+						optionNode.children = [ochild.name && ochild.name.length ? ochild.name : ochild.text];
+					}
+
+					node.children ~= optionNode.text;
+					auto o = new CoverageOption;
+					o.text = optionNode.text;
+					o.scene = option.nextScene;
+					node.options ~= o;
+				}
+			}
+			else
+			{
+				if (scene.nextScene && scene.nextScene.length)
+				{
+					auto child = traverseScene(_scenes[scene.nextScene]);
+					
+					if (child && child.name && child.name.length)
+					{
+						node.children ~= child.name;
+					}
+					else if (child && child.text && child.text.length)
+					{
+						node.children ~= child.text;
+					}
+				}
+				else
+				{
+					endScenes ~= node;
+				}
+			}
+
+			return node;
+		}
+
+		auto cov = new Coverage;
+		traverseScene(main);
+		cov.nodes = nodes;
+		if (!isVerbose)
+		{
+			cov.nodes = null;
+		}
+		cov.endScenes = endScenes;
+
+		import dvn.json;
+
+		string serializedJson;
+		if (!serializeJsonSafe(cov, serializedJson, true))
+		{
+			return;
+		}
+
+		write("coverage.json", serializedJson);
+
+		logInfo("Finished coverage ...");
+	}
 
 	private void logScriptError(string scriptFile, int line, string message, SceneEntry entry = null)
 	{

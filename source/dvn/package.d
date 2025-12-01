@@ -1,3 +1,6 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn;
 
 public
@@ -112,6 +115,8 @@ public
     window.addView!LoadingView("Loading");
 	  window.fadeToView("Loading", getColorByName("black"), false);
 
+    import dvn.views.gameview : GameView;
+
     if (app.isDebugMode)
     {
       auto consoleWindow = app.createWindow("CONSOLE", IntVector(800, 450), false);
@@ -121,7 +126,13 @@ public
       consoleWindow.addView!ConsoleView("ConsoleView");
       consoleWindow.fadeToView("ConsoleView", getColorByName("black"), false, (v) {
         logInfo("Running in debug mode ...");
+
+        new GameView(consoleWindow).coverageTest();
       });
+    }
+    else
+    {
+      new GameView(window).coverageTest();
     }
 
     initializeStandardEffects();
