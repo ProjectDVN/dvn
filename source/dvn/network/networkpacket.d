@@ -5,8 +5,8 @@ module dvn.network.networkpacket;
 
 import std.system : Endian;
 import std.bitmanip : bigEndianToNative, nativeToBigEndian, littleEndianToNative, nativeToLittleEndian;
-import std.traits : isIntegral, isSomeFloat;
-import std.bitmanip : bitwiseCast;
+import std.traits : isIntegral, isFloatingPoint;
+import std.conv : bitCast;
 
 public class NetworkPacket
 {
@@ -21,15 +21,19 @@ public class NetworkPacket
     final:
     this(NetworkPacket packet)
     {
+        assert(packet !is null, "NetworkPacket must not be null");
+
         _buffer = packet._buffer ? packet._buffer.dup : [];
         _offset = 0;
         _packetId = packet._packetId;
         _packetVirtualSize = packet._packetVirtualSize;
-        _packetEndian = Endian.bigEndian;
+        _packetEndian = packet._packetEndian;
     }
     
     this(ubyte[] buffer, Endian endian = Endian.bigEndian)
     {
+        assert(buffer !is null, "NetworkPacket buffer must not be null");
+
         _packetEndian = endian;
 
         _buffer = buffer ? buffer : [];
@@ -84,7 +88,7 @@ public class NetworkPacket
         }
     }
 
-    void writeString(dstring value)
+    void writeStringUTF32(dstring value)
     {
         auto stringBuffer = cast(ubyte[])value;
 
@@ -92,44 +96,46 @@ public class NetworkPacket
     }
 
     void write(T)(T value)
-        if (isIntegral!T || isSomeFloat!T)
+        if (isIntegral!T || isFloatingPoint!T)
     {
         static if (is(T == float))
         {
-            int bits = bitwiseCast!int(value);
+            int bits = bitCast!int(value);
             write!int(bits);
         }
         else static if (is(T == double))
         {
-            long bits = bitwiseCast!long(value);
+            long bits = bitCast!long(value);
             write!long(bits);
+        }
+        else static if (is(T == ubyte))
+        {
+             (*cast(T*)(_buffer.ptr + _offset)) = value;
+            _offset += T.sizeof;
         }
         else static if (isIntegral!T)
         {
+            ubyte[T.sizeof] buf;
             final switch (_packetEndian)
             {
                 case Endian.bigEndian:
-                    value = nativeToBigEndian(value);
+                    buf = nativeToBigEndian(value);
                     break;
                 case Endian.littleEndian:
-                    value = nativeToLittleEndian(value);
-                    break;
-                case Endian.native:
-                    // no conversion
+                    buf = nativeToLittleEndian(value);
                     break;
             }
 
-            (*cast(T*)(_buffer.ptr + _offset)) = value;
-            _offset += T.sizeof;
+            writeStaticBuffer(buf);
         }
     }
 
-    void writeStringList(dstring[] list)
+    void writeStringListUTF32(dstring[] list)
     {
         write!int(cast(int)list.length);
         foreach (s; list)
         {
-            writeString(s);
+            writeStringUTF32(s);
         }
     }
 
@@ -152,51 +158,54 @@ public class NetworkPacket
     }
 
     T read(T)()
+        if (isIntegral!T || isFloatingPoint!T)
     {
         static if (is(T == float))
         {
             int bits = read!int();
 
-            return bitwiseCast!float(bits);
+            return bitCast!float(bits);
         }
         else static if (is(T == double))
         {
             long bits = read!long();
             
-            return bitwiseCast!double(bits);
+            return bitCast!double(bits);
         }
         else
         {
-            T value = (*cast(T*)(_buffer.ptr + _offset));
-            _offset += T.sizeof;
+            T value;
+            ubyte[] slice = _buffer[_offset .. (_offset + T.sizeof)];
+            ubyte[T.sizeof] temp;
+            temp[] = cast(ubyte[]) slice;
 
             static if (isIntegral!T)
             {
                 final switch (_packetEndian)
                 {
                     case Endian.bigEndian:
-                        value = bigEndianToNative(value);
+                        value = bigEndianToNative!(T,T.sizeof)(temp);
                         break;
                     case Endian.littleEndian:
-                        value = littleEndianToNative(value);
-                        break;
-                    case Endian.native:
+                        value = littleEndianToNative!(T,T.sizeof)(temp);
                         break;
                 }
             }
+
+            _offset += T.sizeof;
 
             return value;
         }
     }
 
-    dstring readString()
+    dstring readStringUTF32()
     {
         auto str = cast(dstring)readBuffer();
 
         return (str is null || str.length == 0) ? "" : str;
     }
 
-    dstring[] readStringList()
+    dstring[] readStringListUTF32()
     {
         auto length = read!int;
 
@@ -209,7 +218,7 @@ public class NetworkPacket
 
         foreach (i; 0 .. length)
         {
-            list[i] = readString();
+            list[i] = readStringUTF32();
         }
 
         return list;

@@ -1,3 +1,6 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.components.scrollbar;
 
 import dvn.component;
@@ -37,7 +40,7 @@ public final class ScrollBar : Component
     _scrollablePanel = scrollablePanel;
     _defaultName = defaultName;
     _clickName = clickName;
-    _hoverName = _hoverName;
+    _hoverName = hoverName;
 
     _fontSize = 10;
     _buttonScrollAmount = 24;
