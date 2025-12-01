@@ -1,3 +1,6 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.views.loadgameview;
 
 import std.conv : to;
@@ -179,11 +182,11 @@ public final class LoadGameView : View
                                 import std.uuid : randomUUID;
 											
                                 auto id = randomUUID().toString;
-                                setSaveId(id);
+                                setSaveState(id, sFile.seed);
                             }
                             else
                             {
-                                setSaveId(sFile.id);
+                                setSaveState(sFile.id, sFile.seed);
                             }
 
                             auto gameView = cast(GameView)view;
@@ -195,7 +198,17 @@ public final class LoadGameView : View
 
                     oImage.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
                         window.fadeToView("GameView", getColorByName("black"), false, (view) {
-                            setSaveId(sFile.id);
+                            if (sFile.id == "auto" || sFile.id == "quick")
+                            {
+                                import std.uuid : randomUUID;
+											
+                                auto id = randomUUID().toString;
+                                setSaveState(id, sFile.seed);
+                            }
+                            else
+                            {
+                                setSaveState(sFile.id, sFile.seed);
+                            }
 
                             auto gameView = cast(GameView)view;
                             gameView.loadGame();

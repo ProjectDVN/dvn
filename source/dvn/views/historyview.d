@@ -1,3 +1,6 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.views.historyview;
 
 import std.conv : to;
@@ -204,7 +207,7 @@ public final class HistoryView : View
                         import std.uuid : randomUUID;
                         
                         auto id = randomUUID().toString;
-                        setSaveId(id);
+                        setSaveState(id);
 
                         auto gameView = cast(GameView)view;
                         gameView.loadGame();

@@ -1,7 +1,11 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.views.gameview;
 
 import std.conv : to;
 import std.string : format;
+import std.random : Random,uniform;
 
 import dvn.resources;
 import dvn.gamesettings;
@@ -59,6 +63,7 @@ public final class SceneEntry
 	bool isNarrator;
 	int narratorX;
 	int narratorY;
+	int chance;
 
 	SceneCharacter[] copyCharacters()
 	{
@@ -163,6 +168,7 @@ public final class SceneOption
 	final:
 	string text;
 	string nextScene;
+	int chance;
 }
 
 public final class SceneImage
@@ -205,10 +211,15 @@ private string _lastMusic;
 private string _lastCharacter;
 
 private string _saveId;
+private uint _seed;
 
-void setSaveId(string id)
+void setSaveState(string id, uint seed = 0)
 {
 	_saveId = id;
+	if (seed == 0)
+	{
+		_seed = getSaveIdSeed();
+	}
 }
 
 string getCurrentSaveId()
@@ -226,6 +237,28 @@ SaveFile getCurrentSaveFile()
 	}
 
 	return settings.saves.get(getCurrentSaveId(), null);
+}
+
+uint getSaveIdSeed()
+{
+    import std.regex : replaceAll, regex;
+    import std.conv : to;
+    import std.format : format;
+
+	auto id = getCurrentSaveId();
+
+	if (id == "quick")
+		return 0xC0FFEEEE;
+
+    if (id == "auto")
+        return 0xDEADBEEF;
+
+    auto hex = replaceAll(id, regex("-"), "");
+
+    ulong a = (hex[0 .. 16]).to!ulong(16);
+    ulong b = (hex[16 .. 32]).to!ulong(16);
+
+    return cast(uint)(a ^ (b * 0x9E3779B97F4A7C15UL));
 }
 
 private bool isAuto;
@@ -289,6 +322,7 @@ public final class GameView : View
 
 				string textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
 				lineCount = 0;
+				int chance = 100;
 				foreach (l; lines)
 				{
 					lineCount++;
@@ -307,6 +341,7 @@ public final class GameView : View
 					if (line[0] == '[' && line[$-1] == ']')
 					{
 						entry = new SceneEntry;
+						entry.chance = chance;
 						entry.name = line[1 .. $-1];
 						character = null;
 						charName = null;
@@ -352,6 +387,9 @@ public final class GameView : View
 
 						switch (key)
 						{
+							case "chance":
+								chance = value.to!int;
+								break;
 							case "narrator":
 								isNarrator = true;
 								auto narratorXY = value.split(",");
@@ -535,6 +573,8 @@ public final class GameView : View
 									lastEntry.nextScene = "??????????-" ~ _customSceneIdCounter.to!string;
 
 									entry = new SceneEntry;
+									entry.chance = chance;
+									chance = 100;
 									entry.name = "??????????-" ~ _customSceneIdCounter.to!string;
 
 									entry.music = lastEntry.music;
@@ -554,6 +594,11 @@ public final class GameView : View
 									lastEntry = entry;
 
 									_scenes[entry.name] = entry;
+								}
+								else
+								{
+									entry.chance = chance;
+									chance = 100;
 								}
 
 								entry.characterNames = charNames;
@@ -587,9 +632,11 @@ public final class GameView : View
 							case "option":
 							case "o":
 								auto option = new SceneOption;
+								option.chance = chance;
 								option.text = value;
 								option.nextScene = keyData[1];
 								entry.options ~= option;
+								chance = 100;
 								break;
 
 							case "view":
@@ -1456,13 +1503,36 @@ public final class GameView : View
 
 			takeScreenshot(window, "data/game/saves/" ~ idToSave ~ ".png");
 
-			saveGame(settings, idToSave, scene.name, _lastBackgroundSource, _lastMusic);
+			saveGame(settings, idToSave, scene.name, _lastBackgroundSource, _lastMusic, _seed);
 
 			saveGameSettings("data/settings.json");
 		}
 
 		if (scene.text)
 		{
+			Random rnd = Random(_seed);
+			if (uniform(0,100, rnd) > scene.chance)
+			{
+				if (nextScene)
+				{
+					if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)
+					{
+						initializeGame(nextScene.name);
+					}
+					else
+					{
+						runDelayedTask(0, {
+							window.fadeToView("GameView", getColorByName("black"), false, (view) {
+								auto gameView = cast(GameView)view;
+
+								gameView.initializeGame(nextScene.name);
+							});
+						});
+					}
+				}
+				return;
+			}
+
 			auto historyText = scene.text;
 
 			if (scene.characterNames && scene.characterNames.length)
@@ -1634,8 +1704,14 @@ public final class GameView : View
 				}
 
 				int lastY = 168;
+				Random rnd = Random(_seed);
 				foreach (option; scene.options)
 				{
+					if (uniform(0,100,rnd) > option.chance)
+					{
+						continue;
+					}
+
 					auto optionButton = new Button(window);
 					optionButton.dataId = SceneComponentId.option;
 					addComponent(optionButton);
@@ -1707,8 +1783,13 @@ public final class GameView : View
 			else
 			{
 				int lastY = 50;
+				Random rnd = Random(_seed);
 				foreach (option; scene.options)
 				{
+					if (uniform(0,100,rnd) > option.chance)
+					{
+						continue;
+					}
 					auto optionLabel = new Label(window);
 					optionLabel.dataId = SceneComponentId.option;
 					textPanel.addComponent(optionLabel);
