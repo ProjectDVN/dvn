@@ -65,6 +65,7 @@ public final class SceneEntry
 	int narratorX;
 	int narratorY;
 	int chance;
+	bool stopMusic;
 
 	SceneCharacter[] copyCharacters()
 	{
@@ -406,6 +407,10 @@ public final class GameView : View
 								case "characterFadeIn":
 								case "cf":
 									character.characterFadeIn = true;
+									break;
+
+								case "stopMusic":
+									entry.stopMusic = true;
 									break;
 
 								default: break;
@@ -882,7 +887,11 @@ public final class GameView : View
 
 		DvnEvents.getEvents().beginHandleScene(scene, nextScene, isEnding);
 
-		if (scene.music && scene.music.length)
+		if (scene.stopMusic)
+		{
+			EXT_StopMusic();
+		}
+		else if (scene.music && scene.music.length)
 		{
 			_lastMusic = scene.music;
 
