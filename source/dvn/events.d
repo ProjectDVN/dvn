@@ -23,6 +23,8 @@ public class DvnEvents
     // Global
     ubyte[] scriptBundleWrite(ubyte[] buffer) { return buffer; }
     ubyte[] scriptBundleRead(ubyte[] buffer) { return buffer; }
+    ubyte[] imageBundleWrite(ubyte[] buffer, bool isName) { return buffer; }
+    ubyte[] imageBundleRead(ubyte[] buffer, bool isName) { return buffer; }
 
     void loadedExternalApplicationState() {} // Ex. SDL has been initialized, do whatever the fuck you want with this
     void loadedSettings(GameSettings settings) {}
@@ -144,6 +146,25 @@ public class DvnEvents
                 foreach (ev; _eventsHub)
                 {
                     buffer = ev.scriptBundleRead(buffer);
+                }
+
+                return buffer;
+            }
+
+            public override ubyte[] imageBundleWrite(ubyte[] buffer, bool isName)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    buffer = ev.imageBundleWrite(buffer, isName);
+                }
+
+                return buffer;
+            }
+            public override ubyte[] imageBundleRead(ubyte[] buffer, bool isName)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    buffer = ev.imageBundleRead(buffer, isName);
                 }
 
                 return buffer;

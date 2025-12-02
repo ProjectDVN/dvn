@@ -249,6 +249,11 @@ public final class Window
     _sheetCollection.addSheet(name, path, columnSize, columnCount);
   }
 
+  void addSheetBuffer(string name, ubyte[] buffer, IntVector columnSize, int columnCount)
+  {
+    _sheetCollection.addSheetBuffer(name, buffer, columnSize, columnCount);
+  }
+
   EXT_Sheet getSheet(string name)
   {
     return _sheetCollection.getSheet(name);

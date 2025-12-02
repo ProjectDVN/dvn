@@ -34,6 +34,13 @@ public final class SheetCollection
     _sheets[name] = EXT_Sheet(sheet, columnSize, columnCount);
   }
 
+  void addSheetBuffer(string name, ubyte[] buffer, IntVector columnSize, int columnCount)
+  {
+    auto sheet = EXT_CREATE_SHEET_BUFFER(_window.nativeScreen, buffer);
+
+    _sheets[name] = EXT_Sheet(sheet, columnSize, columnCount);
+  }
+
   void addSheetEntry(string name, string sheetName, int row, int col)
   {
     SHEET_ENTRY_DELEGATE create = ()

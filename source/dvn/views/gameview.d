@@ -691,7 +691,7 @@ public final class GameView : View
 
 			if (hasScriptBundle)
 			{
-				compile(getBundleScript, "data/scripts.dat");
+				compile(getBundleScript, "data/scripts.dvn");
 			}
 			else
 			{

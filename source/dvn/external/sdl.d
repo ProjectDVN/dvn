@@ -1129,6 +1129,22 @@ EXT_Texture EXT_CREATE_SHEET(SDL_Renderer* renderer, string path)
 	return sheet;
 }
 
+public alias EXT_RWFromConstMem = SDL_RWFromConstMem;
+public alias EXT_IMG_Load_RW = IMG_Load_RW;
+public alias EXT_RWops = SDL_RWops*;
+
+EXT_Texture EXT_CREATE_SHEET_BUFFER(SDL_Renderer* renderer, ubyte[] b)
+{
+  import std.string : toStringz;
+
+  SDL_RWops* rw = SDL_RWFromConstMem(b.ptr, cast(int) b.length);
+  SDL_Surface* temp = IMG_Load_RW(rw, 1);
+	SDL_Texture* sheet = SDL_CreateTextureFromSurface(renderer, temp);
+	SDL_FreeSurface(temp);
+
+	return sheet;
+}
+
 struct EXT_SheetEntry
 {
 	EXT_Rectangle rect;

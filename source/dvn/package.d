@@ -91,9 +91,6 @@ public
     auto gameSettings = loadGameSettings("data/settings.json");
     DvnEvents.getEvents().loadedSettings(gameSettings);
     setGlobalSettings(gameSettings);
-
-    writeBundleScript();
-    readBundleScript();
       
     auto app = new Application;
     import std.file : exists;
@@ -138,13 +135,7 @@ public
       consoleWindow.addView!ConsoleView("ConsoleView");
       consoleWindow.fadeToView("ConsoleView", getColorByName("black"), false, (v) {
         logInfo("Running in debug mode ...");
-
-        new GameView(consoleWindow).coverageTest();
       });
-    }
-    else
-    {
-      new GameView(window).coverageTest();
     }
 
     initializeStandardEffects();

@@ -19,6 +19,7 @@ import dvn.views.historyview;
 import dvn.music;
 import dvn.events;
 import dvn.history;
+import dvn.bundling;
 
 import dvn.ui;
 
@@ -205,7 +206,45 @@ public final class LoadingView : View
 
 			DvnEvents.getEvents().loadingAllResources(generalResources);
 
-			addResources(generalResources);
+			auto wroteBundle = writeBundleScript();
+			readBundleScript();
+
+			auto wroteImageBundle = writeBundleImages(generalResources);
+			auto streamedBundle = streamBundleImages((n,b)
+			{
+				auto resource = new Resource;
+				resource.buffer = b;
+
+				DvnEvents.getEvents().loadingResource(n,resource);
+
+				EXT_RWops rw = EXT_RWFromConstMem(b.ptr, cast(int) b.length);
+				EXT_Surface temp1 = EXT_IMG_Load_RW(rw, 1);
+
+				auto temp2 = EXT_CreateTextureFromSurface(window.nativeScreen, temp1);
+				auto originalSize = EXT_QueryTextureSize(temp2);
+
+				auto size = new ResourceSize;
+				size.width = originalSize.x;
+				size.height = originalSize.y;
+				resource.size = size;
+
+				mainWindow.addSheetBuffer(n, resource.buffer, IntVector(size.width, size.height), 1);
+
+				mainWindow.addSheetEntry(n, n, 0, 0);
+
+				EXT_DestroyTexture(temp2);
+				EXT_FreeSurface(temp1);
+
+				DvnEvents.getEvents().loadedResource(n,resource);
+			});
+
+			wroteBundle = wroteBundle || wroteImageBundle;
+			if (wroteBundle)
+			{
+				clearBundling();
+			}
+
+			if (!streamedBundle) addResources(generalResources);
 
 			DvnEvents.getEvents().loadedAllResources();
 
@@ -251,6 +290,8 @@ public final class LoadingView : View
 			if (!settings.fullScreen) EXT_ShowWindow(mainWindow.nativeWindow);
 
 			window.remove();
+
+			new GameView(mainWindow).coverageTest();
 
 			auto app = getApplication();
 			DvnEvents.getEvents().engineReady(app, app.windows);

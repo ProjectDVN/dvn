@@ -7,6 +7,7 @@ import std.file : dirEntries, SpanMode;
 import std.path : baseName, CaseSensitive;
 
 import dvn.meta;
+import dvn.json;
 
 mixin CreateCustomException!"ResourceException";
 
@@ -21,6 +22,7 @@ public final class Resource
   int columns;
   ResourceEntry[] entries;
   string[] directions;
+  @JsonIgnore ubyte[] buffer;
 }
 
 public final class ResourceSize
