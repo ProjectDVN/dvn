@@ -333,8 +333,6 @@ public final class BackgroundMoveZoomEffect : Effect
   }
 }
 
-
-
 void initializeStandardEffects()
 {
   registerEffect(new ScreenShakeEffect);
