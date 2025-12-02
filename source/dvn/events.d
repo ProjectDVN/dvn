@@ -21,6 +21,9 @@ public class DvnEvents
 
     public:
     // Global
+    ubyte[] scriptBundleWrite(ubyte[] buffer) { return buffer; }
+    ubyte[] scriptBundleRead(ubyte[] buffer) { return buffer; }
+
     void loadedExternalApplicationState() {} // Ex. SDL has been initialized, do whatever the fuck you want with this
     void loadedSettings(GameSettings settings) {}
     void fontsLoaded(Application app) {}
@@ -123,6 +126,26 @@ public class DvnEvents
 
         class EventBuilder : DvnEvents
         {
+            public override ubyte[] scriptBundleWrite(ubyte[] buffer)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    buffer = ev.scriptBundleWrite(buffer);
+                }
+
+                return buffer;
+            }
+
+            public override ubyte[] scriptBundleRead(ubyte[] buffer)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    buffer = ev.scriptBundleRead(buffer);
+                }
+
+                return buffer;
+            }
+
             public override void loadedExternalApplicationState()
             {
                 foreach (ev; _eventsHub)

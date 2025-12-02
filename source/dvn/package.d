@@ -45,6 +45,8 @@ public
 
   import dvn.effects;
 
+  import dvn.bundling;
+
   void displayView(string name)
   {
     runDelayedTask(0, {
@@ -89,6 +91,9 @@ public
     auto gameSettings = loadGameSettings("data/settings.json");
     DvnEvents.getEvents().loadedSettings(gameSettings);
     setGlobalSettings(gameSettings);
+
+    writeBundleScript();
+    readBundleScript();
       
     auto app = new Application;
     import std.file : exists;

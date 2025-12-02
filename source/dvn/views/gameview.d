@@ -17,6 +17,7 @@ import dvn.history;
 import dvn.views.consoleview;
 import dvn.effects;
 import dvn.ui;
+import dvn.bundling;
 
 private int _customSceneIdCounter;
 
@@ -336,13 +337,8 @@ public final class GameView : View
 			
 			auto settings = getGlobalSettings();
 
-			auto scriptFiles = dirEntries("data/game/scripts","*.{vns}",SpanMode.depth);
-			foreach (scriptFile; scriptFiles)
+			void compile(string scriptText, string scriptFile)
 			{
-				lastScriptFile = scriptFile;
-
-				auto scriptText = readText(scriptFile);
-
 				auto lines = scriptText
 					.replace("\r", "")
 					.split("\n");
@@ -690,6 +686,24 @@ public final class GameView : View
 								break;
 						}
 					}
+				}
+			}
+
+			if (hasScriptBundle)
+			{
+				compile(getBundleScript, "data/scripts.dat");
+			}
+			else
+			{
+				auto scriptFiles = dirEntries("data/game/scripts","*.{vns}",SpanMode.depth);
+
+				foreach (scriptFile; scriptFiles)
+				{
+					lastScriptFile = scriptFile;
+
+					auto scriptText = readText(scriptFile);
+
+					compile(scriptText, scriptFile);
 				}
 			}
 
