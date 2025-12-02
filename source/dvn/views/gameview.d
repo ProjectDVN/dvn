@@ -890,6 +890,7 @@ public final class GameView : View
 		if (scene.stopMusic)
 		{
 			EXT_StopMusic();
+			_lastMusic = "";
 		}
 		else if (scene.music && scene.music.length)
 		{

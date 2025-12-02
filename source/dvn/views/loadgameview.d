@@ -177,6 +177,8 @@ public final class LoadGameView : View
                 auto closure = (Label oLabel, RawImage oImage, SaveFile sFile) { return () {
                     oLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
                         window.fadeToView("GameView", getColorByName("black"), false, (view) {
+                            EXT_StopMusic();
+
                             if (sFile.id == "auto" || sFile.id == "quick")
                             {
                                 import std.uuid : randomUUID;
@@ -198,6 +200,8 @@ public final class LoadGameView : View
 
                     oImage.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
                         window.fadeToView("GameView", getColorByName("black"), false, (view) {
+                            EXT_StopMusic();
+
                             if (sFile.id == "auto" || sFile.id == "quick")
                             {
                                 import std.uuid : randomUUID;

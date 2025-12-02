@@ -204,6 +204,8 @@ public final class HistoryView : View
             auto closure = (Label oLabel, DialogueHistory oHistory) { return () {
                 oLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
                     window.fadeToView("GameView", getColorByName("black"), false, (view) {
+                        EXT_StopMusic();
+                        
                         import std.uuid : randomUUID;
                         
                         auto id = randomUUID().toString;

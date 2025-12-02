@@ -78,6 +78,8 @@ public final class MainMenuView : View
 									button.onButtonClick(new MouseButtonEventHandler((b,p)
 									{
 										window.fadeToView("GameView", getColorByName("black"), false, (view) {
+											EXT_StopMusic();
+
 											import std.uuid : randomUUID;
 											
 											auto id = randomUUID().toString;
@@ -96,6 +98,8 @@ public final class MainMenuView : View
 									playLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p)
 									{
 										window.fadeToView("GameView", getColorByName("black"), false, (view) {
+											EXT_StopMusic();
+											
 											import std.uuid : randomUUID;
 											
 											auto id = randomUUID().toString;
