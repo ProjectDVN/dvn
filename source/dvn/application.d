@@ -1,3 +1,6 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.application;
 
 import dvn.external;
@@ -16,7 +19,8 @@ import core.stdc.stdlib : exit;
 
 mixin CreateCustomException!"ApplicationException";
 
-shared static this()
+//shared static this()
+void initializeExternalApplicationState()
 {
   EXT_Initialize();
 

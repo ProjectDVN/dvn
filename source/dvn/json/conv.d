@@ -1,3 +1,6 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.json.conv;
 
 import std.traits : isSomeString;

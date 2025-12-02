@@ -1,3 +1,6 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.meta;
 
 mixin template CreateCustomException(string name)
@@ -16,3 +19,35 @@ mixin template CreateCustomException(string name)
 }
 
 mixin CreateCustomException!"ArgumentException";
+
+template EnforceEventOverrides(Base, Derived)
+{
+    bool EnforceEventOverrides()
+    {
+      static foreach (name; __traits(allMembers, Base))
+      {{
+          static if (__traits(compiles, __traits(getVirtualMethods, Base, name)))
+          {{
+              alias baseFns = __traits(getVirtualMethods, Base, name);
+
+              static if (
+                name != "toString" &&
+                name != "toHash" &&
+                name != "opCmp" &&
+                name != "opEquals" &&
+                baseFns.length)
+              {{
+                  alias derivedFns = __traits(getVirtualMethods, Derived, name);
+
+                  static assert(derivedFns.length,
+                      Derived.stringof ~ " is missing virtual method `" ~ name ~ "` from " ~ Base.stringof);
+
+                  static assert(!__traits(isSame, baseFns[0], derivedFns[0]),
+                      Derived.stringof ~ " must override `" ~ name ~ "` from " ~ Base.stringof);
+              }}
+          }}
+      }}
+
+      return true;
+    }
+}

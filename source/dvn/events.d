@@ -1,9 +1,15 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.events;
 
 import dvn.views.gameview;
 import dvn.gamesettings;
 import dvn.external;
 import dvn.ui;
+import dvn.application;
+import dvn.window;
+import dvn.resources;
 
 private DvnEvents[] _eventsHub;
 private DvnEvents _events;
@@ -15,6 +21,17 @@ public class DvnEvents
 
     public:
     // Global
+    void loadedExternalApplicationState() {} // Ex. SDL has been initialized, do whatever the fuck you want with this
+    void loadedSettings(GameSettings settings) {}
+    void fontsLoaded(Application app) {}
+    void standardEffectsLoaded() {}
+
+    void loadingAllResources(Resource[string] resources) {}
+    void loadingResource(string key, Resource resource) {}
+    void loadedResource(string key, Resource resource) {}
+    void loadedAllResources() {}
+    void engineReady(Application app, Window[] windows) {}
+
     void preFrameLoop(Window[] windows) {}
     void preRenderFrameLoop(Window[] windows) {}
     void postRenderFrameLoop(Window[] windows) {}
@@ -106,6 +123,71 @@ public class DvnEvents
 
         class EventBuilder : DvnEvents
         {
+            public override void loadedExternalApplicationState()
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.loadedExternalApplicationState();
+                }
+            }
+            public override void loadedSettings(GameSettings settings)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.loadedSettings(settings);
+                }
+            }
+            public override void fontsLoaded(Application app)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.fontsLoaded(app);
+                }
+            }
+            public override void standardEffectsLoaded()
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.standardEffectsLoaded();
+                }
+            }
+
+            public override void loadingAllResources(Resource[string] resources)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.loadingAllResources(resources);
+                }
+            }
+            public override void loadingResource(string key, Resource resource)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.loadingResource(key, resource);
+                }
+            }
+            public override void loadedResource(string key, Resource resource)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.loadedResource(key, resource);
+                }
+            }
+            public override void loadedAllResources()
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.loadedAllResources();
+                }
+            }
+            public override void engineReady(Application app, Window[] windows)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.engineReady(app, windows);
+                }
+            }
+
             public override void preFrameLoop(Window[] windows)
             {
                 foreach (ev; _eventsHub)
@@ -592,6 +674,8 @@ public class DvnEvents
                     ev.renderLoadGameViewLoadEntry(saveFile, image, saveLabel);
                 }
             }
+
+            static assert(EnforceEventOverrides!(DvnEvents, EventBuilder));
         }
 
         _events = new EventBuilder;

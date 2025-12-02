@@ -1,3 +1,6 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.css.css3selector;
 
 import std.uni : isWhite;

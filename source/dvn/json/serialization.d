@@ -1,3 +1,6 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.json.serialization;
 
 import std.traits : hasUDA, FieldNameTuple, getUDAs, moduleName, isSomeString, isScalarType, isArray, isAssociativeArray;

@@ -1,3 +1,6 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.json.meta;
 
 /// Mixin template to handle fields of a type.

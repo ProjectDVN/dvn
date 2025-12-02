@@ -148,6 +148,8 @@ public final class LoadingView : View
 			{
 				foreach (k,v; resources)
 				{
+					DvnEvents.getEvents().loadingResource(k,v);
+
 					if (v.randomPath && v.randomPath.length)
 					{
 						import std.random : uniform;
@@ -188,14 +190,24 @@ public final class LoadingView : View
 					{
 						mainWindow.addSheetEntry(k, k, 0, 0);
 					}
+
+					DvnEvents.getEvents().loadedResource(k,v);
 				}
 			}
 
 			auto generalResources = loadResources("data/resources/main.json");
+
+			DvnEvents.getEvents().loadingAllResources(generalResources);
+
 			appendResources(generalResources, "data/game/backgrounds.json");
 			appendResources(generalResources, "data/game/characters.json");
 			appendResources(generalResources, "data/game/animations.json");
+
+			DvnEvents.getEvents().loadingAllResources(generalResources);
+
 			addResources(generalResources);
+
+			DvnEvents.getEvents().loadedAllResources();
 
 			loadMusic("data/game/music.json");
 
@@ -239,6 +251,9 @@ public final class LoadingView : View
 			if (!settings.fullScreen) EXT_ShowWindow(mainWindow.nativeWindow);
 
 			window.remove();
+
+			auto app = getApplication();
+			DvnEvents.getEvents().engineReady(app, app.windows);
 		});
 	}
 }

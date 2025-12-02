@@ -1,3 +1,6 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.external.sdl;
 
 import dvn.external.core;
@@ -36,6 +39,8 @@ public alias EXT_SetWindowFullscreen = SDL_SetWindowFullscreen;
 public alias EXT_CreateRGBSurface = SDL_CreateRGBSurface;
 
 public alias EXT_PIXELFORMAT_ARGB8888 = SDL_PIXELFORMAT_ARGB8888;
+
+public alias EXT_TEXTUREACCESS_STREAMING = SDL_TEXTUREACCESS_STREAMING;
 
 public alias EXT_SaveBMP = SDL_SaveBMP;
 
@@ -1169,6 +1174,12 @@ public alias EXT_RendererFlip = SDL_RendererFlip;
 public alias EXT_Surface = SDL_Surface*;
 
 public alias EXT_CreateTextureFromSurface = SDL_CreateTextureFromSurface;
+
+public alias EXT_CreateTexture = SDL_CreateTexture;
+
+public alias EXT_LockTexture = SDL_LockTexture;
+
+public alias EXT_UnlockTexture = SDL_UnlockTexture;
 
 public alias EXT_RenderUnicodeText = TTF_RenderUNICODE_Blended;
 

@@ -1,3 +1,6 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.components.button;
 
 import dvn.component;
@@ -8,6 +11,7 @@ import dvn.colors;
 import dvn.painting;
 import dvn.components.label;
 
+/// 
 public final class ButtonPaint
 {
   private:
@@ -28,25 +32,33 @@ public final class ButtonPaint
   public:
   @property
   {
+    /// 
     Color backgroundColor() { return _backgroundColor; }
+    /// 
     void backgroundColor(Color color)
     {
       _backgroundColor = color;
     }
 
+    /// 
     Color backgroundBottomColor() { return _backgroundBottomColor; }
+    /// 
     void backgroundBottomColor(Color color)
     {
       _backgroundBottomColor = color;
     }
 
+    /// 
     Color borderColor() { return _borderColor; }
+    /// 
     void borderColor(Color color)
     {
       _borderColor = color;
     }
 
+    /// 
     Color shadowColor() { return _shadowColor; }
+    /// 
     void shadowColor(Color color)
     {
       _shadowColor = color;
@@ -54,8 +66,10 @@ public final class ButtonPaint
   }
 }
 
+/// 
 public alias DrawButtonDelegate = void delegate(string name, Painting painting, Color backgroundColor, Color backgroundBottomColor, Color borderColor, Color shadowColor);
 
+/// 
 public final class Button : Component
 {
   private:
@@ -217,11 +231,13 @@ public final class Button : Component
 
   public:
   final:
+  /// 
   this(Window window)
   {
     this(window, null, null, null);
   }
 
+  /// 
   this(Window window, string defaultName, string clickName, string hoverName)
   {
     super(window, false);
@@ -363,6 +379,7 @@ public final class Button : Component
     restyle();
   }
 
+  /// 
   void renderButtonImage(string path, IntVector imageSize, string hoverPath, IntVector imageSizeHover)
   {
     import std.string : toStringz;
@@ -470,7 +487,9 @@ public final class Button : Component
 
   @property
   {
+    /// 
     string defaultName() { return _defaultName; }
+    /// 
     void defaultName(string newName)
     {
       _defaultName = newName;
@@ -478,7 +497,9 @@ public final class Button : Component
       updateRect(true);
     }
 
+    /// 
     string clickName() { return _clickName; }
+    /// 
     void clickName(string newName)
     {
       _clickName = newName;
@@ -486,7 +507,9 @@ public final class Button : Component
       updateRect(true);
     }
 
+    /// 
     string hoverName() { return _hoverName; }
+    /// 
     void hoverName(string newName)
     {
       _hoverName = newName;
@@ -494,7 +517,9 @@ public final class Button : Component
       updateRect(true);
     }
 
+    /// 
     dstring text() { return _text; }
+    /// 
     void text(dstring newText)
     {
       _text = newText;
@@ -506,7 +531,9 @@ public final class Button : Component
       updateRect(true);
     }
 
+    /// 
     Color textColor() { return _textColor; }
+    /// 
     void textColor(Color newColor)
     {
       _textColor = newColor;
@@ -514,7 +541,10 @@ public final class Button : Component
       updateLabel();
     }
 
+    /// 
     string fontName() { return _fontName; }
+
+    /// 
     void fontName(string newFontName)
     {
       _fontName = newFontName;
@@ -526,7 +556,9 @@ public final class Button : Component
       updateRect(true);
     }
 
+    /// 
     size_t fontSize() { return _fontSize; }
+    /// 
     void fontSize(size_t newFontSize)
     {
       _fontSize = newFontSize;
@@ -537,8 +569,10 @@ public final class Button : Component
 
       updateRect(true);
     }
-
+    
+    /// 
     bool fitToSize() { return _fitToSize; }
+    /// 
     void fitToSize(bool shouldFitToSize)
     {
       _fitToSize = shouldFitToSize;
@@ -550,23 +584,24 @@ public final class Button : Component
       updateRect(true);
     }
 
+    /// 
     ButtonPaint defaultPaint() { return _defaultPaint; }
-
+    /// 
     ButtonPaint hoverPaint() { return _hoverPaint; }
-
+    /// 
     ButtonPaint clickPaint() { return _clickPaint; }
   }
-
+  /// 
   void verifyClick(VERIFY_CLICK_DELGATE verification)
   {
     _verifyClicks ~= verification;
   }
-
+  /// 
   void onButtonClick(MouseButtonEventHandler eventHandler)
   {
     _buttonClickEvents ~= eventHandler;
   }
-
+  /// 
   void fireButtonClick()
   {
     if (!_buttonClickEvents)
@@ -579,21 +614,21 @@ public final class Button : Component
       event(MouseButton.left, IntVector(x, y));
     }
   }
-
+  /// 
   void setCustomButtonDraw(DrawButtonDelegate customButtonDraw)
   {
     _customButtonDraw = customButtonDraw;
 
     restyle();
   }
-
+  /// 
   void removeCustomButtonDraw()
   {
     _customButtonDraw = null;
 
     restyle();
   }
-
+  /// 
   void restyle()
   {
     drawDefaultButton();
@@ -602,7 +637,7 @@ public final class Button : Component
 
     updateRect(true);
   }
-
+  /// 
   override void repaint()
   {
     auto rect = super.clientRect;

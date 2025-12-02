@@ -1,3 +1,6 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.tools;
 
 import std.datetime : SysTime, Duration, DateTime, UTC, dur;

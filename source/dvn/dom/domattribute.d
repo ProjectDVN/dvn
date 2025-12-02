@@ -1,3 +1,6 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.dom.domattribute;
 
 import std.string : strip, toLower;

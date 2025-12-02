@@ -82,7 +82,12 @@ public
 
   void runDVN()
   {
+    initializeExternalApplicationState();
+
+    DvnEvents.getEvents().loadedExternalApplicationState();
+
     auto gameSettings = loadGameSettings("data/settings.json");
+    DvnEvents.getEvents().loadedSettings(gameSettings);
     setGlobalSettings(gameSettings);
       
     auto app = new Application;
@@ -99,6 +104,8 @@ public
     {
       app.fonts.addBackupFont(backupFont);
     }
+
+    DvnEvents.getEvents().fontsLoaded(app);
 
     if (gameSettings.muteMusic) EXT_DisableMusic();
     if (gameSettings.muteSoundEffects) EXT_DisableSoundEffects();
@@ -136,6 +143,8 @@ public
     }
 
     initializeStandardEffects();
+
+    DvnEvents.getEvents().standardEffectsLoaded();
 
     app.start();
   }

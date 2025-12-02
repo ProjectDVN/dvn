@@ -1,3 +1,6 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.dom.domparser;
 
 import std.uni : isWhite;

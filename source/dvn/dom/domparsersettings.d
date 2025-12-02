@@ -1,3 +1,6 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.dom.domparsersettings;
 
 import std.string : toLower;
@@ -113,7 +116,7 @@ abstract class DomParserSettings
     /// Gets a boolean determining whether the parser is strict or not.
     bool strictParsing() @safe { return _strictParsing; }
 
-    /// Gets a boolean determining whether the parser allwos self-closing tags or not.
+    /// Gets a boolean determining whether the parser allows self-closing tags or not.
     bool allowSelfClosingTags() @safe { return _allowSelfClosingTags; }
   }
 
@@ -182,7 +185,7 @@ abstract class DomParserSettings
       return false;
     }
 
-    return _headRepairTags.has(tagName);
+    return _headRepairTags.has(tagName.toLower);
   }
 
   /**
@@ -199,6 +202,6 @@ abstract class DomParserSettings
       return false;
     }
 
-    return _bodyRepairTags.has(tagName);
+    return _bodyRepairTags.has(tagName.toLower);
   }
 }

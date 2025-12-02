@@ -1,3 +1,6 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.collections;
 
 /// A simple hash set implementation using the build-in AA.

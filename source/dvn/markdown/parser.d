@@ -1,3 +1,6 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.markdown.parser;
 
 import std.array : replace, split, array;

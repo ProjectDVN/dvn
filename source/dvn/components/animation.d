@@ -1,9 +1,13 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.components.animation;
 
 import dvn.component;
 import dvn.external;
 import dvn.window;
 
+/// 
 public final class Animation : Component
 {
   private:
@@ -25,6 +29,7 @@ public final class Animation : Component
 
   public:
   final:
+  /// 
   this(Window window, string name, bool singular = false, size_t row = 0)
   {
     super(window, false);
@@ -44,7 +49,9 @@ public final class Animation : Component
 
   @property
   {
+    /// 
     double scale() { return _scale; }
+    /// 
     void scale(double newScale)
     {
       auto size = IntVector(cast(int)(_originalRect.w * newScale), cast(int)(_originalRect.h * newScale));
@@ -52,17 +59,23 @@ public final class Animation : Component
       _rect.h = size.y;
       _scale = newScale;
     }
+    /// 
     double angle() { return _angle; }
+    /// 
     void angle(double newAngle)
     {
       _angle = newAngle;
     }
+    /// 
     bool flip() { return _flip; }
+    /// 
     void flip(bool shouldFlip)
     {
       _flip = shouldFlip;
     }
+    /// 
     string name() { return _name; }
+    /// 
     void name(string animationName)
     {
       _name = animationName;
@@ -72,14 +85,16 @@ public final class Animation : Component
 
       updateRect(true);
     }
-
+    /// 
     uint delay() { return _delay; }
+    /// 
     void delay(uint newDelay)
     {
       _delay = newDelay;
     }
-
+    /// 
     size_t row() { return _row; }
+    /// 
     void row(size_t newRow)
     {
       _row = cast(int)newRow;
@@ -91,6 +106,7 @@ public final class Animation : Component
     }
   }
 
+  /// 
   protected override bool measureComponentSize(out IntVector size)
   {
     if (!_sheet.sheet)
@@ -105,6 +121,7 @@ public final class Animation : Component
     return true;
   }
 
+  /// 
   override void repaint()
   {
     auto rect = super.clientRect;
@@ -158,6 +175,7 @@ public final class Animation : Component
     }
   }
 
+  /// 
   void restart()
   {
       _frameIndex = 0;
@@ -165,6 +183,7 @@ public final class Animation : Component
       _lastMS = 0;
   }
 
+  /// 
   override void renderNativeComponent()
   {
     if (!_frames || !_frames.length || _finished)
