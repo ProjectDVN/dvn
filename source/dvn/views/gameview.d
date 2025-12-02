@@ -978,15 +978,27 @@ public final class GameView : View
 			scene.background : ((loadBackground && loadBackground.length) ?
 				loadBackground : _lastBackgroundSource));
 
-		auto bgImage = new Image(window, backgroundSource);
-        addComponent(bgImage);
-        bgImage.position = IntVector(
-            (window.width / 2) - (bgImage.width / 2),
-            (window.height / 2) - (bgImage.height / 2));
-        bgImage.show();
-		bgImage.dataId = SceneComponentId.background;
+		if (backgroundSource && backgroundSource.length)
+		{
+			auto bgImage = new Image(window, backgroundSource);
+			addComponent(bgImage);
+			bgImage.position = IntVector(
+				(window.width / 2) - (bgImage.width / 2),
+				(window.height / 2) - (bgImage.height / 2));
+			bgImage.show();
+			bgImage.dataId = SceneComponentId.background;
 
-		DvnEvents.getEvents().renderGameViewBackground(bgImage);
+			DvnEvents.getEvents().renderGameViewBackground(bgImage);
+		}
+		else
+		{
+			auto background = new Panel(window);
+			addComponent(background);
+			background.fillColor = "000".getColorByHex;
+			background.size = IntVector(window.width, window.height);
+			background.position = IntVector(0,0);
+			background.show();
+		}
 
 		if (scene.effects)
 		{

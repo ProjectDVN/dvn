@@ -15,6 +15,9 @@ public final class Image : Component
   string _renderName;
   bool _coverMode;
   int _opacity;
+  EXT_Rectangle _rect;
+  EXT_Rectangle _originalRect;
+  double _scale;
 
   public:
   final:
@@ -31,6 +34,8 @@ public final class Image : Component
     {
       _sheetRender = sheetRender;
     }
+    _rect = EXT_CreateRectangle(Rectangle(0,0,0,0));
+    _originalRect = _rect;
     
     opacity = 255;
   }
@@ -44,6 +49,16 @@ public final class Image : Component
 
   @property
   {
+    /// 
+    double scale() { return _scale; }
+    /// 
+    void scale(double newScale)
+    {
+      auto size = IntVector(cast(int)(_originalRect.w * newScale), cast(int)(_originalRect.h * newScale));
+      _rect.w = size.x;
+      _rect.h = size.y;
+      _scale = newScale;
+    }
     string name() { return _name; }
     void name(string newName)
     {
@@ -215,7 +230,14 @@ public final class Image : Component
     if (_sheetRender && _sheetRender.texture)
     {
       EXT_SetTextureAlphaMod(_sheetRender.texture, cast(ubyte)_opacity);
-      EXT_RenderCopy(screen, _sheetRender.texture, _sheetRender.entry.textureRect, _sheetRender.entry.rect);
+      if (_scale >= 2 || _scale < 1)
+      {
+        EXT_RenderCopy(screen, _sheetRender.texture, _sheetRender.entry.textureRect, _rect);
+      }
+      else 
+      {
+        EXT_RenderCopy(screen, _sheetRender.texture, _sheetRender.entry.textureRect, _sheetRender.entry.rect);
+      }
     }
   }
 }
