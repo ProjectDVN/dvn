@@ -281,15 +281,28 @@ public abstract class Component
       {
         foreach (paintingParent; _paintingsAll)
         {
-          foreach (painting; _currentPainting.bottomPaintings)
+          foreach (painting; paintingParent.bottomPaintings)
           {
             painting.rect = null;
           }
 
-          foreach (painting; _currentPainting.topPaintings)
+          foreach (painting; paintingParent.topPaintings)
           {
             painting.rect = null;
           }
+        }
+      }
+
+      if (_currentPainting)
+      {
+        foreach (painting; _currentPainting.bottomPaintings)
+        {
+          painting.rect = null;
+        }
+
+        foreach (painting; _currentPainting.topPaintings)
+        {
+          painting.rect = null;
         }
       }
 
@@ -721,15 +734,28 @@ public abstract class Component
       {
         foreach (paintingParent; _paintingsAll)
         {
-          foreach (painting; _currentPainting.bottomPaintings)
+          foreach (painting; paintingParent.bottomPaintings)
           {
             painting.rect = null;
           }
 
-          foreach (painting; _currentPainting.topPaintings)
+          foreach (painting; paintingParent.topPaintings)
           {
             painting.rect = null;
           }
+        }
+      }
+
+      if (_currentPainting)
+      {
+        foreach (painting; _currentPainting.bottomPaintings)
+        {
+          painting.rect = null;
+        }
+
+        foreach (painting; _currentPainting.topPaintings)
+        {
+          painting.rect = null;
         }
       }
 
