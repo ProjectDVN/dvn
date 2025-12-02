@@ -95,6 +95,8 @@ public final class SettingsView : View
 			EXT_PlayMusic(music);
 		}
 
+        DvnEvents.getEvents().renderSettingsViewStart();
+
         auto bgImage = new Image(window, "MainMenuBackground");
         addComponent(bgImage);
         bgImage.position = IntVector(
@@ -223,6 +225,8 @@ public final class SettingsView : View
             restyleCheckbox(checkbox, settings);
             checkbox.updateRect();
 
+            DvnEvents.getEvents().renderSettingsCheckBox(checkbox);
+
             nextY += label.height + 16;
         }
 
@@ -314,6 +318,9 @@ public final class SettingsView : View
 
                 rightButton.position = IntVector(valueLabel.x + valueLabel.width + 14, savedY);
             }));
+
+            DvnEvents.getEvents().renderSettingsButton(leftButton);
+            DvnEvents.getEvents().renderSettingsButton(rightButton);
         }
 
         renderSection("VIDEO");
@@ -438,5 +445,7 @@ public final class SettingsView : View
 
             saveSettings();
         });
+        
+        DvnEvents.getEvents().renderSettingsViewEnd();
     }
 }

@@ -104,8 +104,11 @@ public class DvnEvents
     void endGameView() {}
 
     // Settings View
+    void renderSettingsViewStart() {}
     void renderSettingsDropDown(DropDown dropdown) {}
     void renderSettingsCheckBox(CheckBox checkbox) {}
+    void renderSettingsButton(Button button) {}
+    void renderSettingsViewEnd() {}
 
     // Main Menu View
     void renderMainMenuView(Window window, Component titleLabel, Component playLabel, Component loadLabel, Component historyLabel, Component settingsLabel, Component galleryLabel, Component exitLabel) {}
@@ -639,6 +642,13 @@ public class DvnEvents
             }
 
             // Settings View
+            public override void renderSettingsViewStart()
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderSettingsViewStart();
+                }
+            }
             public override void renderSettingsDropDown(DropDown dropdown)
             {
                 foreach (ev; _eventsHub)
@@ -646,12 +656,25 @@ public class DvnEvents
                     ev.renderSettingsDropDown(dropdown);
                 }
             }
-
             public override void renderSettingsCheckBox(CheckBox checkbox)
             {
                 foreach (ev; _eventsHub)
                 {
                     ev.renderSettingsCheckBox(checkbox);
+                }
+            }
+            public override void renderSettingsButton(Button button)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderSettingsButton(button);
+                }
+            }
+            public override void renderSettingsViewEnd()
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderSettingsViewEnd();
                 }
             }
 
