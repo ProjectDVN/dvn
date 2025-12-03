@@ -2190,6 +2190,136 @@ public final class GameView : View
 
 		if (scene.hideButtons) quickSaveButton.hide();
 
+		Component[] safeComponents = [saveButton, exitButton, settingsButton, autoButton, quickSaveButton];
+
+		if (!settings.useLegacySceneButtons)
+		{
+			Label saveLabel;
+			Label settingsLabel;
+			Label autoLabel;
+			Label quickSaveLabel;
+			Label exitLabel;
+			Panel labelPanel;
+
+			saveButton.hide();
+			exitButton.hide();
+			settingsButton.hide();
+			autoButton.hide();
+			quickSaveButton.hide();
+
+			auto view = quickSaveButton.view;
+
+			labelPanel = new Panel(window);
+			view.addComponent(labelPanel);
+
+			Label[] labels = [];
+
+			saveLabel = new Label(window);
+			labelPanel.addComponent(saveLabel);
+			saveLabel.fontName = settings.defaultFont;
+			saveLabel.fontSize = 18;
+			saveLabel.color = "fff".getColorByHex;
+			saveLabel.text = saveButton.text;
+			saveLabel.shadow = true;
+			saveLabel.isLink = true;
+			saveLabel.position = IntVector(0, 0);
+			saveLabel.updateRect();
+			saveLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) { saveButton.fireButtonClick(); }));
+			labels ~= saveLabel;
+			
+			settingsLabel = new Label(window);
+			labelPanel.addComponent(settingsLabel);
+			settingsLabel.fontName = settings.defaultFont;
+			settingsLabel.fontSize = 18;
+			settingsLabel.color = "fff".getColorByHex;
+			settingsLabel.text = settingsButton.text;
+			settingsLabel.shadow = true;
+			settingsLabel.isLink = true;
+			settingsLabel.position = IntVector(0, 0);
+			settingsLabel.updateRect();
+			settingsLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) { settingsButton.fireButtonClick(); }));
+			labels ~= settingsLabel;
+			
+			autoLabel = new Label(window);
+			labelPanel.addComponent(autoLabel);
+			autoLabel.fontName = settings.defaultFont;
+			autoLabel.fontSize = 18;
+			autoLabel.color = "fff".getColorByHex;
+			autoLabel.text = autoButton.text;
+			autoLabel.shadow = true;
+			autoLabel.isLink = true;
+			autoLabel.position = IntVector(0, 0);
+			autoLabel.updateRect();
+			
+			int width = 0;
+			int maxHeight = 0;
+			int x = 0;
+
+			void updatePanel()
+			{
+				width = 0;
+				maxHeight = 0;
+				x = 0;
+				foreach (label; labels)
+				{
+					label.position = IntVector(x, label.y);
+					width += label.width + 8;
+					if (label.height > maxHeight) maxHeight = label.height;
+
+					x += label.width + 8;
+
+					label.updateRect();
+				}
+
+				labelPanel.size = IntVector(width, maxHeight);
+				labelPanel.position = IntVector(
+					(window.width / 2) - (labelPanel.width / 2),
+					window.height - (labelPanel.height + 8)
+				);
+			}
+
+			autoLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p)
+			{
+				autoButton.fireButtonClick();
+
+				autoLabel.text = autoButton.text;
+				autoLabel.updateRect();
+
+				updatePanel();
+			}));
+			labels ~= autoLabel;
+			
+			quickSaveLabel = new Label(window);
+			labelPanel.addComponent(quickSaveLabel);
+			quickSaveLabel.fontName = settings.defaultFont;
+			quickSaveLabel.fontSize = 18;
+			quickSaveLabel.color = "fff".getColorByHex;
+			quickSaveLabel.text = quickSaveButton.text;
+			quickSaveLabel.shadow = true;
+			quickSaveLabel.isLink = true;
+			quickSaveLabel.position = IntVector(0, 0);
+			quickSaveLabel.updateRect();
+			quickSaveLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) { quickSaveButton.fireButtonClick(); }));
+			labels ~= quickSaveLabel;
+			
+			exitLabel = new Label(window);
+			labelPanel.addComponent(exitLabel);
+			exitLabel.fontName = settings.defaultFont;
+			exitLabel.fontSize = 18;
+			exitLabel.color = "fff".getColorByHex;
+			exitLabel.text = exitButton.text;
+			exitLabel.shadow = true;
+			exitLabel.isLink = true;
+			exitLabel.position = IntVector(0, 0);
+			exitLabel.updateRect();
+			exitLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) { exitButton.fireButtonClick(); }));
+			labels ~= exitLabel;
+
+			updatePanel();
+
+			safeComponents ~= labelPanel;
+		}
+
 		bool intersectsWith(int x1, int y1, int x2, int y2, int w2, int h2)
 		{
 			return (x1 > x2) &&
@@ -2344,8 +2474,6 @@ public final class GameView : View
 				takeScreenshot(window, "data/game/gallery/" ~ photoId ~ ".png");
 			}
 		}), true);
-
-		Component[] safeComponents = [saveButton, exitButton, settingsButton, autoButton, quickSaveButton];
 
 		DvnEvents.getEvents().addClickSafeComponents(safeComponents);
 

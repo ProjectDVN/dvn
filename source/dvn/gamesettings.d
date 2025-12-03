@@ -84,6 +84,7 @@ public final class GameSettings
   int textWrapSize;
   bool fadeInCharacters;
   bool hideSavedLabel;
+  bool useLegacySceneButtons;
 }
 
 public final class SettingsImage
