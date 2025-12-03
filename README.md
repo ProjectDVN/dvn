@@ -15,7 +15,7 @@ Website: https://projectdvn.com/
 
 Wiki: https://github.com/ProjectDVN/dvn/wiki
 
-Documentation: https://dvn-docs.readthedocs.io/
+Documentation: https://projectdvn.com/Docs/
 
 Discord: https://discord.gg/UhetecF4US
 
@@ -171,7 +171,7 @@ Project DVN combines ease of use with powerful features, making it the ideal cho
 
 With Project DVN, the power to create unforgettable narrative experiences is in your hands. Start your journey and bring your stories to life today!
 
-To create your first visual novel see: https://dvn-docs.readthedocs.io/en/latest/getting-started.html
+To create your first visual novel see: https://projectdvn.com/docs/getting-started
 
 ---
 
