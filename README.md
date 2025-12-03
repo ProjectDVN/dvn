@@ -89,7 +89,7 @@ DVN is the opposite
 
 See: https://dvn-docs.readthedocs.io/en/latest/scripting.html
 
-#### Script-Agnostic Architecture (Important!)
+#### Script-Agnostic Architecture
 
 DVN does not rely on a specific scripting language.
 
