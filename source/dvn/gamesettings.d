@@ -83,6 +83,7 @@ public final class GameSettings
   int textMargin;
   int textWrapSize;
   bool fadeInCharacters;
+  bool hideSavedLabel;
 }
 
 public final class SettingsImage
@@ -159,6 +160,44 @@ void saveGame(GameSettings settings, string id, string scene, string background,
   settings.saves[id] = saveFile;
 
   DvnEvents.getEvents().savingGame(settings.saves, saveFile);
+
+  if (!settings.hideSavedLabel)
+  {
+    if (saveFile.id != "auto")
+		{
+      import dvn.application;
+      import dvn.delayedtask;
+      import dvn.components;
+      import dvn.ui;
+      import dvn.views.gameview;
+
+			auto window = getApplication().getRealWindow();
+
+			if (!window) return;
+
+			auto view = window.getActiveView!GameView("GameView");
+
+			if (!view) return;
+
+			auto saveLabel = new Label(window);
+      view.addComponent(saveLabel);
+      saveLabel.fontName = settings.defaultFont;
+      saveLabel.fontSize = 24;
+      saveLabel.color = "fff".getColorByHex;
+      saveLabel.text = "Saved...";
+      saveLabel.shadow = true;
+      saveLabel.isLink = false;
+      saveLabel.position = IntVector(16, 16);
+      saveLabel.updateRect();
+
+			runDelayedTask(2000, {
+				saveLabel.hide();
+
+				try { view.removeComponent(saveLabel); }
+				catch (Exception e) { }
+      });
+		}
+  }
 
   updateSaveFiles(settings);
 }
