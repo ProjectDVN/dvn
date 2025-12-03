@@ -23,6 +23,7 @@ public final class Label : Component
   size_t _wrapWidth;
   bool _shadow;
   bool _isLink;
+  Color _shadowColor;
 
   EXT_TextEntry[] _entries;
   EXT_TextEntry[] _shadowEntries;
@@ -51,6 +52,8 @@ public final class Label : Component
 
       return !_hasMouseHover;
     }));
+
+    _shadowColor = "000".getColorByHex;
   }
 
   @property
@@ -80,6 +83,14 @@ public final class Label : Component
     void color(Color newColor)
     {
       _color = newColor;
+
+      updateRect(true);
+    }
+
+    Color shadowColor() { return _shadowColor; }
+    void shadowColor(Color newColor)
+    {
+      _shadowColor = newColor;
 
       updateRect(true);
     }
@@ -343,7 +354,7 @@ public final class Label : Component
 
       if (_shadow)
       {
-        EXT_Surface shadowSurface = EXT_RenderUnicodeText(rawFont, utf16Buffer.ptr, "000".getColorByHex.changeAlpha(_color.a));
+        EXT_Surface shadowSurface = EXT_RenderUnicodeText(rawFont, utf16Buffer.ptr, _shadowColor.changeAlpha(_color.a));
 
         if (!shadowSurface)
         {

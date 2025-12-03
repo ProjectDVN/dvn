@@ -1555,8 +1555,19 @@ public alias EXT_Delay = SDL_Delay;
 
 private string _lastMusic;
 
+public void delegate() EXT_PlayLastMusicOverride;
+public void delegate(string path) EXT_PlayMusicOverride;
+public void delegate() EXT_PauseMusicOverride;
+public void delegate() EXT_StopMusicOverride;
+public void delegate(string path) EXT_PlaySoundOverride;
+
 void EXT_PlayLastMusic()
 {
+  if (EXT_PlayLastMusicOverride)
+  {
+    EXT_PlayLastMusicOverride();
+    return;
+  }
   if (!_lastMusic || !_lastMusic.length)
   {
     return;
@@ -1567,6 +1578,11 @@ void EXT_PlayLastMusic()
 
 void EXT_PlayMusic(string path)
 {
+  if (EXT_PlayLastMusicOverride)
+  {
+    EXT_PlayMusicOverride(path);
+    return;
+  }
   if (_currentMusicPath == path)
   {
     return;
@@ -1596,6 +1612,11 @@ void EXT_PlayMusic(string path)
 
 void EXT_PauseMusic()
 {
+  if (EXT_PauseMusicOverride)
+  {
+    EXT_PauseMusicOverride();
+    return;
+  }
   if (_currentMusic)
   {
     _currentMusic.pause();
@@ -1604,6 +1625,11 @@ void EXT_PauseMusic()
 
 void EXT_StopMusic()
 {
+  if (EXT_StopMusicOverride)
+  {
+    EXT_StopMusicOverride();
+    return;
+  }
   if (_currentMusic)
   {
     _currentMusic.stop();
@@ -1618,6 +1644,11 @@ private EXT_SoundChunk[string] _soundEffects;
 
 void EXT_PlaySound(string path)
 {
+  if (EXT_PlaySoundOverride)
+  {
+    EXT_PlaySoundOverride(path);
+    return;
+  }
   import std.string : toStringz;
 
   auto sound = _soundEffects.get(path, null);
