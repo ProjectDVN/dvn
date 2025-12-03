@@ -759,13 +759,11 @@ public final class Button : Component
 
   override void clean()
   {
-    if (!_isImageRender)
+    if (_isImageRender)
     {
-      return;
+      EXT_DestroyTexture(_texture);
+      EXT_FreeSurface(_temp);
     }
-
-    EXT_DestroyTexture(_texture);
-    EXT_FreeSurface(_temp);
 
     _cleaned = true;
 

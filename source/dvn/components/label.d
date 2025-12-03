@@ -242,7 +242,7 @@ public final class Label : Component
 
     if (_wrapText && _wrapWidth > 0)
     {
-      _text = _text = wrapableText(_textString);
+      _text = wrapableText(_textString);
     }
     else
     {

@@ -32,6 +32,8 @@ public class DelayedTask
         _repeat = repeat;
     }
 
+    @property bool executed() { return _executed; }
+
     void handle(uint ms)
     {
         if (_lastMS == 0)
