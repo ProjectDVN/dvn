@@ -280,6 +280,19 @@ public final class DropDown : Component
     restyle();
   }
 
+  override void clean()
+  {
+    if (_itemsPanel)
+    {
+      _itemsPanel.window.removeComponent(_itemsPanel);
+    }
+
+    if (_itemsPanelScrollBar)
+    {
+      _itemsPanelScrollBar.window.removeComponent(_itemsPanelScrollBar);
+    }
+  }
+
   @property
   {
     bool showAbove() { return _showAbove; }
@@ -622,21 +635,22 @@ public final class DropDown : Component
       }
 
       _itemsPanel = new Panel(window);
-      auto parent = super.parent;
+      window.addComponent(_itemsPanel);
+      // auto parent = super.parent;
 
-      if (parent) parent.addComponent(_itemsPanel);
-      else
-      {
-        auto view = super.view;
-        if (view)
-        {
-          view.addComponent(_itemsPanel);
-        }
-        else
-        {
-          window.addComponent(_itemsPanel);
-        }
-      }
+      // if (parent) parent.window.addComponent(_itemsPanel);
+      // else
+      // {
+      //   auto view = super.view;
+      //   if (view)
+      //   {
+      //     view.window.addComponent(_itemsPanel);
+      //   }
+      //   else
+      //   {
+      //     window.addComponent(_itemsPanel);
+      //   }
+      // }
 
       _itemsPanel.hide();
       _itemsPanel.size = IntVector(super.width-15, super.height * 4);
@@ -657,19 +671,20 @@ public final class DropDown : Component
       	_itemsPanelScrollBar = new ScrollBar(window, _itemsPanel);
       	_itemsPanelScrollBar.fillColor = defaultPaint.backgroundColor;
       	_itemsPanelScrollBar.borderColor = defaultPaint.borderColor;
-        if (parent) parent.addComponent(_itemsPanelScrollBar);
-        else
-        {
-          auto view = super.view;
-          if (view)
-          {
-            view.addComponent(_itemsPanelScrollBar);
-          }
-          else
-          {
-            window.addComponent(_itemsPanelScrollBar);
-          }
-        }
+        window.addComponent(_itemsPanelScrollBar);
+        // if (parent) parent.addComponent(_itemsPanelScrollBar);
+        // else
+        // {
+        //   auto view = super.view;
+        //   if (view)
+        //   {
+        //     view.addComponent(_itemsPanelScrollBar);
+        //   }
+        //   else
+        //   {
+        //     window.addComponent(_itemsPanelScrollBar);
+        //   }
+        // }
       	_itemsPanelScrollBar.isVertical = true;
       	_itemsPanelScrollBar.size = IntVector(16, _itemsPanel.height);
       	_itemsPanelScrollBar.position = IntVector(_itemsPanel.x + _itemsPanel.width, _itemsPanel.y);

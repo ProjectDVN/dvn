@@ -83,6 +83,8 @@ public final class Window
         _renderComponents ~= component;
       }
     }
+
+    _events.reverseEventOrder();
   }
 
   public:

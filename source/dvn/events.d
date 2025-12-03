@@ -779,6 +779,19 @@ public final class EventCollection
 
   package(dvn)
   {
+    void reverseEventOrder()
+    {
+        import std.algorithm : reverse;
+        import std.array : array;
+        
+        _mouseButtonDownEvents = _mouseButtonDownEvents.reverse.array;
+        _mouseButtonUpEvents = _mouseButtonUpEvents.reverse.array;
+        _mouseMoveEvents = _mouseMoveEvents.reverse.array;
+        _textInputEvents = _textInputEvents.reverse.array;
+        _keyboardDownEvents = _keyboardDownEvents.reverse.array;
+        _keyboardUpEvents = _keyboardUpEvents.reverse.array;
+    }
+
     void clearEvents()
     {
       _mouseButtonDownEvents = [];
