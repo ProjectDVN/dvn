@@ -21,6 +21,19 @@ Discord: https://discord.gg/UhetecF4US
 
 Project DVN is a powerful, user-friendly and flexible free open-source visual novel engine written in the D programming language. It's designed to help creators craft immersive, interactive narrative experiences. Whether you're a solo storyteller, an indie developer, or a studio, Project DVN provides the tools and flexibility needed to bring your stories to life. No advanced technical skills required. Start your journey today!
 
+## Vision
+
+DVN exists to bring visual novel development closer to how stories are actually written.
+
+The goal is simple:
+**powerful systems, simple scripts.**
+
+DVN aims to merge a screenplay-like scripting style with a deeply capable engine core - letting writers focus on narrative flow while still giving developers the freedom to build complex, dynamic experiences.
+
+Ease of use for writers.  
+Full power for developers.  
+No limitations for creators.
+
 ## Core Philosophy
 
 Project DVN is built from what visual novels actually do, not from what engines typically offer.
