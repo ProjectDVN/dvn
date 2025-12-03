@@ -205,4 +205,4 @@ If you wish to contribute just go ahead and do a pull-request or create an issue
 
 ---
 
-![Project DVN](https://i.imgur.com/gjygrkN.png "DVN")
+![Project DVN](https://projectdvn.com/images/mascot.png "DVN")
