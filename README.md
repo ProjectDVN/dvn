@@ -89,6 +89,29 @@ DVN is the opposite
 
 See: https://dvn-docs.readthedocs.io/en/latest/scripting.html
 
+#### Script-Agnostic Architecture (Important!)
+
+DVN does not rely on a specific scripting language.
+
+The built-in .vns script format is only a parser included with the engine, not a core requirement.
+DVN itself only needs scene graph data (SceneEntry objects), meaning:
+
+You can replace the scripting language entirely.
+
+You can load scenes from JSON, YAML, Lua, Ink, or any custom format.
+
+You can generate scenes procedurally at runtime.
+
+Tools can build scenes directly without parsing text.
+
+Modders can add new scripting formats without modifying the engine.
+
+If your custom parser constructs the scene graph correctly,
+DVN will run it exactly like native scripts.
+
+This makes DVN fundamentally different from interpreter-driven VN engines:
+DVN is a data-driven runtime, not a language-bound interpreter.
+
 #### DVN Scripting Is This Simple
 
 Example taken from an actual VN (The Classroom Where Tomorrow Never Comes) made with Project DVN.
