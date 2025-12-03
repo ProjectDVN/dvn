@@ -189,7 +189,13 @@ To create your first visual novel see: https://dvn-docs.readthedocs.io/en/latest
 
 ### Building
 
-See: https://dvn-docs.readthedocs.io/en/latest/getting-started.html
+See:
+
+https://projectdvn.com/Docs/getting-started#installing-dvn
+
++
+
+https://projectdvn.com/Docs/getting-started#building
 
 ### Events
 
