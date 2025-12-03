@@ -712,6 +712,16 @@ public final class GameView : View
 				}
 			}
 
+			foreach (k,s; _scenes)
+			{
+				import std.string : strip;
+				import std.array : replace;
+
+				if (!s.text || !s.text.strip.length) continue;
+
+				s.text = s.text.replace("__EQ__", "=");
+			}
+
 			DvnEvents.getEvents().loadedGameScripts(_scenes);
 
 			logInfo("Parsed scripts ...");
