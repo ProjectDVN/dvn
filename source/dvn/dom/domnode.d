@@ -5,12 +5,14 @@ module dvn.dom.domnode;
 
 import std.string : strip, toLower;
 import std.algorithm : filter;
-import std.array : array;
+import std.array : array,split;
+import std.algorithm : canFind, startsWith;
 
 import dvn.dom.domexception;
 import dvn.dom.domattribute;
 import dvn.dom.domexception;
 import dvn.dom.domparsersettings;
+import dvn.css;
 
 private size_t _nextId;
 
