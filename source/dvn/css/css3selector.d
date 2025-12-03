@@ -336,13 +336,32 @@ Css3Selection[] parsePart(string selector) @safe
     state = null;
   }
 
+  bool inStatePara = false;
+
   foreach (i; 0 .. selector.length)
   {
     char last = i > 0 ? selector[i - 1] : '\0';
     char current = selector[i];
     char next =  i < (selector.length - 1) ? selector[i + 1] : '\0';
 
-    if (current == '[' && !currentAttributeSelector)
+    if (isState)
+    {
+      if (current == '(')
+      {
+        state ~= current;
+        inStatePara = true;
+      }
+      else if (current == ')')
+      {
+        state ~= current;
+        inStatePara = false;
+      }
+    }
+    else if (inStatePara)
+    {
+      state ~= current;
+    }
+    else if (current == '[' && !currentAttributeSelector)
     {
       finalizeSelection();
 
