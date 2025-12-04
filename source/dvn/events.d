@@ -61,7 +61,7 @@ public class DvnEvents
     // Game View
     void loadingGameScripts() {}
     bool injectGameScript(SceneEntry scene, string key, string[] keyData, string value) { return true; }
-    void loadedGameScripts(SceneEntry[string] scenes) {}
+    void loadedGameScripts(SceneEntry[string] scenes, SaveFile saveFile) {}
     
     void beginGameView(string sceneName, string loadBackground, string loadMusic) {}
     
@@ -386,11 +386,11 @@ public class DvnEvents
                 return handled;
             }
 
-            public override void loadedGameScripts(SceneEntry[string] scenes)
+            public override void loadedGameScripts(SceneEntry[string] scenes, SaveFile saveFile)
             {
                 foreach (ev; _eventsHub)
                 {
-                    ev.loadedGameScripts(scenes);
+                    ev.loadedGameScripts(scenes, saveFile);
                 }
             }
 

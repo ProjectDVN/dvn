@@ -321,7 +321,7 @@ public final class GameView : View
 		EXT_EnableKeyboardState();
 	}
 
-    void loadGame()
+    void loadGame(SaveFile saveFile = null)
     {
 		string lastScriptFile = "";
 		int lineCount = 0;
@@ -722,7 +722,7 @@ public final class GameView : View
 				s.text = s.text.replace("__EQ__", "=");
 			}
 
-			DvnEvents.getEvents().loadedGameScripts(_scenes);
+			DvnEvents.getEvents().loadedGameScripts(_scenes, saveFile);
 
 			logInfo("Parsed scripts ...");
 		}

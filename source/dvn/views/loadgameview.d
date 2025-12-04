@@ -192,7 +192,7 @@ public final class LoadGameView : View
                             }
 
                             auto gameView = cast(GameView)view;
-                            gameView.loadGame();
+                            gameView.loadGame(sFile);
 
                             gameView.initializeGame(sFile.scene, sFile.background, sFile.music);
                         });
@@ -215,7 +215,7 @@ public final class LoadGameView : View
                             }
 
                             auto gameView = cast(GameView)view;
-                            gameView.loadGame();
+                            gameView.loadGame(sFile);
 
                             gameView.initializeGame(sFile.scene, sFile.background, sFile.music);
                         });
