@@ -65,7 +65,7 @@ public class DvnEvents
     
     void beginGameView(string sceneName, string loadBackground, string loadMusic) {}
     
-    void beginHandleScene(SceneEntry scene, SceneEntry nextScene, bool isEnding) {}
+    void beginHandleScene(ref SceneEntry scene, ref SceneEntry nextScene, bool isEnding, SceneEntry[string] scenes) {}
     
     void playingMusic(string music) {}
     void playingSound(string sound) {}
@@ -402,11 +402,11 @@ public class DvnEvents
                 }
             }
 
-            public override void beginHandleScene(SceneEntry scene, SceneEntry nextScene, bool isEnding)
+            public override void beginHandleScene(ref SceneEntry scene, ref SceneEntry nextScene, bool isEnding, SceneEntry[string] scenes) {}
             {
                 foreach (ev; _eventsHub)
                 {
-                    ev.beginHandleScene(scene, nextScene, isEnding);
+                    ev.beginHandleScene(scene, nextScene, isEnding, scenes);
                 }
             }
 

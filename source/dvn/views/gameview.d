@@ -895,7 +895,7 @@ public final class GameView : View
 
 		bool isEnding = scene.nextScene == "end";
 
-		DvnEvents.getEvents().beginHandleScene(scene, nextScene, isEnding);
+		DvnEvents.getEvents().beginHandleScene(scene, nextScene, isEnding, _scenes);
 
 		if (scene.stopMusic)
 		{
