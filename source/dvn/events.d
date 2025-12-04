@@ -402,7 +402,7 @@ public class DvnEvents
                 }
             }
 
-            public override void beginHandleScene(ref SceneEntry scene, ref SceneEntry nextScene, bool isEnding, SceneEntry[string] scenes) {}
+            public override void beginHandleScene(ref SceneEntry scene, ref SceneEntry nextScene, bool isEnding, SceneEntry[string] scenes)
             {
                 foreach (ev; _eventsHub)
                 {
