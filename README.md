@@ -7,7 +7,7 @@
 [![Version](https://img.shields.io/github/v/release/projectdvn/dvn
 )](https://github.com/ProjectDVN/dvn/releases)
 [![Docs](https://img.shields.io/badge/documentation-online-blue
-)](https://dvn-docs.readthedocs.io/en/latest/)
+)](https://projectdvn.com/Docs/)
 [![License](https://img.shields.io/dub/l/dvn.svg)](https://code.dlang.org/packages/dvn)
 
 
@@ -100,7 +100,7 @@ DVN is the opposite
 
 ## Scripting
 
-See: https://dvn-docs.readthedocs.io/en/latest/scripting.html
+See: https://projectdvn.com/Docs/scripting-language
 
 #### Script-Agnostic Architecture
 
@@ -199,7 +199,7 @@ https://projectdvn.com/Docs/getting-started#building
 
 ### Events
 
-See: https://dvn-docs.readthedocs.io/en/latest/events.html
+https://projectdvn.com/Docs/events
 
 ### Contributing
 
