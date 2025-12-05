@@ -44,6 +44,8 @@ public final class ScrollBar : Component
 
     _fontSize = 10;
     _buttonScrollAmount = 24;
+
+    scrollablePanel.scrollBar = this;
   }
 
   this(Window window, Panel scrollablePanel)
@@ -258,7 +260,7 @@ public final class ScrollBar : Component
     }
   }
 
-  private bool scrollDecrement()
+  package(dvn) bool scrollDecrement()
   {
     auto scrollPosition = _scrollablePanel.getScrollPosition();
 
@@ -300,7 +302,7 @@ public final class ScrollBar : Component
     return false;
   }
 
-  private bool scrollIncrement()
+  package(dvn) bool scrollIncrement()
   {
     if (maxScroll == minScroll || maxScroll <= 0)
     {
@@ -359,6 +361,37 @@ public final class ScrollBar : Component
     }
     return false;
   }
+
+  package(dvn) void makeScrollableWithWheel()
+  {
+    onMouseWheel(new MouseWheelEventHandler((a,p) {
+      if (_buttonScrollAmount <= 0 || a == 0) return true;
+
+      bool hover = super.intersectsWith(p);
+
+      if (!hover) return true;
+      
+      bool decrement = a < 0;
+      if (a < 0) a = -a;
+
+      if (decrement)
+      {
+        foreach (_; 0 .. a)
+        {
+          scrollIncrement();
+        }
+      }
+      else
+      {
+        foreach (_; 0 .. a)
+        {
+          scrollDecrement();
+        }
+      }
+
+      return false;
+    }));
+  } 
 
   private void createScrollButton()
   {

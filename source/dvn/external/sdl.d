@@ -892,7 +892,17 @@ bool EXT_ProcessEvents(Window[] windows)
             window.events.fireTextInputEvent(eventChar,eventText);
           }
         }
+        break;
 
+      case SDL_EventType.SDL_MOUSEWHEEL:
+        if (windows)
+        {
+          foreach (window; windows)
+          {
+            if (!window.isNativeWindow(EXT_GetWindowFromID(e.window.windowID))) continue;
+            window.events.fireMouseWheelEvent(e.wheel.y, _mousePosition);
+          }
+        }
         break;
 
       default: break;

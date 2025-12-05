@@ -76,6 +76,7 @@ public abstract class Component
   TextInputEventHandler[] _onTextInput;
   KeyboardEventHandler[] _onKeyboardDown;
   KeyboardEventHandler[] _onKeyboardUp;
+  MouseWheelEventHandler[] _onMouseWheel;
   IntVector _scrollPosition;
   bool _allowChildren;
   EXT_Rectangle _nativeRect;
@@ -153,6 +154,14 @@ public abstract class Component
         foreach (onKeyboardUp; _onKeyboardUp)
         {
           events.attachKeyboardUpEvent(onKeyboardUp);
+        }
+      }
+
+      if (_onMouseWheel)
+      {
+        foreach (onMouseWheel; _onMouseWheel)
+        {
+          events.attachMouseWheelEvent(onMouseWheel);
         }
       }
     }
@@ -235,6 +244,19 @@ public abstract class Component
     foreach (event; _onKeyboardUp)
     {
       event(key);
+    }
+  }
+
+  public void fireMouseWheel(int amount, IntVector position)
+  {
+    if (!_onMouseWheel)
+    {
+      return;
+    }
+
+    foreach (event; _onMouseWheel)
+    {
+      event(amount,position);
     }
   }
 
@@ -678,6 +700,29 @@ public abstract class Component
 
         return handler(c,s);
       });
+
+      if (_window) _window.update();
+      else update();
+    }
+
+    void onMouseWheel(MouseWheelEventHandler handler, bool ignoreIntersection = false)
+    {
+      if (ignoreIntersection)
+      {
+        _onMouseWheel ~= handler;
+      }
+      else
+      {
+        _onMouseWheel ~= new MouseWheelEventHandler((a,p)
+        {
+          if (!intersectsWith(p))
+          {
+            return true;
+          }
+
+          return handler(a,p);
+        });
+      }
 
       if (_window) _window.update();
       else update();

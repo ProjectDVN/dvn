@@ -141,22 +141,22 @@ public final class SettingsView : View
         );
 		settingsPanel.show();
         
-        auto scrollbarMessages = new ScrollBar(window, settingsPanel);
-        addComponent(scrollbarMessages);
-        scrollbarMessages.isVertical = true;
-        scrollbarMessages.fillColor = getColorByRGB(0,0,0,150);
-        scrollbarMessages.borderColor = getColorByRGB(0,0,0,150);
+        auto scrollbarSettings = new ScrollBar(window, settingsPanel);
+        addComponent(scrollbarSettings);
+        scrollbarSettings.isVertical = true;
+        scrollbarSettings.fillColor = getColorByRGB(0,0,0,150);
+        scrollbarSettings.borderColor = getColorByRGB(0,0,0,150);
         settingsPanel.scrollMargin = IntVector(0,cast(int)((cast(double)settingsPanel.height / 3.5) / 2));
-        scrollbarMessages.position = IntVector(settingsPanel.x + settingsPanel.width, settingsPanel.y);
-        scrollbarMessages.buttonScrollAmount = cast(int)((cast(double)settingsPanel.height / 3.5) / 2);
-        scrollbarMessages.fontName = settings.defaultFont;
-        scrollbarMessages.fontSize = 8;
-        scrollbarMessages.buttonTextColor = "fff".getColorByHex;
-        scrollbarMessages.createDecrementButton("▲", "◀");
-        scrollbarMessages.createIncrementButton("▼", "▶");
-        scrollbarMessages.size = IntVector(16, settingsPanel.height+1);
-        scrollbarMessages.restyle();
-        scrollbarMessages.updateRect(false);
+        scrollbarSettings.position = IntVector(settingsPanel.x + settingsPanel.width, settingsPanel.y);
+        scrollbarSettings.buttonScrollAmount = cast(int)((cast(double)settingsPanel.height / 3.5) / 2);
+        scrollbarSettings.fontName = settings.defaultFont;
+        scrollbarSettings.fontSize = 8;
+        scrollbarSettings.buttonTextColor = "fff".getColorByHex;
+        scrollbarSettings.createDecrementButton("▲", "◀");
+        scrollbarSettings.createIncrementButton("▼", "▶");
+        scrollbarSettings.size = IntVector(16, settingsPanel.height+1);
+        scrollbarSettings.restyle();
+        scrollbarSettings.updateRect(false);
 
         int nextY = 16;
 
@@ -446,6 +446,9 @@ public final class SettingsView : View
             saveSettings();
         });
         
+        scrollbarSettings.restyle();
+        scrollbarSettings.updateRect(false);
+        settingsPanel.makeScrollableWithWheel();
         DvnEvents.getEvents().renderSettingsViewEnd();
     }
 }

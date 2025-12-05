@@ -7,6 +7,8 @@ import dvn.component;
 import dvn.external;
 import dvn.window;
 import dvn.colors;
+import dvn.events;
+import dvn.components.scrollbar;
 
 public final class Panel : Component
 {
@@ -16,9 +18,47 @@ public final class Panel : Component
 
   public:
   final:
+  package(dvn) ScrollBar scrollBar;
+
   this(Window window)
   {
     super(window, true);
+  }
+
+  void makeScrollableWithWheel()
+  {
+    onMouseWheel(new MouseWheelEventHandler((a,p) {
+      if (_scrollMargin.y <= 0 || a == 0 || !scrollBar) return true;
+
+      bool hover = super.intersectsWith(p);
+
+      if (!hover) return true;
+      
+      bool decrement = a < 0;
+      if (a < 0) a = -a;
+
+      if (decrement)
+      {
+        foreach (_; 0 .. a)
+        {
+          scrollBar.scrollIncrement();
+        }
+      }
+      else
+      {
+        foreach (_; 0 .. a)
+        {
+          scrollBar.scrollDecrement();
+        }
+      }
+
+      return false;
+    }));
+
+    if (scrollBar)
+    {
+      scrollBar.makeScrollableWithWheel();
+    }
   }
 
   @property

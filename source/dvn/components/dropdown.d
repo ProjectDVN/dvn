@@ -564,6 +564,23 @@ public final class DropDown : Component
       _textPosition = IntVector(centerX,centerY);
       _textLabel.position = _textPosition;
     }
+
+    if (_itemsPanel)
+    {
+      if (_showAbove)
+      {
+        _itemsPanel.position = IntVector(super.clientRect.x, (super.clientRect.y - _itemsPanel.height())-1);
+      }
+      else
+      {
+        _itemsPanel.position = IntVector(super.clientRect.x, (super.clientRect.y + super.height)-1);
+      }
+
+      if (_itemsPanelScrollBar)
+      {
+        _itemsPanelScrollBar.position = IntVector(_itemsPanel.x + _itemsPanel.width, _itemsPanel.y);
+      }
+    }
   }
 
   override void renderNativeComponent()
@@ -656,11 +673,11 @@ public final class DropDown : Component
       _itemsPanel.size = IntVector(super.width-15, super.height * 4);
       if (_showAbove)
       {
-        _itemsPanel.position = IntVector(super.x, (super.y - _itemsPanel.height())-1);
+        _itemsPanel.position = IntVector(super.clientRect.x, (super.clientRect.y - _itemsPanel.height())-1);
       }
       else
       {
-        _itemsPanel.position = IntVector(super.x, (super.y + super.height)-1);
+        _itemsPanel.position = IntVector(super.clientRect.x, (super.clientRect.y + super.height)-1);
       }
       _itemsPanel.fillColor = defaultPaint.backgroundColor;
       _itemsPanel.borderColor = defaultPaint.borderColor;
@@ -774,5 +791,7 @@ public final class DropDown : Component
     updateRect(true);
 
     _itemsPanelScrollBar.restyle();
+
+    _itemsPanel.makeScrollableWithWheel();
   }
 }

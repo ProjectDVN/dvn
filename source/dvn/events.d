@@ -768,6 +768,7 @@ public final class EventCollection
   TextInputEventHandler[] _textInputEvents;
   KeyboardEventHandler[] _keyboardDownEvents;
   KeyboardEventHandler[] _keyboardUpEvents;
+  MouseWheelEventHandler[] _mouseWheelEvents;
   size_t[size_t] _eventIds;
 
   public:
@@ -790,6 +791,7 @@ public final class EventCollection
         _textInputEvents = _textInputEvents.reverse.array;
         _keyboardDownEvents = _keyboardDownEvents.reverse.array;
         _keyboardUpEvents = _keyboardUpEvents.reverse.array;
+        _mouseWheelEvents = _mouseWheelEvents.reverse.array;
     }
 
     void clearEvents()
@@ -800,6 +802,7 @@ public final class EventCollection
       _textInputEvents = [];
       _keyboardDownEvents = [];
       _keyboardUpEvents = [];
+      _mouseWheelEvents = [];
 
       if (_eventIds)
       {
@@ -877,6 +880,18 @@ public final class EventCollection
       _eventIds[eventHandler._id] = eventHandler._id;
 
       _keyboardUpEvents ~= eventHandler;
+    }
+
+    void attachMouseWheelEvent(MouseWheelEventHandler eventHandler)
+    {
+      if (_eventIds && eventHandler._id in _eventIds)
+      {
+        return;
+      }
+
+      _eventIds[eventHandler._id] = eventHandler._id;
+
+      _mouseWheelEvents ~= eventHandler;
     }
   }
 
@@ -967,6 +982,22 @@ public final class EventCollection
       foreach (keyboardUpEvent; _keyboardUpEvents)
       {
         if (!keyboardUpEvent(key))
+        {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  bool fireMouseWheelEvent(int amount, IntVector position)
+  {
+    if (_mouseWheelEvents)
+    {
+      foreach (mouseWheelEvent; _mouseWheelEvents)
+      {
+        if (!mouseWheelEvent(amount, position))
         {
           return false;
         }
@@ -1084,6 +1115,33 @@ public final class KeyboardEventHandler
   {
     if (_handler) return _handler(key);
     else if (_fnHandler) return _fnHandler(key);
+    return true;
+  }
+}
+
+public final class MouseWheelEventHandler
+{
+  private:
+  bool delegate(int,IntVector) _handler;
+  bool function(int,IntVector) _fnHandler;
+  size_t _id;
+
+  public:
+  final:
+  this(MouseWheelEventHandler handler) { _id = ++_eventId; _handler = handler._handler; _fnHandler = handler._fnHandler; }
+
+  this(bool delegate(int,IntVector) handler) { _id = ++_eventId; _handler = handler; }
+
+  this(bool function(int,IntVector) handler) { _id = ++_eventId; _fnHandler = handler; }
+
+  this(void delegate(int,IntVector) handler) { this((a,p) { handler(a,p); return true; }); }
+
+  this(void function(int,IntVector) handler) { this((a,p) { handler(a,p); return true; }); }
+
+  bool opCall(int amount,IntVector position)
+  {
+    if (_handler) return _handler(amount,position);
+    else if (_fnHandler) return _fnHandler(amount,position);
     return true;
   }
 }
