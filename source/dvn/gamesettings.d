@@ -85,6 +85,8 @@ public final class GameSettings
   bool fadeInCharacters;
   bool hideSavedLabel;
   bool useLegacySceneButtons;
+
+  int saveFileTextMatchPercentage;
 }
 
 public final class SettingsImage
@@ -111,7 +113,9 @@ public final class SaveFile
 
   string id;
   string date;
+  string originalScene;
   string scene;
+  string text;
   string background;
   string music;
   string[string] meta;
@@ -121,7 +125,7 @@ public final class SaveFile
 
 private SaveFile[] saveFiles;
 
-void saveGame(GameSettings settings, string id, string scene, string background, string music, uint seed, int calls)
+void saveGame(GameSettings settings, string id, string originalScene, string scene, string text, string background, string music, uint seed, int calls)
 {
   import std.uuid : randomUUID;
   import std.datetime : Clock;
@@ -152,7 +156,9 @@ void saveGame(GameSettings settings, string id, string scene, string background,
 
   saveFile.id = id;
   saveFile.date = format("%s-%s-%s %s:%s", year, cast(int)month, day, hour, min);
+  saveFile.originalScene = originalScene;
   saveFile.scene = scene;
+  saveFile.text = text;
   saveFile.background = background;
   saveFile.music = music;
   saveFile.seed = seed;

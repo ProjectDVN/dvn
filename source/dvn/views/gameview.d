@@ -19,8 +19,6 @@ import dvn.effects;
 import dvn.ui;
 import dvn.bundling;
 
-private int _customSceneIdCounter;
-
 public enum SceneComponentId : size_t
 {
 	none = 0,
@@ -40,6 +38,7 @@ public final class SceneEntry
 {
 	public:
 	final:
+	string original;
 	string name;
 	string act;
 	string actContinueButton;
@@ -356,6 +355,8 @@ public final class GameView : View
 				string textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
 				lineCount = 0;
 				int chance = 100;
+				string original = "";
+				int customSceneIdCounter = 0;
 				foreach (l; lines)
 				{
 					lineCount++;
@@ -376,6 +377,9 @@ public final class GameView : View
 						entry = new SceneEntry;
 						entry.chance = chance;
 						entry.name = line[1 .. $-1];
+						original = entry.name;
+						entry.original = original;
+						customSceneIdCounter = 0;
 						character = null;
 						charName = null;
 						charNames = [];
@@ -603,16 +607,17 @@ public final class GameView : View
 							case "t":
 								import std.conv : to;
 								
-								_customSceneIdCounter++;
+								customSceneIdCounter++;
 
 								if (lastEntry && lastEntry.text && lastEntry.text.length)
 								{
-									lastEntry.nextScene = "??????????-" ~ _customSceneIdCounter.to!string;
+									lastEntry.nextScene = original ~ "-??????????-" ~ customSceneIdCounter.to!string;
 
 									entry = new SceneEntry;
+									entry.original = original;
 									entry.chance = chance;
 									chance = 100;
-									entry.name = "??????????-" ~ _customSceneIdCounter.to!string;
+									entry.name = original ~ "-??????????-" ~ customSceneIdCounter.to!string;
 
 									entry.music = lastEntry.music;
 									entry.sound = lastEntry.sound;
@@ -654,7 +659,7 @@ public final class GameView : View
 								}
 								else
 								{
-									entry.nextScene = "??????????-" ~ _customSceneIdCounter.to!string;
+									entry.nextScene = original ~ "-??????????-" ~ customSceneIdCounter.to!string;
 								}
 								
 								break;
@@ -860,7 +865,7 @@ public final class GameView : View
 		}
 	}
 
-    void initializeGame(string sceneName, string loadBackground = "", string loadMusic = "")
+    void initializeGame(string sceneName, string loadBackground = "", string loadMusic = "", string originalSceneName = "", string sceneText = "")
     {
 		logInfo("Loading scene: '%s' | '%s' | '%s'", sceneName, loadBackground, loadMusic);
 
@@ -885,6 +890,26 @@ public final class GameView : View
 			DvnEvents.getEvents().endGameView();
 			
 			return;
+		}
+
+		if (originalSceneName && originalSceneName.length &&
+			sceneText && sceneText.length)
+		{
+			auto similarity = levenshteinSimilarity(sceneText, scene.text);
+
+			auto saveFileTextMatchPercentage = settings.saveFileTextMatchPercentage >= 1 ? settings.saveFileTextMatchPercentage : 90;
+
+			if (similarity < (cast(double)saveFileTextMatchPercentage / 100))
+			{
+				scene = _scenes.get(originalSceneName, null);
+
+				if (!scene)
+				{
+					DvnEvents.getEvents().endGameView();
+					
+					return;
+				}
+			}
 		}
 
 		scene.log();
@@ -1697,7 +1722,7 @@ public final class GameView : View
 
 			takeScreenshot(window, "data/game/saves/" ~ idToSave ~ ".png");
 
-			saveGame(settings, idToSave, scene.name, _lastBackgroundSource, _lastMusic, _seed, _calls);
+			saveGame(settings, idToSave, scene.original, scene.name, scene.text ? scene.text : "", _lastBackgroundSource, _lastMusic, _seed, _calls);
 
 			saveGameSettings("data/settings.json");
 		}
