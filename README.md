@@ -127,24 +127,20 @@ DVN is a data-driven runtime, not a language-bound interpreter.
 
 #### DVN Scripting Is This Simple
 
-Example taken from an actual VN (The Classroom Where Tomorrow Never Comes) made with Project DVN.
+Example:
 
 ```ini
 [act-8-rooftop-conversation]
 c=Yume_Uni_Smile
-n=Yume
-t=...Yume.
-n=Yume
-t=Have you noticed how the flowers bloom in April?
+Yume=...Yume.
+Yume=Have you noticed how the flowers bloom in April?
 narrator=250,250
 t=What does she mean? We're not in April.
-n=Yume
-t=I think flowers and humans are alike.
-n=Yume
-t=We also bloom best when we're being cared for.
+Yume=I think flowers and humans are alike.
+Yume=We also bloom best when we're being cared for.
 ```
 
-Branching example (Not from an actual VN)
+Branching example
 
 ```ini
 [choice-scene]
