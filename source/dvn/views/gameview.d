@@ -876,7 +876,7 @@ public final class GameView : View
 
 		if (!_scenes)
 		{
-			logError("Scene not found: %s", sceneName);
+			logError("Scenes not found.");
 
 			DvnEvents.getEvents().endGameView();
 			
@@ -887,6 +887,8 @@ public final class GameView : View
 
 		if (!scene)
 		{
+			logError("Scene not found: %s", sceneName);
+
 			DvnEvents.getEvents().endGameView();
 			
 			return;
@@ -905,6 +907,8 @@ public final class GameView : View
 
 				if (!scene)
 				{
+					logError("Scene not found: %s", originalSceneName);
+
 					DvnEvents.getEvents().endGameView();
 					
 					return;
