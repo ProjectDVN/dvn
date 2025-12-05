@@ -214,7 +214,7 @@ public final class HistoryView : View
                         auto gameView = cast(GameView)view;
                         gameView.loadGame();
 
-                        gameView.initializeGame(oHistory.sceneName, oHistory.sceneBackground, oHistory.sceneMusic);
+                        gameView.initializeGame(oHistory.sceneName, oHistory.sceneBackground, oHistory.sceneMusic, oHistory.originalScene, oHistory.text);
                     });
                 }));
             };};

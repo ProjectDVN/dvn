@@ -1770,7 +1770,7 @@ public final class GameView : View
 				historyText = names.join(",") ~ ": " ~ historyText;
 			}
 
-			addDialogueHistory(historyText, null, scene.name, _lastBackgroundSource, _lastMusic);
+			addDialogueHistory(historyText, null, scene.name, _lastBackgroundSource, _lastMusic, scene.original);
 
 			textLabel = new Label(window);
 			textLabel.dataId = SceneComponentId.text;
@@ -1915,7 +1915,7 @@ public final class GameView : View
 				optionHistory ~= option.text;
 			}
 
-			addDialogueHistory(null, optionHistory, scene.name, _lastBackgroundSource, _lastMusic);
+			addDialogueHistory(null, optionHistory, scene.name, _lastBackgroundSource, _lastMusic, scene.original);
 
 			if (settings.displayOptionsAsButtons)
 			{

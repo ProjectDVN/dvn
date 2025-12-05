@@ -16,6 +16,7 @@ public final class DialogueHistory
     string sceneName;
     string sceneBackground;
     string sceneMusic;
+    string originalScene;
 }
 
 private DialogueHistory[] _history;
@@ -48,7 +49,7 @@ void loadDialogueHistory()
     }
 }
 
-void addDialogueHistory(string text, string[] options, string sceneName, string sceneBackground, string sceneMusic)
+void addDialogueHistory(string text, string[] options, string sceneName, string sceneBackground, string sceneMusic, string originalScene)
 {
     if (_historyKeys && (sceneName in _historyKeys))
     {
@@ -61,6 +62,7 @@ void addDialogueHistory(string text, string[] options, string sceneName, string 
     history.sceneName = sceneName;
     history.sceneBackground = sceneBackground;
     history.sceneMusic = sceneMusic;
+    history.originalScene = originalScene;
 
     _historyKeys[history.sceneName] = true;
     _history ~= history;
