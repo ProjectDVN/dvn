@@ -417,7 +417,11 @@ public final class GameView : View
 									entry.stopMusic = true;
 									break;
 
-								default: break;
+								default:
+									logScriptError(scriptFile, lineCount,
+										format("Unknown command \"%s\"", line),
+										entry);
+									break;
 							}
 							continue;
 						}
@@ -661,7 +665,6 @@ public final class GameView : View
 								{
 									entry.nextScene = original ~ "-??????????-" ~ customSceneIdCounter.to!string;
 								}
-								
 								break;
 
 							case "act":
@@ -690,9 +693,83 @@ public final class GameView : View
 								{
 									break;
 								}
-								logScriptError(scriptFile, lineCount,
-									format("Unknown command \"%s\"", key),
-									entry);
+
+								// name=text, we have a key, but we need to check if we have a value
+								if (value && value.length)
+								{
+									charName = new SceneCharacterName;
+									charName.name = key;
+									charName.color = "fff";
+									if (settings.defaultCharacterNameColors)
+									{
+										charName.color = settings.defaultCharacterNameColors.get(charName.name, "fff");
+									}
+									charName.position = "left";
+									charNames ~= charName;
+									
+									import std.conv : to;
+									
+									customSceneIdCounter++;
+
+									if (lastEntry && lastEntry.text && lastEntry.text.length)
+									{
+										lastEntry.nextScene = original ~ "-??????????-" ~ customSceneIdCounter.to!string;
+
+										entry = new SceneEntry;
+										entry.original = original;
+										entry.chance = chance;
+										chance = 100;
+										entry.name = original ~ "-??????????-" ~ customSceneIdCounter.to!string;
+
+										entry.music = lastEntry.music;
+										entry.sound = lastEntry.sound;
+										entry.background = lastEntry.background;
+										entry.labels = lastEntry.labels;
+										entry.characters = lastEntry.copyCharacters;
+										//entry.characterNames = lastEntry.characterNames;
+										entry.images = lastEntry.images;
+										entry.videos = lastEntry.videos;
+										entry.animations = lastEntry.animations;
+										entry.textColor = lastEntry.textColor;
+										entry.textFont = lastEntry.textFont;
+										entry.hideDialogue = lastEntry.hideDialogue;
+										entry.hideButtons = lastEntry.hideButtons;
+
+										lastEntry = entry;
+
+										_scenes[entry.name] = entry;
+									}
+									else
+									{
+										entry.chance = chance;
+										chance = 100;
+									}
+
+									entry.characterNames = charNames;
+									entry.isNarrator = isNarrator;
+									entry.narratorX = narratorX;
+									entry.narratorY = narratorY;
+									charNames = [];
+									isNarrator = false;
+									narratorX = 0;
+									narratorY = 0;
+									
+									entry.text = value;
+									if (keyData.length == 2)
+									{
+										entry.nextScene = keyData[1];
+									}
+									else
+									{
+										entry.nextScene = original ~ "-??????????-" ~ customSceneIdCounter.to!string;
+									}
+								}
+								else
+								{
+									logScriptError(scriptFile, lineCount,
+										format("Unknown command \"%s\"", key),
+										entry);
+								}
 								break;
 						}
 					}
