@@ -1569,7 +1569,8 @@ public void delegate() EXT_PlayLastMusicOverride;
 public void delegate(string path) EXT_PlayMusicOverride;
 public void delegate() EXT_PauseMusicOverride;
 public void delegate() EXT_StopMusicOverride;
-public void delegate(string path) EXT_PlaySoundOverride;
+public int delegate(string path) EXT_PlaySoundOverride;
+public void delegate(int channel) EXT_StopSoundOverride;
 
 void EXT_PlayLastMusic()
 {
@@ -1652,12 +1653,11 @@ void EXT_StopMusic()
 private alias EXT_SoundChunk = Mix_Chunk*;
 private EXT_SoundChunk[string] _soundEffects;
 
-void EXT_PlaySound(string path)
+int EXT_PlaySound(string path)
 {
   if (EXT_PlaySoundOverride)
   {
-    EXT_PlaySoundOverride(path);
-    return;
+    return EXT_PlaySoundOverride(path);
   }
   import std.string : toStringz;
 
@@ -1669,7 +1669,7 @@ void EXT_PlaySound(string path)
 
     if (!sound)
     {
-      return;
+      return -1;
     }
 
     _soundEffects[path] = sound;
@@ -1677,8 +1677,21 @@ void EXT_PlaySound(string path)
 
   if (!_allSoundsDisabled && !_soundEffectsDisabled)
   {
-    Mix_PlayChannel(-1, sound, 0);
+    return Mix_PlayChannel(-1, sound, 0);
   }
+
+  return -1;
+}
+
+void EXT_StopSound(int channel)
+{
+  if (EXT_StopSoundOverride)
+  {
+    EXT_StopSoundOverride(channel);
+    return;
+  }
+
+  Mix_HaltChannel(channel);
 }
 
 private uint _lastMS = 0;

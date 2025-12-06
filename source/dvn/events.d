@@ -69,6 +69,7 @@ public class DvnEvents
     
     void playingMusic(string music) {}
     void playingSound(string sound) {}
+    void playingVoice(string voice) {}
 
     void addClickSafeComponents(ref Component[] components) {}
 
@@ -423,6 +424,14 @@ public class DvnEvents
                 foreach (ev; _eventsHub)
                 {
                     ev.playingSound(sound);
+                }
+            }
+
+            public override void playingVoice(string voice)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.playingVoice(voice);
                 }
             }
 

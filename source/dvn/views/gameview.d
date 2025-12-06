@@ -44,6 +44,7 @@ public final class SceneEntry
 	string actContinueButton;
 	string music;
 	string sound;
+	string voice;
 	string background;
 	SceneLabel[] labels;
 	SceneCharacter[] characters;
@@ -65,6 +66,7 @@ public final class SceneEntry
 	int narratorY;
 	int chance;
 	bool stopMusic;
+	bool stopSound;
 	int delay;
 
 	SceneCharacter[] copyCharacters()
@@ -309,11 +311,18 @@ public class Coverage
 
 public final class GameView : View
 {
+	private:
+	int _lastVoiceChannel;
+	int[] _soundEffects;
+
 	public:
 	final:
 	this(Window window)
 	{
 		super(window);
+
+		_lastVoiceChannel = -1;
+		_soundEffects = [];
 	}
 
 	protected override void onInitialize(bool useCache)
@@ -358,6 +367,7 @@ public final class GameView : View
 				int chance = 100;
 				string original = "";
 				int customSceneIdCounter = 0;
+				string voice;
 				foreach (l; lines)
 				{
 					lineCount++;
@@ -385,6 +395,7 @@ public final class GameView : View
 						charName = null;
 						charNames = [];
 						isNarrator = false;
+						voice = null;
 						narratorX = 0;
 						narratorY = 0;
 						lastEntry = entry;
@@ -416,6 +427,10 @@ public final class GameView : View
 
 								case "stopMusic":
 									entry.stopMusic = true;
+									break;
+
+								case "stopSound":
+									entry.stopSound = true;
 									break;
 
 								default:
@@ -460,6 +475,10 @@ public final class GameView : View
 							case "sound":
 							case "s":
 								entry.sound = value;
+								break;
+
+							case "voice":
+								voice = value;
 								break;
 
 							case "effect":
@@ -652,6 +671,7 @@ public final class GameView : View
 									chance = 100;
 								}
 
+								entry.voice = voice;
 								entry.characterNames = charNames;
 								entry.isNarrator = isNarrator;
 								entry.narratorX = narratorX;
@@ -750,6 +770,7 @@ public final class GameView : View
 										chance = 100;
 									}
 
+									entry.voice = voice;
 									entry.characterNames = charNames;
 									entry.isNarrator = isNarrator;
 									entry.narratorX = narratorX;
@@ -953,6 +974,27 @@ public final class GameView : View
 
 		DvnEvents.getEvents().beginGameView(sceneName, loadBackground, loadMusic);
 
+		void stopVoice()
+		{
+			if (_lastVoiceChannel >= 0)
+			{
+				EXT_StopSound(_lastVoiceChannel);
+				_lastVoiceChannel = -1;
+			}
+		}
+
+		void stopSoundEffects()
+		{
+			foreach (soundEffect; _soundEffects)
+			{
+				EXT_StopSound(soundEffect);
+			}
+
+			_soundEffects = [];
+		}
+
+		stopVoice();
+
 		auto window = super.window;
 		auto settings = getGlobalSettings();
 
@@ -974,6 +1016,11 @@ public final class GameView : View
 			DvnEvents.getEvents().endGameView();
 			
 			return;
+		}
+
+		if (scene.stopSound)
+		{
+			stopSoundEffects();
 		}
 
 		if (originalSceneName && originalSceneName.length &&
@@ -1057,9 +1104,26 @@ public final class GameView : View
 
 			if (sound && sound.length)
 			{
-				EXT_PlaySound(sound);
+				auto channel = EXT_PlaySound(sound);
+
+				if (channel >= 0)
+				{
+					_soundEffects ~= channel;
+				}
 
 				DvnEvents.getEvents().playingSound(sound);
+			}
+		}
+
+		if (scene.voice && scene.voice.length)
+		{
+			auto voice = getMusicPath(scene.voice);
+
+			if (voice && voice.length)
+			{
+				_lastVoiceChannel = EXT_PlaySound(voice);
+
+				DvnEvents.getEvents().playingVoice(voice);
 			}
 		}
 
@@ -2219,6 +2283,9 @@ public final class GameView : View
 
 		exitButton.onButtonClick(new MouseButtonEventHandler((b,p) {
 			backToScene = "";
+			stopVoice();
+			stopSoundEffects();
+
 			window.fadeToView("MainMenu", getColorByName("black"), false);
 			return false;
 		}));
@@ -2247,6 +2314,9 @@ public final class GameView : View
 
 		settingsButton.onButtonClick(new MouseButtonEventHandler((b,p) {
 			backToScene = scene.name;
+			stopVoice();
+			stopSoundEffects();
+			
 			window.fadeToView("SettingsView", getColorByName("black"), false);
 			return false;
 		}));
