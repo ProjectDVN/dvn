@@ -1180,7 +1180,7 @@ public final class GameView : View
 
 				int previousVolume = settings.volume;
 
-				EXT_ControlSoundVolume(10);//previousVolume / 2);
+				EXT_ControlSoundVolume(previousVolume / 2);
 
 				EXT_SoundFinished((c)
 				{
