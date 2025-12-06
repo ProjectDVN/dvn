@@ -1184,8 +1184,10 @@ public final class GameView : View
 
 				EXT_SoundFinished((c)
 				{
-					EXT_RemoveSoundFinishedCallback(c);
-					EXT_ControlSoundVolume(previousVolume);
+					application.sendMessage({
+						EXT_RemoveSoundFinishedCallback(c);
+						EXT_ControlSoundVolume(previousVolume);
+					});
 				}, _lastVoiceChannel);
 
 				DvnEvents.getEvents().playingVoice(voice);
