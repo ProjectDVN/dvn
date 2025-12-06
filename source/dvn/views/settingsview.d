@@ -39,7 +39,9 @@ public final class SettingsView : View
         void restyleCheckbox(CheckBox checkbox, GameSettings gameSettings)
         {
             if (!gameSettings.checkBoxBackgroundColor ||
-                !gameSettings.checkBoxBorderColor)
+                !gameSettings.checkBoxBackgroundColor.length ||
+                !gameSettings.checkBoxBorderColor ||
+                !gameSettings.checkBoxBorderColor.length)
             {
                 return;
             }
@@ -53,10 +55,10 @@ public final class SettingsView : View
 
         void restyleButton(Button button, GameSettings gameSettings)
         {
-			if (!gameSettings.buttonTextColor ||
-				!gameSettings.buttonBackgroundColor ||
-				!gameSettings.buttonBackgroundBottomColor ||
-				!gameSettings.buttonBorderColor)
+			if (!gameSettings.buttonTextColor || !gameSettings.buttonTextColor.length ||
+				!gameSettings.buttonBackgroundColor || !gameSettings.buttonBackgroundColor.length ||
+				!gameSettings.buttonBackgroundBottomColor || !gameSettings.buttonBackgroundBottomColor.length ||
+				!gameSettings.buttonBorderColor ||  !gameSettings.buttonBorderColor.length)
 			{
 				return;
 			}

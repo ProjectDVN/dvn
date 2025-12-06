@@ -10,6 +10,7 @@ import dvn.colors;
 import dvn.window;
 import dvn.delayedtask;
 import dvn.events;
+import dvn.audio;
 
 import std.concurrency : spawn, thisTid, send, receive, receiveTimeout;
 public import std.concurrency : Tid;
@@ -70,6 +71,7 @@ public final class Application
   size_t _concurrencyLevel;
   size_t _messageLevel;
   bool _isDebugMode;
+  AudioManager _audio;
 
   public:
   final:
@@ -91,6 +93,8 @@ public final class Application
     _windows = [];
     _concurrencyLevel = 4;
     _messageLevel = 42;
+
+    _audio = new AudioManager;
 
     if (!_app)
     {
@@ -154,6 +158,8 @@ public final class Application
     {
       _isDebugMode = debugMode;
     }
+
+    AudioManager audio() { return _audio; }
   }
 
   Window createWindow(string title, IntVector size, bool isFullScreen)
@@ -266,8 +272,6 @@ public final class Application
 
     uint lastTicks = EXT_GetTicksRaw();
 
-    //import std.stdio : writefln;
-
     if (!allowTextInput)
     {
 		  EXT_StopTextInput();
@@ -286,9 +290,13 @@ public final class Application
 
       auto ticks = EXT_GetTicks();
 
+      if (_audio)
+      {
+        _audio.handleFade(ticks);
+      }
+
       if ((ticks - lastTicks) >= _messageLevel)
       {
-        //writefln("time: %s", (ticks - lastTicks));
         lastTicks = ticks;
 
         receiveMessages();

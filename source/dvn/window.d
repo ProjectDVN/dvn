@@ -342,10 +342,14 @@ public final class Window
 
       _activeViews[name] = view;
 
+      _application.audio.stopFade();
+
       view.initialize(false);
     }
     else
     {
+      _application.audio.stopFade();
+
       view.initialize(true);
     }
 

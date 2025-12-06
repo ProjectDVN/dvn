@@ -133,13 +133,16 @@ public final class HistoryView : View
             searchTextBox.y + searchTextBox.height + 16);
 		searchButton.fontName = settings.defaultFont;
 		searchButton.fontSize = 24;
-		searchButton.textColor = settings.buttonTextColor ? settings.buttonTextColor.getColorByHex : "000".getColorByHex;
+		searchButton.textColor = settings.buttonTextColor && settings.buttonTextColor.length ? settings.buttonTextColor.getColorByHex : "000".getColorByHex;
 		searchButton.text = "Search";
 		searchButton.fitToSize = false;
 
         if (settings.buttonBackgroundColor &&
+            settings.buttonBackgroundColor.length &&
             settings.buttonBackgroundBottomColor &&
-            settings.buttonBorderColor)
+            settings.buttonBackgroundBottomColor.length &&
+            settings.buttonBorderColor &&
+            settings.buttonBorderColor.length)
         {
             restyleButton(searchButton,
                 settings.buttonBackgroundColor,

@@ -45,6 +45,7 @@ public final class SceneEntry
 	string music;
 	string sound;
 	string voice;
+	bool fadeMusic;
 	string background;
 	SceneLabel[] labels;
 	SceneCharacter[] characters;
@@ -432,6 +433,10 @@ public final class GameView : View
 
 								case "stopSound":
 									entry.stopSound = true;
+									break;
+
+								case "fadeMusic":
+									entry.fadeMusic = true;
 									break;
 
 								default:
@@ -1019,11 +1024,17 @@ public final class GameView : View
 
 		DvnEvents.getEvents().beginGameView(sceneName, loadBackground, loadMusic);
 
+		auto window = super.window;
+		auto settings = getGlobalSettings();
+		auto application = getApplication();
+
 		void stopVoice()
 		{
 			if (_lastVoiceChannel >= 0)
 			{
 				EXT_StopSound(_lastVoiceChannel);
+				EXT_RemoveSoundFinishedCallback(_lastVoiceChannel);
+				EXT_ControlSoundVolume(settings.volume);
 				_lastVoiceChannel = -1;
 			}
 		}
@@ -1039,9 +1050,6 @@ public final class GameView : View
 		}
 
 		stopVoice();
-
-		auto window = super.window;
-		auto settings = getGlobalSettings();
 
 		if (!_scenes)
 		{
@@ -1103,6 +1111,7 @@ public final class GameView : View
 		if (scene.stopMusic)
 		{
 			EXT_StopMusic();
+			application.audio.stopFade();
 			_lastMusic = "";
 		}
 		else if (scene.music && scene.music.length)
@@ -1113,7 +1122,8 @@ public final class GameView : View
 
 			if (music && music.length)
 			{
-				EXT_PlayMusic(music);
+				EXT_PlayMusic(music, !scene.fadeMusic);
+				if (scene.fadeMusic) application.audio.beginFade(0, settings.volume);
 
 				DvnEvents.getEvents().playingMusic(music);
 			}
@@ -1126,7 +1136,7 @@ public final class GameView : View
 
 			if (music && music.length)
 			{
-				EXT_PlayMusic(music);
+				EXT_PlayMusic(music, false);
 
 				DvnEvents.getEvents().playingMusic(music);
 			}
@@ -1137,7 +1147,7 @@ public final class GameView : View
 
 			if (music && music.length)
 			{
-				EXT_PlayMusic(music);
+				EXT_PlayMusic(music, false);
 
 				DvnEvents.getEvents().playingMusic(music);
 			}
@@ -1167,6 +1177,16 @@ public final class GameView : View
 			if (voice && voice.length)
 			{
 				_lastVoiceChannel = EXT_PlaySound(voice);
+
+				int previousVolume = settings.volume;
+
+				EXT_ControlSoundVolume(10);//previousVolume / 2);
+
+				EXT_SoundFinished((c)
+				{
+					EXT_RemoveSoundFinishedCallback(c);
+					EXT_ControlSoundVolume(previousVolume);
+				}, _lastVoiceChannel);
 
 				DvnEvents.getEvents().playingVoice(voice);
 			}
@@ -1877,10 +1897,10 @@ public final class GameView : View
 
 		void restyleButton(Button button, GameSettings gameSettings)
         {
-			if (!gameSettings.buttonTextColor ||
-				!gameSettings.buttonBackgroundColor ||
-				!gameSettings.buttonBackgroundBottomColor ||
-				!gameSettings.buttonBorderColor)
+			if (!gameSettings.buttonTextColor || !gameSettings.buttonTextColor.length ||
+				!gameSettings.buttonBackgroundColor || !gameSettings.buttonBackgroundColor.length ||
+				!gameSettings.buttonBackgroundBottomColor || !gameSettings.buttonBackgroundBottomColor.length ||
+				!gameSettings.buttonBorderColor ||  !gameSettings.buttonBorderColor.length)
 			{
 				return;
 			}

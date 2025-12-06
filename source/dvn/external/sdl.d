@@ -1507,14 +1507,25 @@ private final class EXT_Music
   }
 
   /// play()
-  void play()
+  void play(bool setVolumeToDefault = true)
   {
     if (!_allSoundsDisabled && !_musicDisabled)
     {
-      Mix_VolumeMusic(_soundVolume);
-
+      if (setVolumeToDefault)
+      {
+        Mix_VolumeMusic(_soundVolume);
+      }
+      else
+      {
+        Mix_VolumeMusic(0);
+      }
       Mix_PlayMusic(_music, 1);
     }
+  }
+
+  void setVolume(int volume)
+  {
+    Mix_VolumeMusic(volume);
   }
 
   /// pause()
@@ -1550,6 +1561,11 @@ void EXT_SetSoundVolume(int volume)
   _soundVolume = volume;
 }
 
+void EXT_ControlSoundVolume(int volume)
+{
+  Mix_VolumeMusic(volume);
+}
+
 void EXT_ValidateMusic()
 {
   if (!_allSoundsDisabled && !_musicDisabled && _currentMusic && _currentMusicPath && _currentMusicPath.length)
@@ -1566,13 +1582,13 @@ public alias EXT_Delay = SDL_Delay;
 private string _lastMusic;
 
 public void delegate() EXT_PlayLastMusicOverride;
-public void delegate(string path) EXT_PlayMusicOverride;
+public void delegate(string path, bool setVolumeToDefault) EXT_PlayMusicOverride;
 public void delegate() EXT_PauseMusicOverride;
 public void delegate() EXT_StopMusicOverride;
 public int delegate(string path) EXT_PlaySoundOverride;
 public void delegate(int channel) EXT_StopSoundOverride;
 
-void EXT_PlayLastMusic()
+void EXT_PlayLastMusic(bool setVolumeToDefault = true)
 {
   if (EXT_PlayLastMusicOverride)
   {
@@ -1587,11 +1603,11 @@ void EXT_PlayLastMusic()
   EXT_PlayMusic(_lastMusic);
 }
 
-void EXT_PlayMusic(string path)
+void EXT_PlayMusic(string path, bool setVolumeToDefault = true)
 {
   if (EXT_PlayLastMusicOverride)
   {
-    EXT_PlayMusicOverride(path);
+    EXT_PlayMusicOverride(path, setVolumeToDefault);
     return;
   }
   if (_currentMusicPath == path)
@@ -1618,7 +1634,7 @@ void EXT_PlayMusic(string path)
     return;
   }
 
-  music.play();
+  music.play(setVolumeToDefault);
 }
 
 void EXT_PauseMusic()
@@ -1652,6 +1668,46 @@ void EXT_StopMusic()
 
 private alias EXT_SoundChunk = Mix_Chunk*;
 private EXT_SoundChunk[string] _soundEffects;
+private alias FINISHED_SOUND_DELEGATE = void delegate(int);
+private __gshared FINISHED_SOUND_DELEGATE[int] _finishedSoundCallbacks;
+private int _finishedSoundCallbackId;
+private bool _registeredFinishedCallback;
+
+void EXT_SoundFinished(FINISHED_SOUND_DELEGATE finished, int channel)
+{
+  _finishedSoundCallbacks[channel] = finished;
+}
+
+extern(C) private void handleCallbackSoundFinished(int channel) nothrow
+{
+  try
+  {
+    if (!_finishedSoundCallbacks)
+    {
+      return;
+    }
+
+    auto finished = _finishedSoundCallbacks.get(channel, null);
+
+    if (finished)
+    {
+      finished(channel);
+    }
+  }
+  catch (Throwable t)
+  {
+  }
+}
+
+void EXT_RemoveSoundFinishedCallback(int channel)
+{
+  if (!_finishedSoundCallbacks)
+  {
+    return;
+  }
+
+  _finishedSoundCallbacks.remove(channel);
+}
 
 int EXT_PlaySound(string path)
 {
@@ -1677,6 +1733,13 @@ int EXT_PlaySound(string path)
 
   if (!_allSoundsDisabled && !_soundEffectsDisabled)
   {
+    if (!_registeredFinishedCallback)
+    {
+      _registeredFinishedCallback = true;
+
+      Mix_ChannelFinished(&handleCallbackSoundFinished);
+    }
+
     return Mix_PlayChannel(-1, sound, 0);
   }
 

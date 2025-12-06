@@ -49,6 +49,8 @@ public
 
   import dvn.layout;
 
+  import dvn.audio;
+
   void displayView(string name)
   {
     runDelayedTask(0, {
