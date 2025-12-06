@@ -95,16 +95,16 @@ public final class ScreenShakeEffect : Effect
               if (lastWasNegative)
               {
                 position = IntVector(component.component.x + intensity, component.component.y);
-                lastWasNegative = false;
               }
               else
               {
                 position = IntVector(component.component.x - intensity, component.component.y);
-                lastWasNegative = true;
               }
 
               component.component.position = position;
             }
+
+            lastWasNegative = !lastWasNegative;
 
             duration--;
             if (duration <= 0)

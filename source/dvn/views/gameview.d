@@ -65,6 +65,7 @@ public final class SceneEntry
 	int narratorY;
 	int chance;
 	bool stopMusic;
+	int delay;
 
 	SceneCharacter[] copyCharacters()
 	{
@@ -432,6 +433,10 @@ public final class GameView : View
 
 						switch (key)
 						{
+							case "delay":
+							case "d":
+								entry.delay = value.to!int;
+								break;
 							case "chance":
 								chance = value.to!int;
 								break;
@@ -942,7 +947,7 @@ public final class GameView : View
 		}
 	}
 
-    void initializeGame(string sceneName, string loadBackground = "", string loadMusic = "", string originalSceneName = "", string sceneText = "")
+    void initializeGame(string sceneName, string loadBackground = "", string loadMusic = "", string originalSceneName = "", string sceneText = "", bool forceRender = false)
     {
 		logInfo("Loading scene: '%s' | '%s' | '%s'", sceneName, loadBackground, loadMusic);
 
@@ -1086,7 +1091,7 @@ public final class GameView : View
 		addComponent(overlay);
 		overlay.size = IntVector(window.width, window.height);
 		overlay.position = IntVector(0,0);
-		overlay.show();
+		overlay.hide();
 
 		DvnEvents.getEvents().renderGameViewOverplayBegin(overlay);
 
@@ -1116,7 +1121,9 @@ public final class GameView : View
 			background.show();
 		}
 
-		if (scene.effects)
+		overlay.show();
+
+		if (scene.effects && (!scene.delay || !forceRender))
 		{
 			foreach (effect; scene.effects)
 			{
@@ -1125,6 +1132,14 @@ public final class GameView : View
 				if (e) e.handle(effect.values);
 				DvnEvents.getEvents().onEffectPre(effect);
 			}
+		}
+		
+		if (scene.delay && !forceRender)
+		{
+			runDelayedTask(scene.delay, {
+				initializeGame(sceneName, loadBackground, loadMusic, originalSceneName, sceneText, true);
+			});
+			return;
 		}
 
 		_lastBackgroundSource = backgroundSource;
