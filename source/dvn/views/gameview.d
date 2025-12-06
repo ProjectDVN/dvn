@@ -1180,6 +1180,8 @@ public final class GameView : View
 
 				int previousVolume = settings.volume;
 
+				application.audio.stopFade(false);
+
 				EXT_ControlSoundVolume(previousVolume / 2);
 
 				EXT_SoundFinished((c)

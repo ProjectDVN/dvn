@@ -48,10 +48,10 @@ public final class AudioManager
     }
 
     package(dvn):
-    void stopFade()
+    void stopFade(bool setVolume = true)
     {
         _handleFade = false;
-        EXT_ControlSoundVolume(getGlobalSettings().volume);
+        if (setVolume) EXT_ControlSoundVolume(getGlobalSettings().volume);
     }
 
     void handleFade(int ticks)
