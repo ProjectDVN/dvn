@@ -7,10 +7,11 @@ import dvn.external;
 import dvn.meta;
 import dvn.component;
 import dvn.window;
+import dvn.layout;
 
 private size_t _viewId = 0;
 
-public abstract class View
+public abstract class View : ILayout
 {
   private:
   Component[] _components;
@@ -46,6 +47,14 @@ public abstract class View
       Window window() { return _window; }
 
       size_t componentsLength() { return _components ? _components.length : 0; }
+
+      int width() { return _window.width; }
+      int height() { return _window.height; }
+      IntVector size() { return _window.size; }
+
+      int x() { return 0; }
+      int y() { return 0; }
+      IntVector position() { return IntVector(0,0); }
     }
 
     Component[] getComponents()

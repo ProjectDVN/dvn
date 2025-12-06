@@ -23,6 +23,7 @@ public
     import dvn.view;
     import dvn.unorderedlist;
     import dvn.window;
+    import dvn.layout;
     
     import dvn.components;
     import dvn.external;

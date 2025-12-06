@@ -9,6 +9,7 @@ import dvn.view;
 import dvn.window;
 import dvn.events;
 import dvn.painting;
+import dvn.layout;
 
 mixin CreateCustomException!"ComponentException";
 
@@ -56,7 +57,7 @@ private
   }
 }
 
-public abstract class Component
+public abstract class Component : ILayout
 {
   private:
   bool _hasFullRepaint;
@@ -95,6 +96,7 @@ public abstract class Component
   Painting _currentPainting;
   bool _disabled;
   ulong _dataId;
+  Anchor _anchor;
 
   package(dvn) void updateEvents()
   {
@@ -974,8 +976,141 @@ public abstract class Component
       size_t visibleComponentsLength() { return _renderComponents ? _renderComponents.length : 0; }
 
       protected Component[] children() { return _components ? _components : []; }
+
+      Anchor anchor() { return _anchor; }
+
+      void anchor(Anchor anchor)
+      {
+        _anchor = anchor;
+
+        ILayout parent;
+        if (_parent) parent = _parent;
+        else if (_view) parent = view;
+        else return;
+
+        int x;
+        int y;
+        final switch (_anchor)
+        {
+            case Anchor.topLeft:
+                x = parent.x;
+                y = parent.y;
+                break;
+
+            case Anchor.top:
+                x = parent.x + (parent.width - this.width) / 2;
+                y = parent.y;
+                break;
+
+            case Anchor.topRight:
+                x = parent.x + parent.width - this.width;
+                y = parent.y;
+                break;
+
+            case Anchor.left:
+                x = parent.x;
+                y = parent.y + (parent.height - this.height) / 2;
+                break;
+
+            case Anchor.center:
+                x = parent.x + (parent.width - this.width) / 2;
+                y = parent.y + (parent.height - this.height) / 2;
+                break;
+
+            case Anchor.right:
+                x = parent.x + parent.width - this.width;
+                y = parent.y + (parent.height - this.height) / 2;
+                break;
+
+            case Anchor.bottomLeft:
+                x = parent.x;
+                y = parent.y + parent.height - this.height;
+                break;
+
+            case Anchor.bottom:
+                x = parent.x + (parent.width - this.width) / 2;
+                y = parent.y + parent.height - this.height;
+                break;
+
+            case Anchor.bottomRight:
+                x = parent.x + parent.width - this.width;
+                y = parent.y + parent.height - this.height;
+                break;
+        }
+
+        this.position = IntVector(x, y);
+      }
     }
   }
+
+  void moveBelow(Component other, int spacing = 0, bool center = false)
+  {
+      const y = other.y + other.height + spacing;
+
+      int x;
+      if (center)
+      {
+          x = other.x + (other.width - this.width) / 2;
+      }
+      else
+      {
+          x = other.x;
+      }
+
+      position = IntVector(x, y);
+  }
+
+  void moveAbove(Component other, int spacing = 0, bool center = false)
+  {
+      const y = other.y - this.height - spacing;
+
+      int x;
+      if (center)
+      {
+          x = other.x + (other.width - this.width) / 2;
+      }
+      else
+      {
+          x = other.x;
+      }
+
+      position = IntVector(x, y);
+  }
+
+  void moveRightOf(Component other, int spacing = 0, bool center = false)
+  {
+      const x = other.x + other.width + spacing;
+
+      int y;
+      if (center)
+      {
+          y = other.y + (other.height - this.height) / 2;
+      }
+      else
+      {
+          y = other.y;
+      }
+
+      position = IntVector(x, y);
+  }
+
+  void moveLeftOf(Component other, int spacing = 0, bool center = false)
+  {
+      const x = other.x - this.width - spacing;
+
+      int y;
+      if (center)
+      {
+          y = other.y + (other.height - this.height) / 2;
+      }
+      else
+      {
+          y = other.y;
+      }
+
+      position = IntVector(x, y);
+  }
+
 
   private bool _forceRender = false;
   private bool _skipForceRender = false;

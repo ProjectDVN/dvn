@@ -47,6 +47,8 @@ public
 
   import dvn.bundling;
 
+  import dvn.layout;
+
   void displayView(string name)
   {
     runDelayedTask(0, {
