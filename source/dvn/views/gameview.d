@@ -1136,7 +1136,7 @@ public final class GameView : View
 
 			if (music && music.length)
 			{
-				EXT_PlayMusic(music, false);
+				EXT_PlayMusic(music, true);
 
 				DvnEvents.getEvents().playingMusic(music);
 			}
@@ -1147,7 +1147,7 @@ public final class GameView : View
 
 			if (music && music.length)
 			{
-				EXT_PlayMusic(music, false);
+				EXT_PlayMusic(music, true);
 
 				DvnEvents.getEvents().playingMusic(music);
 			}
