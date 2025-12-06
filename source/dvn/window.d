@@ -275,6 +275,11 @@ public final class Window
   {
     return _sheetCollection.getSheetEntry(sheetName, row, col, sheetRender);
   }
+  
+  bool hasSheetEntry(string entryName)
+  {
+    return _sheetCollection.hasSheetEntry(entryName);
+  }
 
   bool isCurrentView(T : View)(T view)
   {

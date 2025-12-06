@@ -54,6 +54,11 @@ public final class SheetCollection
     _sheetEntries[name] = create;
   }
 
+  bool hasSheetEntry(string entryName)
+  {
+    return cast(bool)(entryName in _sheetEntries);
+  }
+
   bool getSheetEntry(string entryName, out EXT_SheetRender* sheetRender)
   {
     sheetRender = null;

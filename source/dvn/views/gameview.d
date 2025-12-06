@@ -307,6 +307,7 @@ public class Coverage
 	final:
 	CoverageNode[] nodes;
 	CoverageNode[] endScenes;
+	string[] missingAssets;
 }
 
 public final class GameView : View
@@ -847,6 +848,8 @@ public final class GameView : View
 		import std.file : exists, readText, write;
 		import std.string : strip, toLower;
 
+		auto window = super.window;
+
 		if (!exists("coverage.txt"))
 		{
 			logInfo("Skipping coverage ...");
@@ -861,11 +864,11 @@ public final class GameView : View
 
 		auto settings = getGlobalSettings();
 
-		auto main = _scenes[settings.mainScript && settings.mainScript ? settings.mainScript : "main"];
+		auto main = _scenes[settings.mainScript && settings.mainScript.length ? settings.mainScript : "main"];
 
 		CoverageNode[] endScenes;
-		CoverageNode[] infiniteScenes;
 		CoverageNode[] nodes;
+		string[] missingAssets;
 
 		bool[string] visited;
 
@@ -880,6 +883,47 @@ public final class GameView : View
 			if (visited && scene.name in visited)
 			{
 				return null;
+			}
+
+			if (scene.animations && scene.animations.length)
+			{
+				foreach (ani; scene.animations)
+				{
+					if (!window.hasSheetEntry(ani.source))
+					{
+						missingAssets ~= ani.source;
+					}
+				}
+			}
+
+			if (scene.images && scene.images.length)
+			{
+				foreach (image; scene.images)
+				{
+					if (!window.hasSheetEntry(image.source))
+					{
+						missingAssets ~= image.source;
+					}
+				}
+			}
+
+			if (scene.characters && scene.characters.length)
+			{
+				foreach (character; scene.characters)
+				{
+					if (!window.hasSheetEntry(character.image))
+					{
+						missingAssets ~= character.image;
+					}
+				}
+			}
+
+			if (scene.background)
+			{
+				if (!window.hasSheetEntry(scene.background))
+				{
+					missingAssets ~= scene.background;
+				}
 			}
 
 			visited[scene.name] = true;
@@ -940,6 +984,7 @@ public final class GameView : View
 			cov.nodes = null;
 		}
 		cov.endScenes = endScenes;
+		cov.missingAssets = missingAssets;
 
 		import dvn.json;
 
