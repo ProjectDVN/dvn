@@ -87,6 +87,9 @@ public final class GameSettings
   bool useLegacySceneButtons;
 
   int saveFileTextMatchPercentage;
+
+  bool useLegacyCharacters;
+  string useLegacyCharacterSplit;
 }
 
 public final class SettingsImage

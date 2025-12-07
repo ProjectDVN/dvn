@@ -51,6 +51,8 @@ public
 
   import dvn.audio;
 
+  import dvn.characters;
+
   void displayView(string name)
   {
     runDelayedTask(0, {

@@ -77,6 +77,7 @@ public final class SceneEntry
 		foreach (character; characters)
 		{
 			auto ch = new SceneCharacter;
+			ch.name = character.name;
 			ch.image = character.image;
 			ch.position = character.position;
 			ch.x = character.x;
@@ -136,6 +137,7 @@ public final class SceneCharacter
 {
 	public:
 	final:
+	string name;
 	string image;
 	string position;
 	int x;
@@ -147,6 +149,7 @@ public final class SceneCharacter
 	SceneCharacter copyCharacter()
 	{
 		auto c = new SceneCharacter();
+		c.name = name;
 		c.image = image;
 		c.position = position;
 		c.x = x;
@@ -507,6 +510,21 @@ public final class GameView : View
 							case "c":
 								character = new SceneCharacter;
 								character.image = value;
+								if (settings.useLegacyCharacters)
+								{
+									if (settings.useLegacyCharacterSplit && settings.useLegacyCharacterSplit.length)
+									{
+										character.name = value.split(settings.useLegacyCharacterSplit)[0].strip;
+									}
+									else
+									{
+										character.name = value;
+									}
+								}
+								else
+								{
+									character.name = value.split(",")[0].strip;
+								}
 								character.position = "bottomCenter";
 								entry.characters ~= character;
 								break;
@@ -1018,6 +1036,8 @@ public final class GameView : View
 		}
 	}
 
+	private bool[string] _lastCharacterNames;
+
     void initializeGame(string sceneName, string loadBackground = "", string loadMusic = "", string originalSceneName = "", string sceneText = "", bool forceRender = false)
     {
 		logInfo("Loading scene: '%s' | '%s' | '%s'", sceneName, loadBackground, loadMusic);
@@ -1291,10 +1311,22 @@ public final class GameView : View
 
 					if (settings.fadeInCharacters)
 					{
-						shouldFadeIn = !_lastCharacter || !_lastCharacter.length || _lastCharacter != character.image;
+						// shouldFadeIn =
+						// 	(!_lastCharacter ||
+						// 	!_lastCharacter.length ||
+						// 	_lastCharacter != character.image) &&
+						// 	_lastCharacterName != character.name;
+						// shouldFadeIn =
+						// 	!_lastCharacterName ||
+						// 	!_lastCharacterName.length ||
+						// 	_lastCharacterName != character.name;
+							shouldFadeIn = !_lastCharacterNames ||
+							!(character.name in _lastCharacterNames);
 					}
-
+					
 					_lastCharacter = character.image;
+					//_lastCharacterName = character.name;
+					_lastCharacterNames[character.name] = true;
 
 					if (character.characterFadeIn || shouldFadeIn)
 					{

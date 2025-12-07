@@ -127,4 +127,7 @@ void printLineToConsole(string msg, string color = "fff")
             view.printLine(msg, color);
         }
     }
+
+    import std.stdio : writeln;
+    writeln(msg);
 }

@@ -21,8 +21,8 @@ import dvn.music;
 import dvn.events;
 import dvn.history;
 import dvn.bundling;
-
 import dvn.ui;
+import dvn.characters;
 
 public final class LoadingView : View
 {
@@ -202,7 +202,14 @@ public final class LoadingView : View
 			DvnEvents.getEvents().loadingAllResources(generalResources);
 
 			appendResources(generalResources, "data/game/backgrounds.json");
-			appendResources(generalResources, "data/game/characters.json");
+			if (settings.useLegacyCharacters)
+			{
+				appendResources(generalResources, "data/game/characters.json");
+			}
+			else
+			{
+				loadCharacters(generalResources);
+			}
 			appendResources(generalResources, "data/game/animations.json");
 
 			DvnEvents.getEvents().loadingAllResources(generalResources);
