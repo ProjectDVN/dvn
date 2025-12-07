@@ -131,7 +131,7 @@ Example:
 
 ```ini
 [act-8-rooftop-conversation]
-c=Yume_Uni_Smile
+c=Yume,Uni_Smile
 Yume=...Yume.
 Yume=Have you noticed how the flowers bloom in April?
 narrator=250,250
