@@ -44,7 +44,9 @@ public final class CreditsView : View
 
         if (!exists("data/credits.json"))
         {
-            window.fadeToView("MainMenu", getColorByName("black"), false);
+            runDelayedTask(1000, {
+                window.fadeToView("MainMenu", getColorByName("black"), false);
+            });
             return;
         }
 

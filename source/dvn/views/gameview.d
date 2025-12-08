@@ -223,6 +223,8 @@ private uint _seed;
 private Random random;
 private int _calls;
 
+private bool _skipToNextChoice;
+
 void setSaveState(string id, uint seed = 0, int calls = 0)
 {
 	_saveId = id;
@@ -1142,6 +1144,33 @@ public final class GameView : View
 
 		DvnEvents.getEvents().beginHandleScene(scene, nextScene, isEnding, _scenes);
 
+		// if (_skipToNextChoice)
+		// {
+		// 	string nextSceneName = scene.nextScene;
+
+		// 	while (scene && (!scene.options || !scene.options.length))
+		// 	{
+		// 		scene = _scenes.get(nextSceneName, null);
+				
+		// 		if (!scene) break;
+
+		// 		nextScene = _scenes.get(scene.nextScene, null);
+		// 		nextSceneName = scene.nextScene;
+
+		// 		isEnding = scene.nextScene == "end";
+
+		// 		DvnEvents.getEvents().beginHandleScene(scene, nextScene, isEnding, _scenes);
+		// 	}
+
+		// 	if (!scene)
+		// 	{
+		// 		logError("Scene not found: %s", nextSceneName ? nextSceneName : originalSceneName);
+
+		// 		DvnEvents.getEvents().endGameView();
+		// 		return;
+		// 	}
+		// }
+
 		if (scene.stopMusic)
 		{
 			EXT_StopMusic();
@@ -1247,6 +1276,8 @@ public final class GameView : View
 		if (scene.view && scene.view.length)
 		{
 			import dvn : displayView;
+
+			_skipToNextChoice = false;
 			
 			DvnEvents.getEvents().endGameView();
 			
@@ -1290,7 +1321,7 @@ public final class GameView : View
 
 		overlay.show();
 
-		if (scene.effects && (!scene.delay || !forceRender))
+		if (!_skipToNextChoice && scene.effects && (!scene.delay || !forceRender))
 		{
 			foreach (effect; scene.effects)
 			{
@@ -1997,7 +2028,7 @@ public final class GameView : View
 			saveGameSettings("data/settings.json");
 		}
 
-		if (scene.text)
+		if (scene.text && (!_skipToNextChoice || (scene.options && scene.options.length)))
 		{
 			if (uniform(0,100, random) > scene.chance)
 			{
@@ -2175,6 +2206,7 @@ public final class GameView : View
 		if ((!scene.text || settings.displayOptionsAsButtons) && scene.options && scene.options.length)
 		{
 			hasOptions = true;
+			_skipToNextChoice = false;
 
 			DvnEvents.getEvents().renderGameViewOptionsStart();
 
@@ -2650,325 +2682,361 @@ public final class GameView : View
 		window.addDebugInformation("Last Choice", _lastChoice ? _lastChoice : "N/A");
 		window.addDebugInformation("Last Background Image", backgroundSource);
 
-		overlay.onKeyboardUp(new KeyboardEventHandler((k) {
-			if (switchingScene || hasOptions || disableEvents)
-			{
-				return;
-			}
-			
-			auto ticks = EXT_GetTicks();
-
-      		if ((ticks - lastTicks) < 256)
-			{
-				return;
-			}
-
-			lastTicks = ticks;
-
-			if (k == KeyboardKey.f2)
-			{
-				if (window.toggleDebugPanel())
-				{
-					window.addDebugInformation("FPS", "0");
-					window.addDebugInformation("Scene Name", sceneName);
-					window.addDebugInformation("Current Scene", scene.name);
-					window.addDebugInformation("Last Choice", _lastChoice ? _lastChoice : "N/A");
-					window.addDebugInformation("Last Background Image", backgroundSource);
-				}
-			}
-			else if (k == KeyboardKey.f5)
-			{
-				window.refreshCurrentView((view)
-				{
-					EXT_StopMusic();
-        
-					syncRuntimeFromSave();
-
-					auto gameView = cast(GameView)view;
-					gameView.loadGame(_lastSaveFile);
-
-					gameView.initializeGame(sceneName, loadBackground, loadMusic, originalSceneName, sceneText, forceRender);
-				});
-			}
-			else if (k == KeyboardKey.LControl)
-			{
-				if (loaded)
-				{
-					switchingScene = true;
-
-					if (isEnding)
-					{
-						window.fadeToView("MainMenu", getColorByName("black"), false);
-					}
-					else if (nextScene)
-					{
-						_lastScene = scene.name;
-					
-						if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)
-						{
-							initializeGame(nextScene.name);
-						}
-						else
-						{
-							runDelayedTask(0, {
-								window.fadeToView("GameView", getColorByName("black"), false, (view) {
-									auto gameView = cast(GameView)view;
-
-									gameView.initializeGame(nextScene.name);
-								});
-							});
-						}
-					}
-				}
-				else
-				{
-					loaded = true;
-					textLabel.text = finalText;
-					textLabel.color = textLabel.color.changeAlpha(255);
-
-					if (settings.enableAutoSave)
-					{
-						runDelayedTask(0, {
-							saveCurrentScene("auto");
-						});
-					}
-
-					DvnEvents.getEvents().renderGameViewTextFinished(textLabel);
-				}
-			}
-		}), true);
-
-		overlay.onTextInput(new TextInputEventHandler((c,s) {
-			if (switchingScene || hasOptions || disableEvents)
-			{
-				return;
-			}
-			
-			auto ticks = EXT_GetTicks();
-
-      		if ((ticks - lastTicks) < 256)
-			{
-				return;
-			}
-
-			lastTicks = ticks;
-			
-			if (s == " ")
-			{
-				if (loaded)
-				{
-					switchingScene = true;
-
-					if (isEnding)
-					{
-						window.fadeToView("MainMenu", getColorByName("black"), false);
-					}
-					else if (nextScene)
-					{
-						_lastScene = scene.name;
-					
-						if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)
-						{
-							initializeGame(nextScene.name);
-						}
-						else
-						{
-							runDelayedTask(0, {
-								window.fadeToView("GameView", getColorByName("black"), false, (view) {
-									auto gameView = cast(GameView)view;
-
-									gameView.initializeGame(nextScene.name);
-								});
-							});
-						}
-					}
-				}
-				else
-				{
-					loaded = true;
-					textLabel.text = finalText;
-					textLabel.color = textLabel.color.changeAlpha(255);
-
-					if (settings.enableAutoSave)
-					{
-						runDelayedTask(0, {
-							saveCurrentScene("auto");
-						});
-					}
-
-					DvnEvents.getEvents().renderGameViewTextFinished(textLabel);
-				}
-			}
-			else if (s == "s" || s == "S")
-			{
-				import std.file : exists, mkdir, remove;
-
-				import std.uuid : randomUUID;
-				
-				auto photoId = randomUUID().toString;
-
-				if (!exists("data/game/gallery"))
-				{
-					mkdir("data/game/gallery");
-				}
-				else if (exists("data/game/gallery/" ~ photoId ~ ".png"))
-				{
-					remove("data/game/gallery/" ~ photoId ~ ".png");
-				}
-
-				takeScreenshot(window, "data/game/gallery/" ~ photoId ~ ".png");
-			}
-		}), true);
-
 		DvnEvents.getEvents().addClickSafeComponents(safeComponents);
 
-		overlay.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
-			if (switchingScene || hasOptions || disableEvents)
+		if (_skipToNextChoice)
+		{
+			switchingScene = true;
+					
+			if (isEnding)
 			{
-				return;
+				window.fadeToView("MainMenu", getColorByName("black"), false);
 			}
-
-			foreach (component; safeComponents)
+			else if (nextScene)
 			{
-				if (intersectsWith(p.x, p.y, component.x, component.y, component.width, component.height))
+				_lastScene = scene.name;
+
+				if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)
+				{
+					initializeGame(nextScene.name);
+				}
+				else
+				{
+					runDelayedTask(0, {
+						window.fadeToView("GameView", getColorByName("black"), false, (view) {
+							auto gameView = cast(GameView)view;
+
+							gameView.initializeGame(nextScene.name);
+						});
+					});
+				}
+			}
+		}
+		else
+		{
+			overlay.onKeyboardUp(new KeyboardEventHandler((k) {
+				if (switchingScene || hasOptions || disableEvents)
 				{
 					return;
 				}
-			}
-			
-			auto ticks = EXT_GetTicks();
-
-      		if ((ticks - lastTicks) < 256)
-			{
-				return;
-			}
-
-			lastTicks = ticks;
-
-			if (loaded)
-			{
-				switchingScene = true;
 				
-				if (isEnding)
-				{
-					window.fadeToView("MainMenu", getColorByName("black"), false);
-				}
-				else if (nextScene)
-				{
-					_lastScene = scene.name;
+				auto ticks = EXT_GetTicks();
 
-					if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)
+				if ((ticks - lastTicks) < 256)
+				{
+					return;
+				}
+
+				lastTicks = ticks;
+
+				if (k == KeyboardKey.f1)
+				{
+					_skipToNextChoice = !_skipToNextChoice;
+				}
+				else if (k == KeyboardKey.f2)
+				{
+					if (window.toggleDebugPanel())
 					{
-						initializeGame(nextScene.name);
+						window.addDebugInformation("FPS", "0");
+						window.addDebugInformation("Scene Name", sceneName);
+						window.addDebugInformation("Current Scene", scene.name);
+						window.addDebugInformation("Last Choice", _lastChoice ? _lastChoice : "N/A");
+						window.addDebugInformation("Last Background Image", backgroundSource);
+						window.addDebugInformation("Skip To Next Choice", _skipToNextChoice.to!string);
+					}
+				}
+				else if (k == KeyboardKey.f5)
+				{
+					window.refreshCurrentView((view)
+					{
+						EXT_StopMusic();
+			
+						syncRuntimeFromSave();
+
+						auto gameView = cast(GameView)view;
+						gameView.loadGame(_lastSaveFile);
+
+						gameView.initializeGame(sceneName, loadBackground, loadMusic, originalSceneName, sceneText, forceRender);
+					});
+				}
+				else if (k == KeyboardKey.LControl)
+				{
+					if (loaded)
+					{
+						switchingScene = true;
+
+						if (isEnding)
+						{
+							window.fadeToView("MainMenu", getColorByName("black"), false);
+						}
+						else if (nextScene)
+						{
+							_lastScene = scene.name;
+						
+							if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)
+							{
+								initializeGame(nextScene.name);
+							}
+							else
+							{
+								runDelayedTask(0, {
+									window.fadeToView("GameView", getColorByName("black"), false, (view) {
+										auto gameView = cast(GameView)view;
+
+										gameView.initializeGame(nextScene.name);
+									});
+								});
+							}
+						}
 					}
 					else
 					{
-						runDelayedTask(0, {
-							window.fadeToView("GameView", getColorByName("black"), false, (view) {
-								auto gameView = cast(GameView)view;
+						loaded = true;
+						textLabel.text = finalText;
+						textLabel.color = textLabel.color.changeAlpha(255);
 
-								gameView.initializeGame(nextScene.name);
+						if (settings.enableAutoSave)
+						{
+							runDelayedTask(0, {
+								saveCurrentScene("auto");
 							});
+						}
+
+						DvnEvents.getEvents().renderGameViewTextFinished(textLabel);
+					}
+				}
+			}), true);
+
+			overlay.onTextInput(new TextInputEventHandler((c,s) {
+				if (switchingScene || hasOptions || disableEvents)
+				{
+					return;
+				}
+				
+				auto ticks = EXT_GetTicks();
+
+				if ((ticks - lastTicks) < 256)
+				{
+					return;
+				}
+
+				lastTicks = ticks;
+				
+				if (s == " ")
+				{
+					if (loaded)
+					{
+						switchingScene = true;
+
+						if (isEnding)
+						{
+							window.fadeToView("MainMenu", getColorByName("black"), false);
+						}
+						else if (nextScene)
+						{
+							_lastScene = scene.name;
+						
+							if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)
+							{
+								initializeGame(nextScene.name);
+							}
+							else
+							{
+								runDelayedTask(0, {
+									window.fadeToView("GameView", getColorByName("black"), false, (view) {
+										auto gameView = cast(GameView)view;
+
+										gameView.initializeGame(nextScene.name);
+									});
+								});
+							}
+						}
+					}
+					else
+					{
+						loaded = true;
+						textLabel.text = finalText;
+						textLabel.color = textLabel.color.changeAlpha(255);
+
+						if (settings.enableAutoSave)
+						{
+							runDelayedTask(0, {
+								saveCurrentScene("auto");
+							});
+						}
+
+						DvnEvents.getEvents().renderGameViewTextFinished(textLabel);
+					}
+				}
+				else if (s == "s" || s == "S")
+				{
+					import std.file : exists, mkdir, remove;
+
+					import std.uuid : randomUUID;
+					
+					auto photoId = randomUUID().toString;
+
+					if (!exists("data/game/gallery"))
+					{
+						mkdir("data/game/gallery");
+					}
+					else if (exists("data/game/gallery/" ~ photoId ~ ".png"))
+					{
+						remove("data/game/gallery/" ~ photoId ~ ".png");
+					}
+
+					takeScreenshot(window, "data/game/gallery/" ~ photoId ~ ".png");
+				}
+			}), true);
+
+			overlay.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
+				if (switchingScene || hasOptions || disableEvents)
+				{
+					return;
+				}
+
+				foreach (component; safeComponents)
+				{
+					if (intersectsWith(p.x, p.y, component.x, component.y, component.width, component.height))
+					{
+						return;
+					}
+				}
+				
+				auto ticks = EXT_GetTicks();
+
+				if ((ticks - lastTicks) < 256)
+				{
+					return;
+				}
+
+				lastTicks = ticks;
+
+				if (loaded)
+				{
+					switchingScene = true;
+					
+					if (isEnding)
+					{
+						window.fadeToView("MainMenu", getColorByName("black"), false);
+					}
+					else if (nextScene)
+					{
+						_lastScene = scene.name;
+
+						if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)
+						{
+							initializeGame(nextScene.name);
+						}
+						else
+						{
+							runDelayedTask(0, {
+								window.fadeToView("GameView", getColorByName("black"), false, (view) {
+									auto gameView = cast(GameView)view;
+
+									gameView.initializeGame(nextScene.name);
+								});
+							});
+						}
+					}
+				}
+				else
+				{
+					loaded = true;
+					textLabel.text = finalText;
+					textLabel.color = textLabel.color.changeAlpha(255);
+
+					if (settings.enableAutoSave)
+					{
+						runDelayedTask(0, {
+							saveCurrentScene("auto");
 						});
 					}
 				}
-			}
-			else
-			{
-				loaded = true;
-				textLabel.text = finalText;
-				textLabel.color = textLabel.color.changeAlpha(255);
+			}));
 
-				if (settings.enableAutoSave)
-				{
-					runDelayedTask(0, {
-						saveCurrentScene("auto");
-					});
-				}
-			}
-		}));
-
-		overlay.enableSwiping((b,d,p)
-		{
-			if (d != SwipeDirection.left)
+			overlay.enableSwiping((b,d,p)
 			{
-				return false;
-			}
-
-			if (switchingScene || hasOptions || disableEvents)
-			{
-				return false;
-			}
-
-			foreach (component; safeComponents)
-			{
-				if (intersectsWith(p.x, p.y, component.x, component.y, component.width, component.height))
+				if (d != SwipeDirection.left)
 				{
 					return false;
 				}
-			}
-			
-			auto ticks = EXT_GetTicks();
 
-      		if ((ticks - lastTicks) < 256)
-			{
-				return false;
-			}
-
-			lastTicks = ticks;
-
-			if (loaded)
-			{
-				switchingScene = true;
-				
-				if (isEnding)
+				if (switchingScene || hasOptions || disableEvents)
 				{
-					window.fadeToView("MainMenu", getColorByName("black"), false);
+					return false;
 				}
-				else if (nextScene)
-				{
-					_lastScene = scene.name;
 
-					if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)
+				foreach (component; safeComponents)
+				{
+					if (intersectsWith(p.x, p.y, component.x, component.y, component.width, component.height))
 					{
-						initializeGame(nextScene.name);
+						return false;
 					}
-					else
+				}
+				
+				auto ticks = EXT_GetTicks();
+
+				if ((ticks - lastTicks) < 256)
+				{
+					return false;
+				}
+
+				lastTicks = ticks;
+
+				if (loaded)
+				{
+					switchingScene = true;
+					
+					if (isEnding)
+					{
+						window.fadeToView("MainMenu", getColorByName("black"), false);
+					}
+					else if (nextScene)
+					{
+						_lastScene = scene.name;
+
+						if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)
+						{
+							initializeGame(nextScene.name);
+						}
+						else
+						{
+							runDelayedTask(0, {
+								window.fadeToView("GameView", getColorByName("black"), false, (view) {
+									auto gameView = cast(GameView)view;
+
+									gameView.initializeGame(nextScene.name);
+								});
+							});
+						}
+					}
+				}
+				else
+				{
+					loaded = true;
+					textLabel.text = finalText;
+					textLabel.color = textLabel.color.changeAlpha(255);
+
+					if (settings.enableAutoSave)
 					{
 						runDelayedTask(0, {
-							window.fadeToView("GameView", getColorByName("black"), false, (view) {
-								auto gameView = cast(GameView)view;
-
-								gameView.initializeGame(nextScene.name);
-							});
+							saveCurrentScene("auto");
 						});
 					}
 				}
-			}
-			else
-			{
-				loaded = true;
-				textLabel.text = finalText;
-				textLabel.color = textLabel.color.changeAlpha(255);
+				return false;
+			});
 
-				if (settings.enableAutoSave)
+			if (scene.effects)
+			{
+				foreach (effect; scene.effects)
 				{
-					runDelayedTask(0, {
-						saveCurrentScene("auto");
-					});
+					if (effect.render && effect.render != "post") continue;
+					auto e = getEffect(effect.id);
+					if (e) e.handle(effect.values);
+					DvnEvents.getEvents().onEffectPost(effect);
 				}
-			}
-			return false;
-		});
-
-		if (scene.effects)
-		{
-			foreach (effect; scene.effects)
-			{
-				if (effect.render && effect.render != "post") continue;
-				auto e = getEffect(effect.id);
-				if (e) e.handle(effect.values);
-				DvnEvents.getEvents().onEffectPost(effect);
 			}
 		}
 
