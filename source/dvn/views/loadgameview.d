@@ -259,29 +259,32 @@ public final class LoadGameView : View
             saveY += 196 + 16 + 30;
         }
 
-        auto overlay = new Panel(window);
-		addComponent(overlay);
-		overlay.size = IntVector(window.width, window.height);
-		overlay.position = IntVector(0,0);
-        overlay.enableSwiping((b,d,p)
+        if (!settings.disableSwipeGesture)
         {
-            if (d != SwipeDirection.left &&
-                d != SwipeDirection.right)
-			{
-				return true;
-			}
-
-            if (d == SwipeDirection.left)
+            auto overlay = new Panel(window);
+            addComponent(overlay);
+            overlay.size = IntVector(window.width, window.height);
+            overlay.position = IntVector(0,0);
+            overlay.enableSwiping((b,d,p)
             {
-                moveNextPage();
-            }
-            else
-            {
-                movePreviousPage();
-            }
+                if (d != SwipeDirection.left &&
+                    d != SwipeDirection.right)
+                {
+                    return true;
+                }
 
-            return false;
-        });
-		overlay.show();
+                if (d == SwipeDirection.left)
+                {
+                    moveNextPage();
+                }
+                else
+                {
+                    movePreviousPage();
+                }
+
+                return false;
+            });
+            overlay.show();
+        }
     }
 }

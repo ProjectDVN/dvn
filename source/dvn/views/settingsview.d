@@ -210,7 +210,7 @@ public final class SettingsView : View
 			splitter.color = "cornflowerblue".getColorByName;
 			splitter.text = " | ";
 			splitter.shadow = true;
-			splitter.position = IntVector(128, nextY);
+			splitter.position = IntVector(328, nextY);
 			splitter.updateRect();
 
             auto checkbox = new CheckBox(window);
@@ -256,7 +256,7 @@ public final class SettingsView : View
 			splitter.color = "cornflowerblue".getColorByName;
 			splitter.text = " | ";
 			splitter.shadow = true;
-			splitter.position = IntVector(128, nextY);
+			splitter.position = IntVector(328, nextY);
 			splitter.updateRect();
 
             auto leftButton = new Button(window);
@@ -447,6 +447,19 @@ public final class SettingsView : View
 
             saveSettings();
         });
+        
+        renderToggleSetting("Disable Swipe Gesture", (checkbox) {
+            if (checkbox.checked)
+            {
+                settings.disableSwipeGesture = true;
+                saveSettings();
+            }
+            else
+            {
+                settings.disableSwipeGesture = false;
+                saveSettings();
+            }
+        }, () { return settings.disableSwipeGesture; });
         
         scrollbarSettings.restyle();
         scrollbarSettings.updateRect(false);

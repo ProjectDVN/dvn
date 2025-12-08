@@ -90,6 +90,8 @@ public final class GameSettings
 
   bool useLegacyCharacters;
   string useLegacyCharacterSplit;
+
+  bool disableSwipeGesture;
 }
 
 public final class SettingsImage
