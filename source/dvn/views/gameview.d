@@ -1246,7 +1246,7 @@ public final class GameView : View
 
 				if (settings.voiceTimingMultiplier > 1)
 				{
-					autoTextDelay = voiceLength * settings.voiceTimingMultiplier;
+					autoTextDelay = cast(int)voiceLength * settings.voiceTimingMultiplier;
 				}
 
 				int previousVolume = settings.volume;
@@ -2185,7 +2185,8 @@ public final class GameView : View
 			{
 				textPanel.addComponent(textLabel);
 			}
-
+			
+			textLabel.lineSpacing = settings.dialogueTextLineSpacing;
 			textLabel.fontName = settings.defaultFont;
 			if (scene.textFont && scene.textFont.length)
 			{

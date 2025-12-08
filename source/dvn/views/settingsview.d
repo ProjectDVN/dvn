@@ -433,6 +433,23 @@ public final class SettingsView : View
             saveSettings();
         });
 
+        renderValueSelector("Dialogue Text Line-Spacing", settings.dialogueTextLineSpacing, (value)
+        {
+            if (value >= 32) return 32;
+
+            return value + 1;
+        }, (value)
+        {
+            if (value <= 0) return 0;
+
+            return value - 1;
+        }, "-", "+", (value)
+        {
+            settings.dialogueTextLineSpacing = value;
+
+            saveSettings();
+        });
+
         nextY += 16;
 
         renderSection("AUDIO");

@@ -24,6 +24,7 @@ public final class Label : Component
   bool _shadow;
   bool _isLink;
   Color _shadowColor;
+  int _lineSpacing;
 
   EXT_TextEntry[] _entries;
   EXT_TextEntry[] _shadowEntries;
@@ -54,10 +55,16 @@ public final class Label : Component
     }));
 
     _shadowColor = "000".getColorByHex;
+    _lineSpacing = 0;
   }
 
   @property
   {
+    int lineSpacing() { return _lineSpacing; }
+    void lineSpacing(int value)
+    {
+      _lineSpacing = value;
+    }
     bool isLink() { return _isLink; }
     void isLink(bool newIsLink)
     {
@@ -381,6 +388,8 @@ public final class Label : Component
         }
 
         _shadowEntries ~= shadowText;
+
+        _textHeight += _lineSpacing;
       }
 
   		if (textSurface)
@@ -464,7 +473,7 @@ public final class Label : Component
       }
 
       _textWidth = w > _textWidth ? w : _textWidth;
-      _textHeight += h;
+      _textHeight += h + _lineSpacing;
   	}
 
     size = IntVector(_textWidth, _textHeight);

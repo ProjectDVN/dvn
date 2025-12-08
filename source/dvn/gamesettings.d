@@ -103,6 +103,8 @@ public final class GameSettings
 
   int windowFadeTime;
   int voiceTimingMultiplier;
+
+  int dialogueTextLineSpacing;
 }
 
 public final class SettingsImage
