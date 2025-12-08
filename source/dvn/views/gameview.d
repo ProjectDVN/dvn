@@ -2745,6 +2745,32 @@ public final class GameView : View
 						window.addDebugInformation("Skip To Next Choice", _skipToNextChoice.to!string);
 					}
 				}
+				else if (k == KeyboardKey.f9)
+				{
+					window.refreshCurrentView((view)
+					{
+						if (!_lastSaveFile) return;
+
+						EXT_StopMusic();
+			
+						if (_lastSaveFile.id == "auto" || _lastSaveFile.id == "quick")
+						{
+							import std.uuid : randomUUID;
+										
+							auto id = randomUUID().toString;
+							setSaveState(id, _lastSaveFile.seed);
+						}
+						else
+						{
+							setSaveState(_lastSaveFile.id, _lastSaveFile.seed);
+						}
+
+						auto gameView = cast(GameView)view;
+						gameView.loadGame(_lastSaveFile);
+
+						gameView.initializeGame(_lastSaveFile.scene, _lastSaveFile.background, _lastSaveFile.music, _lastSaveFile.originalScene, _lastSaveFile.text);
+					});
+				}
 				else if (k == KeyboardKey.f5)
 				{
 					window.refreshCurrentView((view)
