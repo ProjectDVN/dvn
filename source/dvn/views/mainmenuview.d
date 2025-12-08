@@ -12,8 +12,6 @@ import dvn.events;
 
 import dvn.ui;
 
-public bool debugReloadRequested;
-
 public final class MainMenuView : View
 {
 	public:
@@ -26,11 +24,6 @@ public final class MainMenuView : View
 	protected override void onInitialize(bool useCache)
 	{
 		EXT_DisableKeyboardState();
-
-		if (debugReloadRequested)
-		{
-			return;
-		}
 
 		if (useCache) return;
 		auto window = super.window;

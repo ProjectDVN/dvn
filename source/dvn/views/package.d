@@ -16,4 +16,5 @@ public
   import dvn.views.historyview;
   import dvn.views.consoleview;
   import dvn.views.creditsview;
+  import dvn.views.emptyview;
 }

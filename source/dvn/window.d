@@ -123,9 +123,6 @@ public final class Window
     _debugPanel.size = IntVector(width / 4, height / 4);
     _debugPanel.position = IntVector(4, 4);
     _debugPanel.fillColor = "000".getColorByHex.changeAlpha(150);
-
-    import std.stdio : writefln;
-    writefln("deubgpanel: %s", true);
   }
 
   bool toggleDebugPanel()
@@ -450,6 +447,22 @@ public final class Window
     EXT_ResetCursor();
 
     logInfo("Changed view: %s", name);
+  }
+
+  void refreshCurrentView(void delegate(View) onRefreshed)
+  {
+    auto newView = _currentViewName;
+
+    fadeToView("EmptyView", getColorByName("black"), false, (v) {
+      runDelayedTask(1000, {
+        fadeToView(newView, getColorByName("black"), false, (view) {
+          if (onRefreshed)
+          {
+            onRefreshed(view);
+          }
+        });
+      });
+    });
   }
 
   void fadeToView(string name, Color fadeColor, bool saveCurrentView = false, void delegate(View) onInitialized = null)

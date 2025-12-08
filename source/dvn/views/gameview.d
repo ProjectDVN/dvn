@@ -2665,9 +2665,6 @@ public final class GameView : View
 
 			lastTicks = ticks;
 
-			import std.stdio : writefln;
-			writefln("input: %s", k);
-
 			if (k == KeyboardKey.f2)
 			{
 				if (window.toggleDebugPanel())
@@ -2681,22 +2678,16 @@ public final class GameView : View
 			}
 			else if (k == KeyboardKey.f5)
 			{
-				import dvn.views.mainmenuview;
-				debugReloadRequested = true;
-				window.fadeToView("MainMenu", getColorByName("black"), false, (v) {
-					runDelayedTask(1000, {
-						window.fadeToView("GameView", getColorByName("black"), false, (view) {
-							debugReloadRequested = false;
-							EXT_StopMusic();
-						
-							resetSaveState();
+				window.refreshCurrentView((view)
+				{
+					EXT_StopMusic();
+        
+					resetSaveState();
 
-							auto gameView = cast(GameView)view;
-							gameView.loadGame(_lastSaveFile);
+					auto gameView = cast(GameView)view;
+					gameView.loadGame(_lastSaveFile);
 
-							gameView.initializeGame(sceneName, loadBackground, loadMusic, originalSceneName, sceneText, forceRender);
-						});
-					});
+					gameView.initializeGame(sceneName, loadBackground, loadMusic, originalSceneName, sceneText, forceRender);
 				});
 			}
 			else if (k == KeyboardKey.LControl)

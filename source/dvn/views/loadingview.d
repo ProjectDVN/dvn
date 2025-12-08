@@ -17,6 +17,7 @@ import dvn.views.galleryview;
 import dvn.views.photoview;
 import dvn.views.historyview;
 import dvn.views.creditsview;
+import dvn.views.emptyview;
 import dvn.music;
 import dvn.events;
 import dvn.history;
@@ -280,6 +281,7 @@ public final class LoadingView : View
 			mainWindow.addView!PhotoView("PhotoView");
 			mainWindow.addView!HistoryView("HistoryView");
 			mainWindow.addView!CreditsView("CreditsView");
+			mainWindow.addView!EmptyView("EmptyView");
 
 			DvnEvents.getEvents().loadingViews(mainWindow);
 			
