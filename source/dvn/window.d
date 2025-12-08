@@ -547,6 +547,9 @@ public final class Window
 
   void render()
   {
+    import dvn.gamesettings : getGlobalSettings;
+    auto settings = getGlobalSettings();
+    
     EXT_SetRenderRectangle(_nativeScreen, null);
 
     EXT_SetScreenDrawColor(_nativeScreen, _backgroundColor);
@@ -611,7 +614,7 @@ public final class Window
           {
             auto  delta_time = current_time - _lastFadeTime;
 
-            canUpdateFade = delta_time > 24;
+            canUpdateFade = delta_time > (settings.windowFadeTime ? cast(uint)settings.windowFadeTime : 24);
           }
           else
           {
@@ -656,7 +659,7 @@ public final class Window
           {
             auto  delta_time = current_time - _lastFadeTime;
 
-            canUpdateFade = delta_time > 40;
+            canUpdateFade = delta_time > (settings.windowFadeTime ? cast(uint)settings.windowFadeTime : 24);
           }
           else
           {

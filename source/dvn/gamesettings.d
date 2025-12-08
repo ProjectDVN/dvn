@@ -100,6 +100,8 @@ public final class GameSettings
   bool hideAutoIndicator;
   bool highlightNewText;
   string highlightNewTextColor;
+
+  int windowFadeTime;
 }
 
 public final class SettingsImage

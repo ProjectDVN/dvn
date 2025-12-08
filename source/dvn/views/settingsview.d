@@ -416,6 +416,23 @@ public final class SettingsView : View
             }
         }, () { return settings.highlightNewText; });
 
+        renderValueSelector("Window Fade Time", settings.windowFadeTime, (value)
+        {
+            if (value >= 256) return 256;
+
+            return value + 2;
+        }, (value)
+        {
+            if (value <= 0) return 0;
+
+            return value - 2;
+        }, "-", "+", (value)
+        {
+            settings.windowFadeTime = value;
+
+            saveSettings();
+        });
+
         nextY += 16;
 
         renderSection("AUDIO");
