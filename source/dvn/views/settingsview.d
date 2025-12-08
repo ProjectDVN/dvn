@@ -357,6 +357,20 @@ public final class SettingsView : View
             }
         }, () { return settings.fadeInCharacters; });
 
+        renderToggleSetting("Text Fade", (checkbox) {
+            if (checkbox.checked)
+            {
+                settings.fadeInText = true;
+                saveSettings();
+
+            }
+            else
+            {
+                settings.fadeInText = false;
+                saveSettings();
+            }
+        }, () { return settings.fadeInText; });
+
         nextY += 16;
 
         renderSection("AUDIO");
@@ -461,6 +475,36 @@ public final class SettingsView : View
             }
         }, () { return settings.disableSwipeGesture; });
         
+        renderToggleSetting("Disable Continue Arrow", (checkbox) {
+            if (checkbox.checked)
+            {
+                settings.disableContinueArrow = true;
+                saveSettings();
+            }
+            else
+            {
+                settings.disableContinueArrow = false;
+                saveSettings();
+            }
+        }, () { return settings.disableContinueArrow; });
+        
+        renderValueSelector("Auto Speed Increase", settings.autoSpeed, (value)
+        {
+            if (value >= 10) return 512;
+
+            return value + 1;
+        }, (value)
+        {
+            if (value <= 1) return 1;
+
+            return value - 1;
+        }, "-", "+", (value)
+        {
+            settings.autoSpeed = value;
+
+            saveSettings();
+        });
+
         scrollbarSettings.restyle();
         scrollbarSettings.updateRect(false);
         settingsPanel.makeScrollableWithWheel();

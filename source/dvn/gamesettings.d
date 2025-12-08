@@ -92,6 +92,8 @@ public final class GameSettings
   string useLegacyCharacterSplit;
 
   bool disableSwipeGesture;
+  bool disableContinueArrow;
+  int autoSpeed;
 }
 
 public final class SettingsImage

@@ -1053,7 +1053,7 @@ public final class GameView : View
 
 	private bool[string] _lastCharacterNames;
 	private string _lastChoice;
-
+	private ulong continueArrowTaskId;
     void initializeGame(string sceneName, string loadBackground = "", string loadMusic = "", string originalSceneName = "", string sceneText = "", bool forceRender = false)
     {
 		logInfo("Loading scene: '%s' | '%s' | '%s'", sceneName, loadBackground, loadMusic);
@@ -2028,6 +2028,90 @@ public final class GameView : View
 			saveGameSettings("data/settings.json");
 		}
 
+		bool showedContinueArrow;
+		Label continueArrowLabel;
+
+		void showContinueArrow()
+		{
+			if (showedContinueArrow || settings.disableContinueArrow) return;
+			showedContinueArrow = true;
+
+			if (!continueArrowLabel)
+			{
+				continueArrowLabel = new Label(window);
+                addComponent(continueArrowLabel);
+                continueArrowLabel.fontName = settings.defaultFont;
+                continueArrowLabel.fontSize = 24;
+                continueArrowLabel.color = "fff".getColorByHex;
+                continueArrowLabel.text = ">>";
+                continueArrowLabel.shadow = true;
+                continueArrowLabel.isLink = true;
+			}
+
+			if (textPanel && textPanel.x && textPanel.y && !textPanel.isHidden)
+			{
+				continueArrowLabel.position = IntVector(
+					(textPanel.x + textPanel.width) - (continueArrowLabel.width + 14),
+					(textPanel.y + textPanel.height) - (continueArrowLabel.height + 14)
+				);
+			}
+			else
+			{
+				continueArrowLabel.position = IntVector(
+					(window.width) - (continueArrowLabel.width + 14),
+					(window.height) - (continueArrowLabel.height + 14)
+				);
+			}
+
+			continueArrowLabel.updateRect();
+			continueArrowLabel.hide();
+
+			int textFadeInSpeed = 42;
+			auto faded = false;
+
+			continueArrowLabel.color = continueArrowLabel.color.changeAlpha(0);
+			
+			continueArrowTaskId = runDelayedTask(textFadeInSpeed, (d) {
+				if (continueArrowLabel.color.a >= 255)
+				{
+					faded = true;
+					return faded;
+				}
+
+				int newAlpha = continueArrowLabel.color.a + 10;
+
+				if (newAlpha >= 255)
+				{
+					newAlpha = 255;
+				}
+
+				continueArrowLabel.color = continueArrowLabel.color.changeAlpha(cast(ubyte)newAlpha);
+
+				if (continueArrowLabel.color.a >= 255)
+				{
+					faded = true;
+				}
+
+				continueArrowLabel.show();
+
+				return faded;
+			}, true);
+		}
+
+		if (continueArrowLabel)
+		{
+			try
+			{
+				removeComponent(continueArrowLabel);
+				continueArrowLabel.hide();
+			}
+			catch (Throwable t) {}
+
+			continueArrowLabel = null;
+			removeDelayedTask(continueArrowTaskId);
+			showedContinueArrow = false;
+		}
+
 		if (scene.text && (!_skipToNextChoice || (scene.options && scene.options.length)))
 		{
 			if (uniform(0,100, random) > scene.chance)
@@ -2114,8 +2198,14 @@ public final class GameView : View
 				auto faded = false;
 
 				textLabel.color = textLabel.color.changeAlpha(0);
+				textLabel.hide();
 				
 				runDelayedTask(textFadeInSpeed, (d) {
+					if (loaded)
+					{
+						textLabel.color = textLabel.color.changeAlpha(255);
+					}
+
 					if (textLabel.color.a >= 255)
 					{
 						faded = true;
@@ -2136,13 +2226,16 @@ public final class GameView : View
 						faded = true;
 					}
 
+					textLabel.show();
+
 					return faded;
 				}, true);
 			}
 
-			runDelayedTask(settings.textSpeed, (d) {
+			runDelayedTask(isAuto ? (settings.textSpeed / settings.autoSpeed) : settings.textSpeed, (d) {
 				if (loaded)
 				{
+					showContinueArrow();
 					return true;
 				}
 
@@ -2155,11 +2248,13 @@ public final class GameView : View
 				else
 				{
 					loaded = true;
+					showContinueArrow();
 				}
 
 				if (finalText == textLabel.text)
 				{
 					loaded = true;
+					showContinueArrow();
 				}
 
 				if (loaded)
@@ -2818,6 +2913,7 @@ public final class GameView : View
 					else
 					{
 						loaded = true;
+						showContinueArrow();
 						textLabel.text = finalText;
 						textLabel.color = textLabel.color.changeAlpha(255);
 
@@ -2881,6 +2977,7 @@ public final class GameView : View
 					else
 					{
 						loaded = true;
+						showContinueArrow();
 						textLabel.text = finalText;
 						textLabel.color = textLabel.color.changeAlpha(255);
 
@@ -2969,6 +3066,7 @@ public final class GameView : View
 				else
 				{
 					loaded = true;
+					showContinueArrow();
 					textLabel.text = finalText;
 					textLabel.color = textLabel.color.changeAlpha(255);
 
@@ -3048,6 +3146,7 @@ public final class GameView : View
 					else
 					{
 						loaded = true;
+						showContinueArrow();
 						textLabel.text = finalText;
 						textLabel.color = textLabel.color.changeAlpha(255);
 

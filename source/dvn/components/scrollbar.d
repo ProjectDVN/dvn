@@ -149,7 +149,7 @@ public final class ScrollBar : Component
     _incrementButtonTextVertical = buttonTextVertical;
     _incrementButtonTextHorizontal = buttonTextHorizontal;
 
-    createDecrementButton();
+    createIncrementButton();
 
     updateRect(true);
   }
@@ -302,7 +302,7 @@ public final class ScrollBar : Component
     return false;
   }
 
-  package(dvn) bool scrollIncrement()
+  package(dvn) bool scrollIncrement(bool aboveMaxRun = false)
   {
     if (maxScroll == minScroll || maxScroll <= 0)
     {
@@ -329,10 +329,10 @@ public final class ScrollBar : Component
       _scrollablePanel.scrollTo(scrollPosition.x, scrollToY);
       createScrollButton();
 
-      if (aboveMax) // Weird hack ...
+      if (aboveMax && !aboveMaxRun) // Weird hack ... (2024)
       {
-        scrollDecrement();
-        scrollIncrement();
+        //scrollDecrement();
+        //scrollIncrement(true); // We comment this out, idk why it was there to begin with, seems to work (2025)
       }
     }
     else
@@ -353,10 +353,10 @@ public final class ScrollBar : Component
       _scrollablePanel.scrollTo(scrollToX, scrollPosition.y);
       createScrollButton();
 
-      if (aboveMax) // Weird hack ...
+      if (aboveMax) // Weird hack ... (2024)
       {
-        scrollDecrement();
-        scrollIncrement();
+        //scrollDecrement();
+        //scrollIncrement(true); // See comment with the other weird hack (2025)
       }
     }
     return false;

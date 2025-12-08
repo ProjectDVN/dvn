@@ -76,6 +76,8 @@ public final class Panel : Component
       return 0;
     }
 
+    import std.algorithm : max;
+
     int maxScrollVertical()
     {
       int bottom = 0;
@@ -83,14 +85,11 @@ public final class Panel : Component
       foreach (child; super.children)
       {
         auto childBottom = child.y + child.height;
-
-        if (childBottom > bottom)
-        {
-          bottom = childBottom;
-        }
+        bottom = max(bottom, childBottom);
       }
 
-      return (bottom - super.height) + _scrollMargin.y;
+      int raw = bottom - super.height + _scrollMargin.y;
+      return max(0, raw);
     }
 
     int minScrollHorizontal()
@@ -105,14 +104,11 @@ public final class Panel : Component
       foreach (child; super.children)
       {
         auto childRight = child.x + child.width;
-
-        if (childRight > right)
-        {
-          right = childRight;
-        }
+        right = max(right, childRight);
       }
 
-      return (right - super.width) + _scrollMargin.x;
+      int raw = right - super.width + _scrollMargin.x;
+      return max(0, raw);
     }
   }
 
