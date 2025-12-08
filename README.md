@@ -1,6 +1,6 @@
 # Project DVN - Visual Novel Engine
 
-![Project DVN](https://i.imgur.com/dgzGwsK.png "DVN")
+![Project DVN](https://i.imgur.com/3pVO673.png "DVN")
 
 [![DONATE](https://img.shields.io/badge/Support%20Project%20DVN-Donate-brightgreen.svg)](https://buymeacoffee.com/projectdvn)
 [![OS](https://img.shields.io/badge/os-windows%20%7C%20linux%20%7C%20macos-ff69b4.svg)](https://code.dlang.org/packages/dvn)
