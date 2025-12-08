@@ -1126,6 +1126,17 @@ public abstract class Component : ILayout
     _skipForceRender = true;
   }
 
+  
+  // Update the native component - use rect() to determine viewport
+  abstract void repaint();
+
+  bool measureComponentSize(out IntVector size)
+  {
+    size = _size;
+    return false;
+  }
+
+
   protected:
   this(Window window, bool allowChildren)
   {
@@ -1158,17 +1169,8 @@ public abstract class Component : ILayout
     _id = ++_componentId;
   }
 
-  // Update the native component - use rect() to determine viewport
-  abstract void repaint();
-
   // Render to screen
   abstract void renderNativeComponent();
-
-  bool measureComponentSize(out IntVector size)
-  {
-    size = _size;
-    return false;
-  }
 
   package(dvn)
   {

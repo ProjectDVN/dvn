@@ -145,12 +145,12 @@ public final class GalleryView : View
 
                 auto galleryFile = galleryFiles[galleryIndex];
 
-                auto rawImage = new RawImage(window, galleryFile, IntVector(1280, 720));
+                auto rawImage = new Image(window, galleryFile, true);
                 addComponent(rawImage);
                 rawImage.size = IntVector(340, 196);
                 rawImage.position = IntVector(galleryX, galleryY);
  
-                auto closure = (RawImage oImage, string sFile) { return () {
+                auto closure = (Image oImage, string sFile) { return () {
                     oImage.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
                         window.fadeToView("PhotoView", getColorByName("black"), false, (view) {
                             auto photoView = cast(PhotoView)view;

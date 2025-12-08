@@ -43,7 +43,7 @@ public final class PhotoView : View
 		auto window = super.window;
 		auto settings = getGlobalSettings();
 
-        auto bgImage = new RawImage(window, path, IntVector(1280, 720));
+        auto bgImage = new Image(window, path, true);
         addComponent(bgImage);
         bgImage.size = IntVector(1280, 720);
         bgImage.position = IntVector(0,0);

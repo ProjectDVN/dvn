@@ -85,9 +85,9 @@ public class DvnEvents
     void renderGameViewVideo(SceneVideo video, Video videoComponent) {}
     void renderGameViewAnimation(SceneAnimation animation, Animation animationComponent) {}
     void renderGameViewLabel(SceneLabel label, Label labelComponent) {}
-    void renderGameViewDialoguePanelImage(RawImage image) {}
+    void renderGameViewDialoguePanelImage(Image image) {}
     void renderGameViewDialoguePanel(Panel panel) {}
-    void renderGameViewCharacterName(SceneCharacterName characterName, Label label, Panel panel, RawImage namePanelImage) {}
+    void renderGameViewCharacterName(SceneCharacterName characterName, Label label, Panel panel, Image namePanelImage) {}
     void renderGameViewOption(Label option) {}
     void renderGameViewOption(Button option) {}
     void renderGameViewOptionsStart() {}
@@ -122,7 +122,7 @@ public class DvnEvents
     // Load Game View
     void renderLoadGameViewPrevLabel(Label label) {}
     void renderLoadGameViewNextLabel(Label label) {}
-    void renderLoadGameViewLoadEntry(SaveFile saveFile, RawImage image, Label saveLabel) {}
+    void renderLoadGameViewLoadEntry(SaveFile saveFile, Image image, Label saveLabel) {}
 
     static:
     final:
@@ -517,7 +517,7 @@ public class DvnEvents
                 }
             }
 
-            public override void renderGameViewDialoguePanelImage(RawImage image)
+            public override void renderGameViewDialoguePanelImage(Image image)
             {
                 foreach (ev; _eventsHub)
                 {
@@ -533,7 +533,7 @@ public class DvnEvents
                 }
             }
 
-            public override void renderGameViewCharacterName(SceneCharacterName characterName, Label label, Panel panel, RawImage namePanelImage)
+            public override void renderGameViewCharacterName(SceneCharacterName characterName, Label label, Panel panel, Image namePanelImage)
             {
                 foreach (ev; _eventsHub)
                 {
@@ -743,7 +743,7 @@ public class DvnEvents
                 }
             }
 
-            public override void renderLoadGameViewLoadEntry(SaveFile saveFile, RawImage image, Label saveLabel)
+            public override void renderLoadGameViewLoadEntry(SaveFile saveFile, Image image, Label saveLabel)
             {
                 foreach (ev; _eventsHub)
                 {

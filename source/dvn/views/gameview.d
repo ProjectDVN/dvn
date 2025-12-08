@@ -1799,10 +1799,7 @@ public final class GameView : View
 
 		if (settings.dialoguePanelImage)
 		{
-			auto rawImage = new RawImage(window,
-				settings.dialoguePanelImage.path,
-				IntVector(settings.dialoguePanelImage.size.width,
-					settings.dialoguePanelImage.size.height));
+			auto rawImage = new Image(window, settings.dialoguePanelImage.path, true);
 			addComponent(rawImage);
 			rawImage.size = IntVector(
 				(window.width / 100) * 90,
@@ -1860,13 +1857,11 @@ public final class GameView : View
 				charNameLabel.position = IntVector(16, 4);
 				charNameLabel.updateRect();
 
-				RawImage namePanelImage;
+				Image namePanelImage;
 				if (settings.namePanelImage)
 				{
-					auto rawImage = new RawImage(window,
-						settings.namePanelImage.path,
-						IntVector(settings.namePanelImage.size.width,
-							settings.namePanelImage.size.height));
+					auto rawImage = new Image(window,
+						settings.namePanelImage.path, true);
 					addComponent(rawImage);
 					rawImage.size = IntVector(charNameLabel.width + 32, charNameLabel.height + 8);
 					namePanelImage = rawImage;

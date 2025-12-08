@@ -15,6 +15,8 @@ import dvn.components.label;
 import dvn.components.panel;
 import dvn.components.scrollbar;
 
+// LEGACY: Only provided for backward compatibility.
+// Prefer using Image(window, path, true) for direct file sources.
 public final class RawImage : Component
 {
     private:
@@ -91,9 +93,10 @@ public final class RawImage : Component
 
     override void repaint()
     {
+         auto rect = super.clientRect;
         _rect2 = new EXT_RectangleNative;
-        _rect2.x = super.x;
-        _rect2.y = super.y;
+        _rect2.x = rect.x;
+        _rect2.y = rect.y;
         _rect2.w = super.width;
         _rect2.h = super.height;
     }

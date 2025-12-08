@@ -143,7 +143,7 @@ public final class LoadGameView : View
 
                 auto saveFile = saveFiles[saveIndex];
 
-                auto rawImage = new RawImage(window, "data/game/saves/" ~ saveFile.id ~ ".png", IntVector(1280, 720));
+                auto rawImage = new Image(window, "data/game/saves/" ~ saveFile.id ~ ".png", true);
                 addComponent(rawImage);
                 rawImage.size = IntVector(340, 196);
                 rawImage.position = IntVector(saveX, saveY);
@@ -174,7 +174,7 @@ public final class LoadGameView : View
                 );
                 saveLabel.updateRect();
 
-                auto closure = (Label oLabel, RawImage oImage, SaveFile sFile) { return () {
+                auto closure = (Label oLabel, Image oImage, SaveFile sFile) { return () {
                     oLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
                         window.fadeToView("GameView", getColorByName("black"), false, (view) {
                             EXT_StopMusic();
