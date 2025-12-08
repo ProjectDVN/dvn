@@ -341,6 +341,20 @@ public final class SettingsView : View
                 saveSettings();
                 EXT_SetWindowFullscreen(window.nativeWindow, 0);
             }
+
+            import dvn.delayedtask;
+            runDelayedTask(500, {
+                import dvn.external;
+                auto flags = EXT_GetWindowFlags(window.nativeWindow);
+
+                bool hasKeyboardFocus = (flags & EXT_WINDOW_INPUT_FOCUS) != 0;
+                
+                if (!hasKeyboardFocus)
+                {
+                    EXT_RaiseWindow(window.nativeWindow);
+                    EXT_SetWindowInputFocus(window.nativeWindow);
+                }
+            });
         }, () { return settings.fullScreen; });
 
         renderToggleSetting("Character Fade", (checkbox) {

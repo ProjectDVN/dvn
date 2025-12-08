@@ -1042,6 +1042,11 @@ KeyboardKey EXT_KeyboardKey(SDL_Keycode keyCode)
 public alias EXT_Window = SDL_Window*;
 public alias EXT_Screen = SDL_Renderer*;
 
+public alias EXT_WINDOW_INPUT_FOCUS = SDL_WINDOW_INPUT_FOCUS;
+
+public alias EXT_RaiseWindow = SDL_RaiseWindow;
+public alias EXT_SetWindowInputFocus = SDL_SetWindowInputFocus;
+
 EXT_Window EXT_CreateWindow(string title, IntVector size, bool isFullScreen)
 {
   import std.string : toStringz;
@@ -1071,7 +1076,7 @@ EXT_Window EXT_CreateWindow(string title, IntVector size, bool isFullScreen)
   }
 
   import dvn.delayedtask;
-  runDelayedTask(100, {
+  runDelayedTask(500, {
     auto flags = SDL_GetWindowFlags(window);
 
     bool hasKeyboardFocus = (flags & SDL_WINDOW_INPUT_FOCUS) != 0;
@@ -1082,7 +1087,6 @@ EXT_Window EXT_CreateWindow(string title, IntVector size, bool isFullScreen)
         SDL_SetWindowInputFocus(window);
     }
   });
-  //SDL_SetWindowGrab(window, SDL_TRUE);
 
   return window;
 }
