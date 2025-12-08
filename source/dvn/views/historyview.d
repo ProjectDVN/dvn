@@ -265,5 +265,6 @@ public final class HistoryView : View
         
         scrollbarMessages.restyle();
         scrollbarMessages.updateRect(false);
+        historyPanel.makeScrollableWithWheel();
     }
 }
