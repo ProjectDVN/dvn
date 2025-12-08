@@ -89,7 +89,8 @@ public final class LoadGameView : View
         prevLabel.position = IntVector(16, (window.height / 2) - (prevLabel.height / 2));
         prevLabel.updateRect();
 
-        prevLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
+        void movePreviousPage()
+        {
             page -= 1;
             if (page <= 0)
             {
@@ -97,6 +98,21 @@ public final class LoadGameView : View
             }
 
             renderLoadPage();
+        }
+
+        void moveNextPage()
+        {
+            page += 1;
+            if (page >= 100)
+            {
+                page = 100;
+            }
+
+            renderLoadPage();
+        }
+
+        prevLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
+            movePreviousPage();
         }));
 
         DvnEvents.getEvents().renderLoadGameViewPrevLabel(prevLabel);
@@ -113,13 +129,7 @@ public final class LoadGameView : View
         nextLabel.updateRect();
 
         nextLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
-            page += 1;
-            if (page >= 100)
-            {
-                page = 100;
-            }
-
-            renderLoadPage();
+            moveNextPage();
         }));
 
         DvnEvents.getEvents().renderLoadGameViewNextLabel(nextLabel);
@@ -248,5 +258,30 @@ public final class LoadGameView : View
 
             saveY += 196 + 16 + 30;
         }
+
+        auto overlay = new Panel(window);
+		addComponent(overlay);
+		overlay.size = IntVector(window.width, window.height);
+		overlay.position = IntVector(0,0);
+        overlay.enableSwiping((b,d,p)
+        {
+            if (d != SwipeDirection.left &&
+                d != SwipeDirection.right)
+			{
+				return true;
+			}
+
+            if (d == SwipeDirection.left)
+            {
+                moveNextPage();
+            }
+            else
+            {
+                movePreviousPage();
+            }
+
+            return false;
+        });
+		overlay.show();
     }
 }
