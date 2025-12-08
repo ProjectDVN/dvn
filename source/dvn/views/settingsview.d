@@ -640,6 +640,19 @@ public final class SettingsView : View
             }
         }, () { return settings.immersionMode; });
 
+        renderToggleSetting("Disable Effects", (checkbox) {
+            if (checkbox.checked)
+            {
+                settings.disableEffects = true;
+                saveSettings();
+            }
+            else
+            {
+                settings.disableEffects = false;
+                saveSettings();
+            }
+        }, () { return settings.disableEffects; });
+
         scrollbarSettings.restyle();
         scrollbarSettings.updateRect(false);
         settingsPanel.makeScrollableWithWheel();

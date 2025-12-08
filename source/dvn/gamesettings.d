@@ -106,6 +106,7 @@ public final class GameSettings
 
   int dialogueTextLineSpacing;
   bool immersionMode;
+  bool disableEffects;
 }
 
 public final class SettingsImage

@@ -1329,7 +1329,7 @@ public final class GameView : View
 
 		overlay.show();
 
-		if (!_skipToNextChoice && scene.effects && (!scene.delay || !forceRender))
+		if (!_skipToNextChoice && scene.effects && !settings.disableEffects && (!scene.delay || !forceRender))
 		{
 			foreach (effect; scene.effects)
 			{
@@ -3273,7 +3273,7 @@ public final class GameView : View
 				});
 			}
 
-			if (scene.effects)
+			if (scene.effects && !settings.disableEffects)
 			{
 				foreach (effect; scene.effects)
 				{
