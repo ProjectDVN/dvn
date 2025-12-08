@@ -389,12 +389,12 @@ public final class SettingsView : View
         {
             if (value >= 255) return 255;
 
-            return value + 10;
+            return value + 5;
         }, (value)
         {
             if (value <= 0) return 0;
 
-            return value - 10;
+            return value - 5;
         }, "-", "+", (value)
         {
             settings.autoSpeed = value;
