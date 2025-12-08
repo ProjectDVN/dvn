@@ -94,6 +94,10 @@ public final class GameSettings
   bool disableSwipeGesture;
   bool disableContinueArrow;
   int autoSpeed;
+
+  bool clickTextBoxtoAdvance;
+  int textPanelOpacityLevel;
+  bool hideAutoIndicator;
 }
 
 public final class SettingsImage

@@ -1865,7 +1865,8 @@ public final class GameView : View
 		auto textPanel = new Panel(window);
 		textPanel.dataId = SceneComponentId.textPanel;
 		addComponent(textPanel);
-		textPanel.fillColor = settings.dialoguePanelBackgroundColor.getColorByHex.changeAlpha(150);
+		textPanel.fillColor = settings.dialoguePanelBackgroundColor.getColorByHex
+			.changeAlpha(settings.textPanelOpacityLevel ? settings.textPanelOpacityLevel : 150);
 		textPanel.borderColor = settings.dialoguePanelBorderColor.getColorByHex;
 		textPanel.size = IntVector(
 			(window.width / 100) * 90,
@@ -2584,6 +2585,21 @@ public final class GameView : View
 
 		autoButton.show();
 
+		auto autoIndicatorLabel = new Label(window);
+		addComponent(autoIndicatorLabel);
+		autoIndicatorLabel.fontName = settings.defaultFont;
+		autoIndicatorLabel.fontSize = 18;
+		autoIndicatorLabel.color = "E74C3C".getColorByHex;
+		autoIndicatorLabel.text = "AUTO ●";
+		autoIndicatorLabel.shadow = true;
+		autoIndicatorLabel.position = IntVector(14, 14);
+		autoIndicatorLabel.updateRect();
+		autoIndicatorLabel.show();
+		if (!isAuto || settings.hideAutoIndicator)
+		{
+			autoIndicatorLabel.hide();
+		}
+
 		autoButton.onButtonClick(new MouseButtonEventHandler((b,p) {
 			isAuto = !isAuto;
 
@@ -2595,6 +2611,9 @@ public final class GameView : View
 			{
 				autoButton.text = settings.autoButtonTextOff.to!dstring;
 			}
+
+			if (isAuto && !settings.hideAutoIndicator) autoIndicatorLabel.show();
+			else autoIndicatorLabel.hide();
 
 			return false;
 		}));
@@ -2809,7 +2828,21 @@ public final class GameView : View
 		}
 		else
 		{
+			bool holdCtrl = false;
+
+			overlay.onKeyboardDown(new KeyboardEventHandler((k) {
+				if (k == KeyboardKey.LControl)
+				{
+					holdCtrl = true;
+				}
+			}), true);
+
 			overlay.onKeyboardUp(new KeyboardEventHandler((k) {
+				if (k == KeyboardKey.LControl)
+				{
+					holdCtrl = false;
+				}
+
 				if (switchingScene || hasOptions || disableEvents)
 				{
 					return;
@@ -2880,53 +2913,109 @@ public final class GameView : View
 						gameView.initializeGame(sceneName, loadBackground, loadMusic, originalSceneName, sceneText, forceRender);
 					});
 				}
-				else if (k == KeyboardKey.LControl)
+				else if (holdCtrl && k == KeyboardKey.s)
 				{
-					if (loaded)
+					import std.file : exists, mkdir, remove;
+
+					import std.uuid : randomUUID;
+					
+					auto photoId = randomUUID().toString;
+
+					if (!exists("data/game/gallery"))
 					{
-						switchingScene = true;
-
-						if (isEnding)
-						{
-							window.fadeToView("MainMenu", getColorByName("black"), false);
-						}
-						else if (nextScene)
-						{
-							_lastScene = scene.name;
-						
-							if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)
-							{
-								initializeGame(nextScene.name);
-							}
-							else
-							{
-								runDelayedTask(0, {
-									window.fadeToView("GameView", getColorByName("black"), false, (view) {
-										auto gameView = cast(GameView)view;
-
-										gameView.initializeGame(nextScene.name);
-									});
-								});
-							}
-						}
+						mkdir("data/game/gallery");
 					}
-					else
+					else if (exists("data/game/gallery/" ~ photoId ~ ".png"))
 					{
-						loaded = true;
-						showContinueArrow();
-						textLabel.text = finalText;
-						textLabel.color = textLabel.color.changeAlpha(255);
+						remove("data/game/gallery/" ~ photoId ~ ".png");
+					}
 
-						if (settings.enableAutoSave)
+					class ComponentState
+					{
+						bool isHidden;
+						Component component;
+					}
+
+					ComponentState[] states = [];
+
+					foreach (comp; getComponents)
+					{
+						auto state = new ComponentState;
+						state.component = comp;
+						state.isHidden = comp.isHidden;
+						states ~= state;
+					}
+
+					foreach (state; states)
+					{
+						if (
+							state.component.dataId == SceneComponentId.background ||
+							state.component.dataId == SceneComponentId.character
+						)
 						{
-							runDelayedTask(0, {
-								saveCurrentScene("auto");
-							});
+							continue;
 						}
 
-						DvnEvents.getEvents().renderGameViewTextFinished(textLabel);
+						state.component.hide();
 					}
+
+					runDelayedTask(1, {
+						takeScreenshot(window, "data/game/gallery/" ~ photoId ~ ".png");
+
+						foreach (state; states)
+						{
+							state.component.show();
+							if (state.isHidden) state.component.hide();
+						}
+					});
 				}
+				// else if (k == KeyboardKey.LControl)
+				// {
+				// 	if (loaded)
+				// 	{
+				// 		switchingScene = true;
+
+				// 		if (isEnding)
+				// 		{
+				// 			window.fadeToView("MainMenu", getColorByName("black"), false);
+				// 		}
+				// 		else if (nextScene)
+				// 		{
+				// 			_lastScene = scene.name;
+						
+				// 			if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)
+				// 			{
+				// 				initializeGame(nextScene.name);
+				// 			}
+				// 			else
+				// 			{
+				// 				runDelayedTask(0, {
+				// 					window.fadeToView("GameView", getColorByName("black"), false, (view) {
+				// 						auto gameView = cast(GameView)view;
+
+				// 						gameView.initializeGame(nextScene.name);
+				// 					});
+				// 				});
+				// 			}
+				// 		}
+				// 	}
+				// 	else
+				// 	{
+				// 		loaded = true;
+				// 		showContinueArrow();
+				// 		textLabel.text = finalText;
+				// 		textLabel.color = textLabel.color.changeAlpha(255);
+
+				// 		if (settings.enableAutoSave)
+				// 		{
+				// 			runDelayedTask(0, {
+				// 				saveCurrentScene("auto");
+				// 			});
+				// 		}
+
+				// 		DvnEvents.getEvents().renderGameViewTextFinished(textLabel);
+				// 	}
+				// }
 			}), true);
 
 			overlay.onTextInput(new TextInputEventHandler((c,s) {
@@ -2991,7 +3080,7 @@ public final class GameView : View
 						DvnEvents.getEvents().renderGameViewTextFinished(textLabel);
 					}
 				}
-				else if (s == "s" || s == "S")
+				else if (!holdCtrl && (s == "s" || s == "S"))
 				{
 					import std.file : exists, mkdir, remove;
 
@@ -3007,12 +3096,18 @@ public final class GameView : View
 					{
 						remove("data/game/gallery/" ~ photoId ~ ".png");
 					}
-
+					
 					takeScreenshot(window, "data/game/gallery/" ~ photoId ~ ".png");
 				}
 			}), true);
 
-			overlay.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
+			auto mouseAndSwipEventComponent = overlay;
+			if (settings.clickTextBoxtoAdvance && textPanel && !textPanel.isHidden)
+			{
+				mouseAndSwipEventComponent = textPanel;
+			}
+
+			mouseAndSwipEventComponent.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
 				if (switchingScene || hasOptions || disableEvents)
 				{
 					return;
@@ -3081,7 +3176,7 @@ public final class GameView : View
 
 			if (!settings.disableSwipeGesture)
 			{
-				overlay.enableSwiping((b,d,p)
+				mouseAndSwipEventComponent.enableSwiping((b,d,p)
 				{
 					if (d != SwipeDirection.left)
 					{

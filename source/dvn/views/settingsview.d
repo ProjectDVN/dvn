@@ -370,6 +370,23 @@ public final class SettingsView : View
                 saveSettings();
             }
         }, () { return settings.fadeInText; });
+        
+        renderValueSelector("Text Panel Opacity Level", settings.textPanelOpacityLevel, (value)
+        {
+            if (value >= 255) return 255;
+
+            return value + 10;
+        }, (value)
+        {
+            if (value <= 0) return 0;
+
+            return value - 10;
+        }, "-", "+", (value)
+        {
+            settings.autoSpeed = value;
+
+            saveSettings();
+        });
 
         nextY += 16;
 
@@ -490,7 +507,7 @@ public final class SettingsView : View
         
         renderValueSelector("Auto Speed Increase", settings.autoSpeed, (value)
         {
-            if (value >= 10) return 512;
+            if (value >= 10) return 10;
 
             return value + 1;
         }, (value)
@@ -504,6 +521,32 @@ public final class SettingsView : View
 
             saveSettings();
         });
+        
+        renderToggleSetting("Click Text-Panel To Advance", (checkbox) {
+            if (checkbox.checked)
+            {
+                settings.clickTextBoxtoAdvance = true;
+                saveSettings();
+            }
+            else
+            {
+                settings.clickTextBoxtoAdvance = false;
+                saveSettings();
+            }
+        }, () { return settings.clickTextBoxtoAdvance; });
+        
+        renderToggleSetting("Hide Auto Indicator", (checkbox) {
+            if (checkbox.checked)
+            {
+                settings.hideAutoIndicator = true;
+                saveSettings();
+            }
+            else
+            {
+                settings.hideAutoIndicator = false;
+                saveSettings();
+            }
+        }, () { return settings.hideAutoIndicator; });
 
         scrollbarSettings.restyle();
         scrollbarSettings.updateRect(false);

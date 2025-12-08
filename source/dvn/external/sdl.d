@@ -941,6 +941,7 @@ KeyboardKey EXT_KeyboardKey(SDL_Keycode keyCode)
 {
   switch (keyCode)
   {
+
     case SDLK_0:
       return KeyboardKey.num0;
     case SDLK_1:
@@ -1007,6 +1008,32 @@ KeyboardKey EXT_KeyboardKey(SDL_Keycode keyCode)
       return KeyboardKey.f11;
     case SDL_Keycode.SDLK_F12:
       return KeyboardKey.f12;
+    case SDL_Keycode.SDLK_a: return KeyboardKey.a;
+    case SDL_Keycode.SDLK_b: return KeyboardKey.b;
+    case SDL_Keycode.SDLK_c: return KeyboardKey.c;
+    case SDL_Keycode.SDLK_d: return KeyboardKey.d;
+    case SDL_Keycode.SDLK_e: return KeyboardKey.e;
+    case SDL_Keycode.SDLK_f: return KeyboardKey.f;
+    case SDL_Keycode.SDLK_g: return KeyboardKey.g;
+    case SDL_Keycode.SDLK_h: return KeyboardKey.h;
+    case SDL_Keycode.SDLK_i: return KeyboardKey.i;
+    case SDL_Keycode.SDLK_j: return KeyboardKey.j;
+    case SDL_Keycode.SDLK_k: return KeyboardKey.k;
+    case SDL_Keycode.SDLK_l: return KeyboardKey.l;
+    case SDL_Keycode.SDLK_m: return KeyboardKey.m;
+    case SDL_Keycode.SDLK_n: return KeyboardKey.n;
+    case SDL_Keycode.SDLK_o: return KeyboardKey.o;
+    case SDL_Keycode.SDLK_p: return KeyboardKey.p;
+    case SDL_Keycode.SDLK_q: return KeyboardKey.q;
+    case SDL_Keycode.SDLK_r: return KeyboardKey.r;
+    case SDL_Keycode.SDLK_s: return KeyboardKey.s;
+    case SDL_Keycode.SDLK_t: return KeyboardKey.t;
+    case SDL_Keycode.SDLK_u: return KeyboardKey.u;
+    case SDL_Keycode.SDLK_v: return KeyboardKey.v;
+    case SDL_Keycode.SDLK_w: return KeyboardKey.w;
+    case SDL_Keycode.SDLK_x: return KeyboardKey.x;
+    case SDL_Keycode.SDLK_y: return KeyboardKey.y;
+    case SDL_Keycode.SDLK_z: return KeyboardKey.z;
 
     default: return KeyboardKey.unknown;
   }
@@ -1019,9 +1046,10 @@ EXT_Window EXT_CreateWindow(string title, IntVector size, bool isFullScreen)
 {
   import std.string : toStringz;
 
+  EXT_Window window;
   if (isFullScreen)
   {
-    return SDL_CreateWindow(
+    window = SDL_CreateWindow(
       title.toStringz,
       SDL_WINDOWPOS_UNDEFINED,
       SDL_WINDOWPOS_UNDEFINED,
@@ -1032,7 +1060,7 @@ EXT_Window EXT_CreateWindow(string title, IntVector size, bool isFullScreen)
   }
   else
   {
-    return SDL_CreateWindow(
+    window = SDL_CreateWindow(
       title.toStringz,
       SDL_WINDOWPOS_UNDEFINED,
       SDL_WINDOWPOS_UNDEFINED,
@@ -1041,6 +1069,22 @@ EXT_Window EXT_CreateWindow(string title, IntVector size, bool isFullScreen)
       SDL_WINDOW_OPENGL
     );
   }
+
+  import dvn.delayedtask;
+  runDelayedTask(100, {
+    auto flags = SDL_GetWindowFlags(window);
+
+    bool hasKeyboardFocus = (flags & SDL_WINDOW_INPUT_FOCUS) != 0;
+    
+    if (!hasKeyboardFocus)
+    {
+        SDL_RaiseWindow(window);
+        SDL_SetWindowInputFocus(window);
+    }
+  });
+  //SDL_SetWindowGrab(window, SDL_TRUE);
+
+  return window;
 }
 
 EXT_Screen EXT_CreateScreen(EXT_Window nativeWindow)

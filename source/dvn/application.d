@@ -297,14 +297,6 @@ public final class Application
         _audio.handleFade(ticks);
       }
 
-      if ((ticks - lastTicks) >= _messageLevel)
-      {
-        lastTicks = ticks;
-
-        receiveMessages();
-        handleDelayedTasks();
-      }
-
       EXT_InitializeKeyboardState();
 
       foreach (window; _windows)
@@ -322,6 +314,14 @@ public final class Application
       DvnEvents.getEvents().postRenderFrameLoop(_windows);
 
       EXT_PostApplicationLoop(_fps);
+      
+      if ((ticks - lastTicks) >= _messageLevel)
+      {
+        lastTicks = ticks;
+
+        receiveMessages();
+        handleDelayedTasks();
+      }
 
       DvnEvents.getEvents().postFrameLoop(_windows);
     }
