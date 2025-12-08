@@ -102,6 +102,7 @@ public final class GameSettings
   string highlightNewTextColor;
 
   int windowFadeTime;
+  int voiceTimingMultiplier;
 }
 
 public final class SettingsImage

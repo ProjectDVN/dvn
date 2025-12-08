@@ -1233,13 +1233,21 @@ public final class GameView : View
 			}
 		}
 
+		int autoTextDelay = 2000;
+
 		if (scene.voice && scene.voice.length)
 		{
 			auto voice = getMusicPath(scene.voice);
 
 			if (voice && voice.length)
 			{
-				_lastVoiceChannel = EXT_PlaySound(voice);
+				long voiceLength;
+				_lastVoiceChannel = EXT_PlaySound(voice, voiceLength);
+
+				if (settings.voiceTimingMultiplier > 1)
+				{
+					autoTextDelay = voiceLength * settings.voiceTimingMultiplier;
+				}
 
 				int previousVolume = settings.volume;
 
@@ -2283,7 +2291,7 @@ public final class GameView : View
 				{
 					disableEvents = true;
 
-					runDelayedTask(2000, {
+					runDelayedTask(autoTextDelay, {
 						if (nextScene)
 						{
 							if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)

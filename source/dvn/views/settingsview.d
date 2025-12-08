@@ -490,6 +490,23 @@ public final class SettingsView : View
             }
         }, () { return settings.muteSoundEffects; });
 
+        renderValueSelector("Voice Timing Multiplier", settings.voiceTimingMultiplier, (value)
+        {
+            if (value >= 10) return 10;
+
+            return value + 1;
+        }, (value)
+        {
+            if (value <= 0) return 0;
+
+            return value - 1;
+        }, "-", "+", (value)
+        {
+            settings.voiceTimingMultiplier = value;
+
+            saveSettings();
+        });
+
         nextY += 16;
 
         renderSection("GAMEPLAY");

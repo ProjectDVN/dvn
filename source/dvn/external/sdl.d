@@ -1781,7 +1781,73 @@ void EXT_RemoveSoundFinishedCallback(int channel)
   _finishedSoundCallbacks.remove(channel);
 }
 
+struct AudioFormatSpec
+{
+    int freq;
+    ushort format;
+    int channels;
+}
+
+AudioFormatSpec EXT_GetMixerSpec()
+{
+    AudioFormatSpec spec;
+    int freq, channels;
+    ushort format;
+
+    if (Mix_QuerySpec(&freq, &format, &channels) == 0)
+    {
+        return AudioFormatSpec(0, 0, 0);
+    }
+
+    spec.freq = freq;
+    spec.format = format;
+    spec.channels = channels;
+    return spec;
+}
+
+double EXT_GetChunkDurationSeconds(EXT_SoundChunk chunk, AudioFormatSpec spec)
+{
+    if (!chunk || spec.freq == 0 || spec.channels == 0)
+        return 0.0;
+
+    int bytesPerSample;
+
+    switch (spec.format)
+    {
+        case AUDIO_U8:
+        case AUDIO_S8:
+            bytesPerSample = 1;
+            break;
+
+        case AUDIO_U16LSB:
+        case AUDIO_S16LSB:
+        case AUDIO_U16MSB:
+        case AUDIO_S16MSB:
+            bytesPerSample = 2;
+            break;
+
+        case AUDIO_F32LSB:
+        case AUDIO_F32MSB:
+            bytesPerSample = 4;
+            break;
+
+        default:
+            bytesPerSample = 2;
+            break;
+    }
+
+    double totalFrames = cast(double)chunk.alen
+                       / (bytesPerSample * spec.channels);
+
+    return totalFrames / cast(double)spec.freq;
+}
+
 int EXT_PlaySound(string path)
+{
+  long length;
+  return EXT_PlaySound(path, length);
+}
+int EXT_PlaySound(string path, out long length)
 {
   if (EXT_PlaySoundOverride)
   {
@@ -1799,6 +1865,8 @@ int EXT_PlaySound(string path)
     {
       return -1;
     }
+
+    length = cast(long)EXT_GetChunkDurationSeconds(sound, EXT_GetMixerSpec());
 
     _soundEffects[path] = sound;
   }
