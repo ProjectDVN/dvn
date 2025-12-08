@@ -2156,9 +2156,17 @@ public final class GameView : View
 				historyText = names.join(",") ~ ": " ~ historyText;
 			}
 
+			textLabel = new Label(window);
+			if (settings.highlightNewText && !isInHistory(historyText))
+			{
+				textLabel.fillColor =
+					((settings.highlightNewTextColor && settings.highlightNewTextColor.length) ?
+						settings.highlightNewTextColor : "444")
+						.getColorByHex;
+			}
+
 			addDialogueHistory(historyText, null, scene.name, _lastBackgroundSource, _lastMusic, scene.original);
 
-			textLabel = new Label(window);
 			textLabel.dataId = SceneComponentId.text;
 
 			if (scene.isNarrator)

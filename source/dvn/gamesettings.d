@@ -98,6 +98,8 @@ public final class GameSettings
   bool clickTextBoxtoAdvance;
   int textPanelOpacityLevel;
   bool hideAutoIndicator;
+  bool highlightNewText;
+  string highlightNewTextColor;
 }
 
 public final class SettingsImage

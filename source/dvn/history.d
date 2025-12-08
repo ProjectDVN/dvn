@@ -21,6 +21,7 @@ public final class DialogueHistory
 
 private DialogueHistory[] _history;
 private bool[string] _historyKeys;
+private bool[string] _historyText;
 
 void loadDialogueHistory()
 {
@@ -45,6 +46,7 @@ void loadDialogueHistory()
 
     foreach (h; _history)
     {
+        _historyText[h.text] = true;
         _historyKeys[h.sceneName] = true;
     }
 }
@@ -65,6 +67,7 @@ void addDialogueHistory(string text, string[] options, string sceneName, string 
     history.originalScene = originalScene;
 
     _historyKeys[history.sceneName] = true;
+    _historyText[history.text] = true;
     _history ~= history;
 
     import std.file : write;
@@ -112,4 +115,9 @@ DialogueHistory[] searchDialogueHistory(string input)
     }
 
     return results;
+}
+
+bool isInHistory(string input)
+{
+    return _historyText && (input in _historyText);
 }

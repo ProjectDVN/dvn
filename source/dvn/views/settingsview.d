@@ -402,6 +402,20 @@ public final class SettingsView : View
             saveSettings();
         });
 
+        renderToggleSetting("Highlight New Text", (checkbox) {
+            if (checkbox.checked)
+            {
+                settings.highlightNewText = true;
+                saveSettings();
+
+            }
+            else
+            {
+                settings.highlightNewText = false;
+                saveSettings();
+            }
+        }, () { return settings.highlightNewText; });
+
         nextY += 16;
 
         renderSection("AUDIO");
