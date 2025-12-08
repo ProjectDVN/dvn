@@ -626,6 +626,19 @@ public final class SettingsView : View
                 saveSettings();
             }
         }, () { return settings.hideAutoIndicator; });
+        
+        renderToggleSetting("Immersion Mode", (checkbox) {
+            if (checkbox.checked)
+            {
+                settings.immersionMode = true;
+                saveSettings();
+            }
+            else
+            {
+                settings.immersionMode = false;
+                saveSettings();
+            }
+        }, () { return settings.immersionMode; });
 
         scrollbarSettings.restyle();
         scrollbarSettings.updateRect(false);

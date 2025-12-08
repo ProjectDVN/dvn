@@ -2612,7 +2612,7 @@ public final class GameView : View
 		autoIndicatorLabel.position = IntVector(14, 14);
 		autoIndicatorLabel.updateRect();
 		autoIndicatorLabel.show();
-		if (!isAuto || settings.hideAutoIndicator)
+		if (!isAuto || settings.hideAutoIndicator || settings.immersionMode)
 		{
 			autoIndicatorLabel.hide();
 		}

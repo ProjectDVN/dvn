@@ -105,6 +105,7 @@ public final class GameSettings
   int voiceTimingMultiplier;
 
   int dialogueTextLineSpacing;
+  bool immersionMode;
 }
 
 public final class SettingsImage
