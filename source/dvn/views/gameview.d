@@ -239,7 +239,7 @@ void setSaveState(string id, uint seed = 0, int calls = 0)
 	_calls = calls;
 }
 
-void resetSaveState()
+void syncRuntimeFromSave()
 {
 	random = Random(_seed);
 	foreach (_; 0 .. _calls)
@@ -2682,7 +2682,7 @@ public final class GameView : View
 				{
 					EXT_StopMusic();
         
-					resetSaveState();
+					syncRuntimeFromSave();
 
 					auto gameView = cast(GameView)view;
 					gameView.loadGame(_lastSaveFile);
