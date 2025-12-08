@@ -11,6 +11,14 @@ import dvn.application;
 import dvn.window;
 import dvn.resources;
 
+public enum SwipeDirection
+{
+    up,
+    right,
+    down,
+    left
+}
+
 private DvnEvents[] _eventsHub;
 private DvnEvents _events;
 

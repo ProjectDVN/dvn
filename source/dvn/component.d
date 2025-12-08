@@ -500,6 +500,71 @@ public abstract class Component : ILayout
   public:
   final
   {
+    void enableSwiping(bool delegate(MouseButton,SwipeDirection,IntVector) swipe, int tolerance = 150)
+    {
+      bool isHoldingDown = false;
+      IntVector startPosition;
+      IntVector endPosition;
+
+      onMouseButtonDown(new MouseButtonEventHandler((b,p)
+      {
+        isHoldingDown = true;
+        startPosition = p;
+        endPosition = p;
+
+        return true;
+      }));
+
+      onMouseButtonUp(new MouseButtonEventHandler((b,p)
+      {
+        if (!isHoldingDown)
+            return true;
+
+        isHoldingDown = false;
+
+        endPosition = p;
+
+        int dx = endPosition.x - startPosition.x;
+        int dy = endPosition.y - startPosition.y;
+
+        long distSq = cast(long)dx * dx + cast(long)dy * dy;
+        long toleranceSq = cast(long)tolerance * tolerance;
+
+        if (distSq < toleranceSq)
+            return true;
+
+        SwipeDirection dir;
+
+        int absDx = dx < 0 ? -dx : dx;
+        int absDy = dy < 0 ? -dy : dy;
+
+        if (absDx > absDy)
+        {
+            if (dx > 0)
+                dir = SwipeDirection.right;
+            else
+                dir = SwipeDirection.left;
+        }
+        else
+        {
+            if (dy > 0)
+                dir = SwipeDirection.down;
+            else
+                dir = SwipeDirection.up;
+        }
+
+        return swipe(b, dir, p);
+      }));
+
+      onMouseMove(new MouseMoveEventHandler((p)
+      {
+        if (!isHoldingDown) return true;
+
+        endPosition = p;
+        return true;
+      }));
+    }
+
     void show()
     {
       _isHidden = false;

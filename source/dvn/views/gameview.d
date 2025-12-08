@@ -2835,26 +2835,6 @@ public final class GameView : View
 					return;
 				}
 			}
-
-			// if (intersectsWith(p.x, p.y, saveButton.x, saveButton.y, saveButton.width, saveButton.height))
-			// {
-			// 	return;
-			// }
-
-			// if (intersectsWith(p.x, p.y, exitButton.x, exitButton.y, exitButton.width, exitButton.height))
-			// {
-			// 	return;
-			// }
-
-			// if (intersectsWith(p.x, p.y, settingsButton.x, settingsButton.y, settingsButton.width, settingsButton.height))
-			// {
-			// 	return;
-			// }
-
-			// if (intersectsWith(p.x, p.y, autoButton.x, autoButton.y, autoButton.width, autoButton.height))
-			// {
-			// 	return;
-			// }
 			
 			auto ticks = EXT_GetTicks();
 
@@ -2907,6 +2887,79 @@ public final class GameView : View
 				}
 			}
 		}));
+
+		overlay.enableSwiping((b,d,p)
+		{
+			if (d != SwipeDirection.left)
+			{
+				return false;
+			}
+
+			if (switchingScene || hasOptions || disableEvents)
+			{
+				return false;
+			}
+
+			foreach (component; safeComponents)
+			{
+				if (intersectsWith(p.x, p.y, component.x, component.y, component.width, component.height))
+				{
+					return false;
+				}
+			}
+			
+			auto ticks = EXT_GetTicks();
+
+      		if ((ticks - lastTicks) < 256)
+			{
+				return false;
+			}
+
+			lastTicks = ticks;
+
+			if (loaded)
+			{
+				switchingScene = true;
+				
+				if (isEnding)
+				{
+					window.fadeToView("MainMenu", getColorByName("black"), false);
+				}
+				else if (nextScene)
+				{
+					_lastScene = scene.name;
+
+					if (nextScene.background == scene.background || !nextScene.background || !nextScene.background.length)
+					{
+						initializeGame(nextScene.name);
+					}
+					else
+					{
+						runDelayedTask(0, {
+							window.fadeToView("GameView", getColorByName("black"), false, (view) {
+								auto gameView = cast(GameView)view;
+
+								gameView.initializeGame(nextScene.name);
+							});
+						});
+					}
+				}
+			}
+			else
+			{
+				loaded = true;
+				textLabel.text = finalText;
+				textLabel.color = textLabel.color.changeAlpha(255);
+
+				if (settings.enableAutoSave)
+				{
+					runDelayedTask(0, {
+						saveCurrentScene("auto");
+					});
+				}
+			}
+			return false;
+		});
 
 		if (scene.effects)
 		{
