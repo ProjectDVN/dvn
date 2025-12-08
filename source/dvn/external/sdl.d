@@ -983,6 +983,30 @@ KeyboardKey EXT_KeyboardKey(SDL_Keycode keyCode)
       return KeyboardKey.backSpace;
     case SDL_Keycode.SDLK_DELETE:
       return KeyboardKey.deleteKey;
+    case SDL_Keycode.SDLK_F1:
+      return KeyboardKey.f1;
+    case SDL_Keycode.SDLK_F2:
+      return KeyboardKey.f2;
+    case SDL_Keycode.SDLK_F3:
+      return KeyboardKey.f3;
+    case SDL_Keycode.SDLK_F4:
+      return KeyboardKey.f4;
+    case SDL_Keycode.SDLK_F5:
+      return KeyboardKey.f5;
+    case SDL_Keycode.SDLK_F6:
+      return KeyboardKey.f6;
+    case SDL_Keycode.SDLK_F7:
+      return KeyboardKey.f7;
+    case SDL_Keycode.SDLK_F8:
+      return KeyboardKey.f8;
+    case SDL_Keycode.SDLK_F9:
+      return KeyboardKey.f9;
+    case SDL_Keycode.SDLK_F10:
+      return KeyboardKey.f10;
+    case SDL_Keycode.SDLK_F11:
+      return KeyboardKey.f11;
+    case SDL_Keycode.SDLK_F12:
+      return KeyboardKey.f12;
 
     default: return KeyboardKey.unknown;
   }
@@ -1760,8 +1784,14 @@ void EXT_StopSound(int channel)
 private uint _lastMS = 0;
 private int _frames = 0;
 private int _frameCount = 0;
+private int _fps = 0;
 
 int EXT_GetFps()
+{
+  return _fps;
+}
+
+int EXT_UpdateFps()
 {
   auto ticks = EXT_GetTicks();
 
@@ -1774,6 +1804,7 @@ int EXT_GetFps()
   {
     _lastMS = 0;
     _frameCount = _frames;
+    _fps = _frameCount;
     _frames = 0;
   }
   else

@@ -239,6 +239,15 @@ void setSaveState(string id, uint seed = 0, int calls = 0)
 	_calls = calls;
 }
 
+void resetSaveState()
+{
+	random = Random(_seed);
+	foreach (_; 0 .. _calls)
+	{
+		uniform(0,100, random);
+	}
+}
+
 string getCurrentSaveId()
 {
 	return _saveId;
@@ -335,8 +344,12 @@ public final class GameView : View
 		EXT_EnableKeyboardState();
 	}
 
+	private SaveFile _lastSaveFile;
+
     void loadGame(SaveFile saveFile = null)
     {
+		_lastSaveFile = saveFile;
+
 		string lastScriptFile = "";
 		int lineCount = 0;
 		SceneEntry lastEntry;
@@ -1037,6 +1050,7 @@ public final class GameView : View
 	}
 
 	private bool[string] _lastCharacterNames;
+	private string _lastChoice;
 
     void initializeGame(string sceneName, string loadBackground = "", string loadMusic = "", string originalSceneName = "", string sceneText = "", bool forceRender = false)
     {
@@ -2223,6 +2237,8 @@ public final class GameView : View
 								return false;
 							}
 
+							_lastChoice = oButton.text.to!string;
+
 							switchingScene = true;
 
 							if (isEnding)
@@ -2296,6 +2312,8 @@ public final class GameView : View
 							{
 								return;
 							}
+
+							_lastChoice = oLabel.text.to!string;
 
 							switchingScene = true;
 
@@ -2627,6 +2645,11 @@ public final class GameView : View
 		
 		auto lastTicks = EXT_GetTicks();
 
+		window.addDebugInformation("Scene Name", sceneName);
+		window.addDebugInformation("Current Scene", scene.name);
+		window.addDebugInformation("Last Choice", _lastChoice ? _lastChoice : "N/A");
+		window.addDebugInformation("Last Background Image", backgroundSource);
+
 		overlay.onKeyboardUp(new KeyboardEventHandler((k) {
 			if (switchingScene || hasOptions || disableEvents)
 			{
@@ -2641,8 +2664,42 @@ public final class GameView : View
 			}
 
 			lastTicks = ticks;
-			
-			if (k == KeyboardKey.LControl)
+
+			import std.stdio : writefln;
+			writefln("input: %s", k);
+
+			if (k == KeyboardKey.f2)
+			{
+				if (window.toggleDebugPanel())
+				{
+					window.addDebugInformation("FPS", "0");
+					window.addDebugInformation("Scene Name", sceneName);
+					window.addDebugInformation("Current Scene", scene.name);
+					window.addDebugInformation("Last Choice", _lastChoice ? _lastChoice : "N/A");
+					window.addDebugInformation("Last Background Image", backgroundSource);
+				}
+			}
+			else if (k == KeyboardKey.f5)
+			{
+				import dvn.views.mainmenuview;
+				debugReloadRequested = true;
+				window.fadeToView("MainMenu", getColorByName("black"), false, (v) {
+					runDelayedTask(1000, {
+						window.fadeToView("GameView", getColorByName("black"), false, (view) {
+							debugReloadRequested = false;
+							EXT_StopMusic();
+						
+							resetSaveState();
+
+							auto gameView = cast(GameView)view;
+							gameView.loadGame(_lastSaveFile);
+
+							gameView.initializeGame(sceneName, loadBackground, loadMusic, originalSceneName, sceneText, forceRender);
+						});
+					});
+				});
+			}
+			else if (k == KeyboardKey.LControl)
 			{
 				if (loaded)
 				{

@@ -282,6 +282,8 @@ public final class Application
       EXT_PreAplicationLoop(_fps);
       DvnEvents.getEvents().preFrameLoop(_windows);
 
+      EXT_UpdateFps();
+      
       if (!EXT_ProcessEvents(_windows))
       {
         stop();

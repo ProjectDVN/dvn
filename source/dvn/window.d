@@ -12,6 +12,7 @@ import dvn.view;
 import dvn.sheetcollection;
 import dvn.colors;
 import dvn.views.consoleview;
+import dvn.ui;
 
 private size_t _windowId;
 
@@ -25,6 +26,7 @@ public final class Window
   EXT_Screen _nativeScreen;
   Component[] _components;
   Component[] _renderComponents;
+  Panel _debugPanel;
   size_t _id;
   Color _backgroundColor;
   EventCollection _events;
@@ -112,6 +114,88 @@ public final class Window
     _sheetCollection = new SheetCollection(this);
 
     _overlayRectangle = EXT_CreateRectangle(Rectangle(0,0,_size.x, _size.y));
+  }
+
+  void enableDebugPanel()
+  {
+    _debugPanel = new Panel(this);
+    addComponent(_debugPanel);
+    _debugPanel.size = IntVector(width / 4, height / 4);
+    _debugPanel.position = IntVector(4, 4);
+    _debugPanel.fillColor = "000".getColorByHex.changeAlpha(150);
+
+    import std.stdio : writefln;
+    writefln("deubgpanel: %s", true);
+  }
+
+  bool toggleDebugPanel()
+  {
+    if (_debugPanel)
+    {
+      disableDebugPanel();
+      return false;
+    }
+    else
+    {
+      enableDebugPanel();
+      return true;
+    }
+  }
+
+  private Label[string] _debugLabels;
+  private Label _lastLabel;
+
+  void addDebugInformation(string key, string value)
+  {
+    if (!_debugPanel) return;
+
+    import dvn.gamesettings : getGlobalSettings;
+
+    import std.conv : to;
+
+    auto settings = getGlobalSettings();
+
+    Label label;
+    if (_debugLabels)
+    {
+      label = _debugLabels.get(key, null);
+    }
+
+    if (!label)
+    {
+      label = new Label(this);
+      _debugPanel.addComponent(label);
+      _debugLabels[key] = label;
+      label.fontName = settings.defaultFont;
+      label.fontSize = 14;
+      label.color = "fff".getColorByHex;
+      label.shadow = true;
+      label.isLink = false;
+      if (_lastLabel)
+      {
+        label.moveBelow(_lastLabel, 4);
+      }
+      else
+      {
+        label.position = IntVector(4, 4);
+      }
+      _lastLabel = label;
+    }
+    
+    label.text = (key ~ ": " ~ value).to!dstring;
+    label.updateRect();
+    label.show();
+  }
+
+  void disableDebugPanel()
+  {
+    if (_debugPanel)
+    {
+      removeComponent(_debugPanel);
+      _debugPanel = null;
+      _lastLabel = null;
+      _debugLabels.clear();
+    }
   }
 
   void remove()
@@ -446,6 +530,7 @@ public final class Window
   }
 
   private size_t _lastFadeTime;
+  private size_t _lastFpsUpdate;
 
   void render()
   {
@@ -471,6 +556,17 @@ public final class Window
       EXT_SetScreenDrawColor(_nativeScreen, _backgroundColor); // reset
     }
 
+    if (_debugPanel)
+    {
+      auto ticks = EXT_GetTicks();
+      if ((ticks - _lastFpsUpdate) > 1000)
+      {
+        import std.conv : to;
+        addDebugInformation("FPS", EXT_GetFps().to!string);
+        _lastFpsUpdate = ticks;
+      }
+    }
+    
     if (_renderComponents)
     {
       foreach (component; _renderComponents)
