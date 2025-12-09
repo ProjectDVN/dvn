@@ -1,3 +1,6 @@
+/**
+* Copyright (c) 2025 Project DVN
+*/
 module dvn.dom.svg.svgparsersettings;
 
 import dvn.dom.domparsersettings;
