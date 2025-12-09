@@ -113,7 +113,6 @@ public final class SceneEntry
 	bool stopSound;
 /// 
 	int delay;
-
 /// 
 	SceneCharacter[] copyCharacters()
 	{
@@ -436,6 +435,17 @@ public class Coverage
 }
 
 /// 
+struct ScriptLine
+{
+	/// 
+    string text;
+	/// 
+    string file;
+	/// 
+    int lineNumber;
+}
+
+/// 
 public final class GameView : View
 {
 	private:
@@ -474,18 +484,112 @@ public final class GameView : View
 			logInfo("Parsing scripts ...");
 
 			import std.file : dirEntries, SpanMode, readText;
-			import std.string : strip;
+			import std.string : strip, stripLeft, stripRight;
 			import std.array : replace, split;
+			import std.algorithm : canFind, startsWith;
 
 			DvnEvents.getEvents().loadingGameScripts();
 			
 			auto settings = getGlobalSettings();
 
-			void compile(string scriptText, string scriptFile)
+			ScriptLine[] preprocess(ScriptLine[] scripts)
 			{
-				auto lines = scriptText
-					.replace("\r", "")
-					.split("\n");
+				string[string] sceneContent;
+
+				foreach (scriptText; scripts)
+				{
+					auto lines = scriptText
+						.text
+						.replace("\r", "")
+						.split("\n");
+						
+					string sceneName = "";
+					string currentScene = "";
+
+					foreach (l; lines)
+					{
+						if (!l || !l.strip.length)
+						{
+							continue;
+						}
+
+						auto line = l.strip;
+
+						if (line[0] == '#')
+						{
+							continue;
+						}
+
+						if (line[0] == '[' && line[$-1] == ']')
+						{
+							if (currentScene && currentScene.length)
+							{
+								sceneContent[sceneName] = currentScene;
+								currentScene = "";
+							}
+							sceneName = line[1 .. $-1];
+						}
+						else if (sceneName && sceneName.length)
+						{
+							currentScene ~= l ~ "\r\n";
+						}
+					}
+
+					if (currentScene && currentScene.length)
+					{
+						sceneContent[sceneName] = currentScene;
+						currentScene = "";
+					}
+				}
+
+				ScriptLine[] finalText = [];
+
+				foreach (scriptFile; scripts)
+				{
+					auto scriptText = scriptFile.text;
+
+					auto lines = scriptText
+						.replace("\r", "")
+						.split("\n");
+
+						int lineCount = 0;
+					foreach (l; lines)
+					{
+						lineCount++;
+						if (!l || !l.strip.length)
+						{
+							continue;
+						}
+
+						auto line = l.strip;
+
+						if (line.startsWith("@"))
+						{
+							auto sceneToInclude = line.split("@")[1];
+							auto sceneLines = sceneContent[sceneToInclude].replace("\r", "").split("\n");
+
+							foreach (sceneLine; sceneLines)
+							{
+								finalText ~= ScriptLine(sceneLine, scriptFile.file, lineCount);
+							}
+						}
+						else
+						{
+							auto text = l ~ "\r\n";
+
+							finalText ~= ScriptLine(text, scriptFile.file, lineCount);
+						}
+					}
+				}
+
+				return finalText;
+			}
+
+			void compile(ScriptLine[] scriptText)
+			{
+				auto lines = scriptText;
+					//.replace("\r", "")
+					//.split("\n");
 
 				SceneEntry entry;
 				SceneCharacter character;
@@ -502,9 +606,14 @@ public final class GameView : View
 				string original = "";
 				int customSceneIdCounter = 0;
 				string voice;
-				foreach (l; lines)
+				string lastCharacterName;
+
+				foreach (scriptLine; lines)
 				{
-					lineCount++;
+					auto scriptFile = scriptLine.file;
+					auto l = scriptLine.text;
+					auto lineCount = scriptLine.lineNumber;
+					//lineCount++;
 					if (!l || !l.strip.length)
 					{
 						continue;
@@ -520,6 +629,7 @@ public final class GameView : View
 					if (line[0] == '[' && line[$-1] == ']')
 					{
 						entry = new SceneEntry;
+						chance = 100;
 						entry.chance = chance;
 						entry.name = line[1 .. $-1];
 						original = entry.name;
@@ -535,12 +645,28 @@ public final class GameView : View
 						lastEntry = entry;
 						textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
 						entry.textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
+						lastCharacterName = null;
 
 						_scenes[entry.name] = entry;
 					}
 					else
 					{
 						auto kv = line.split("=");
+
+						if (!line.canFind("=") && line.canFind("->"))
+						{
+							auto optionData = line.split("->");
+							line = "o:" ~ optionData[0].strip ~ "=" ~ optionData[1].stripLeft;
+
+							kv = line.split("=");
+						}
+
+						if (!line.canFind("="))
+						{
+							line = "t=" ~ l.stripRight;
+
+							kv = line.split("=");
+						}
 
 						if (kv.length != 2)
 						{
@@ -581,7 +707,7 @@ public final class GameView : View
 						}
 
 						auto keyData = kv[0].split(":");
-						auto key = keyData[0];
+						string key = keyData && keyData.length ? keyData[0].strip : "";
 						auto value = kv[1];
 
 						switch (key)
@@ -680,6 +806,7 @@ public final class GameView : View
 								}
 								charName.position = "left";
 								charNames ~= charName;
+								lastCharacterName = value;
 								break;
 
 							case "charColor":
@@ -790,6 +917,8 @@ public final class GameView : View
 								
 								customSceneIdCounter++;
 
+								lastCharacterName = null;
+
 								if (lastEntry && lastEntry.text && lastEntry.text.length)
 								{
 									lastEntry.nextScene = original ~ "-??????????-" ~ customSceneIdCounter.to!string;
@@ -875,15 +1004,19 @@ public final class GameView : View
 								// name=text, we have a key, but we need to check if we have a value
 								if (value && value.length)
 								{
-									charName = new SceneCharacterName;
-									charName.name = key;
-									charName.color = "fff";
-									if (settings.defaultCharacterNameColors)
+									if ((key && key.length) || (lastCharacterName && lastCharacterName.length))
 									{
-										charName.color = settings.defaultCharacterNameColors.get(charName.name, "fff");
+										charName = new SceneCharacterName;
+										charName.name = key && key.length ? key : lastCharacterName;
+										lastCharacterName = charName.name;
+										charName.color = "fff";
+										if (settings.defaultCharacterNameColors)
+										{
+											charName.color = settings.defaultCharacterNameColors.get(charName.name, "fff");
+										}
+										charName.position = "left";
+										charNames ~= charName;
 									}
-									charName.position = "left";
-									charNames ~= charName;
 									
 									import std.conv : to;
 									
@@ -957,11 +1090,15 @@ public final class GameView : View
 
 			if (hasScriptBundle)
 			{
-				compile(getBundleScript, "data/scripts.dvn");
+				auto script = getBundleScript();
+				auto scriptLines = preprocess([ScriptLine(script, "data/scripts.dvn", 0)]);
+				compile(scriptLines);
 			}
 			else
 			{
 				auto scriptFiles = dirEntries("data/game/scripts","*.{vns}",SpanMode.depth);
+
+				ScriptLine[] scripts = [];
 
 				foreach (scriptFile; scriptFiles)
 				{
@@ -969,8 +1106,12 @@ public final class GameView : View
 
 					auto scriptText = readText(scriptFile);
 
-					compile(scriptText, scriptFile);
+					scripts ~= ScriptLine(scriptText, scriptFile, 0);
 				}
+
+				auto scriptLines = preprocess(scripts);
+
+				compile(scriptLines);
 			}
 
 			foreach (k,s; _scenes)
