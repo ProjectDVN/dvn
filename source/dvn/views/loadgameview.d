@@ -267,6 +267,7 @@ public final class LoadGameView : View
         {
             auto overlay = new Panel(window);
             addComponent(overlay);
+		    overlay.isInputComponent = true;
             overlay.size = IntVector(window.width, window.height);
             overlay.position = IntVector(0,0);
             overlay.enableSwiping((b,d,p)

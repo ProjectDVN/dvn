@@ -98,6 +98,7 @@ public abstract class Component : ILayout
   bool _disabled;
   ulong _dataId;
   Anchor _anchor;
+  bool _isInputComponent;
 
   package(dvn) void updateEvents()
   {
@@ -997,6 +998,13 @@ public abstract class Component : ILayout
   {
     final
     {
+      /// 
+      bool isInputComponent() { return _isInputComponent; }
+      ///
+      void isInputComponent(bool isInput)
+      {
+        _isInputComponent = isInput;
+      }
 /// 
       ulong dataId() { return _dataId; }
 /// 
@@ -1312,6 +1320,10 @@ public abstract class Component : ILayout
   {
     void render()
     {
+      if (_isInputComponent)
+      {
+        return;
+      }
       if (_forceRender)
       {
         if (!_skipForceRender) renderNativeComponent();

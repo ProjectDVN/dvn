@@ -318,7 +318,7 @@ public final class Application
         stop();
         break;
       }
-
+      
       auto ticks = EXT_GetTicks();
 
       if (_audio)

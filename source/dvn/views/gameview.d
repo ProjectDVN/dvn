@@ -661,49 +661,44 @@ public final class GameView : View
 							kv = line.split("=");
 						}
 
-						if (!line.canFind("="))
-						{
-							line = "t=" ~ l.stripRight;
-
-							kv = line.split("=");
-						}
-
 						if (kv.length != 2)
 						{
 							switch (line)
 							{
 								case "hideDialogue":
 									entry.hideDialogue = true;
-									break;
+									continue;
 
 								case "hideButtons":
 									entry.hideButtons = true;
-									break;
+									continue;
 
 								case "characterFadeIn":
 								case "cf":
 									character.characterFadeIn = true;
-									break;
+									continue;
 
 								case "stopMusic":
 									entry.stopMusic = true;
-									break;
+									continue;
 
 								case "stopSound":
 									entry.stopSound = true;
-									break;
+									continue;
 
 								case "fadeMusic":
 									entry.fadeMusic = true;
-									break;
+									continue;
 
 								default:
-									logScriptError(scriptFile, lineCount,
-										format("Unknown command \"%s\"", line),
-										entry);
+									if (!line.canFind("="))
+									{
+										line = "t=" ~ l.stripRight;
+
+										kv = line.split("=");
+									}
 									break;
 							}
-							continue;
 						}
 
 						auto keyData = kv[0].split(":");
@@ -1401,33 +1396,6 @@ public final class GameView : View
 
 		DvnEvents.getEvents().beginHandleScene(scene, nextScene, isEnding, _scenes);
 
-		// if (_skipToNextChoice)
-		// {
-		// 	string nextSceneName = scene.nextScene;
-
-		// 	while (scene && (!scene.options || !scene.options.length))
-		// 	{
-		// 		scene = _scenes.get(nextSceneName, null);
-				
-		// 		if (!scene) break;
-
-		// 		nextScene = _scenes.get(scene.nextScene, null);
-		// 		nextSceneName = scene.nextScene;
-
-		// 		isEnding = scene.nextScene == "end";
-
-		// 		DvnEvents.getEvents().beginHandleScene(scene, nextScene, isEnding, _scenes);
-		// 	}
-
-		// 	if (!scene)
-		// 	{
-		// 		logError("Scene not found: %s", nextSceneName ? nextSceneName : originalSceneName);
-
-		// 		DvnEvents.getEvents().endGameView();
-		// 		return;
-		// 	}
-		// }
-
 		if (scene.stopMusic)
 		{
 			EXT_StopMusic();
@@ -1552,6 +1520,7 @@ public final class GameView : View
 
 		auto overlay = new Panel(window);
 		addComponent(overlay);
+		overlay.isInputComponent = true;
 		overlay.size = IntVector(window.width, window.height);
 		overlay.position = IntVector(0,0);
 		overlay.hide();
@@ -2330,13 +2299,13 @@ public final class GameView : View
 			}
 
 			continueArrowLabel.updateRect();
-			continueArrowLabel.hide();
+			
+			continueArrowLabel.color = continueArrowLabel.color.changeAlpha(cast(ubyte)0);
 
 			int textFadeInSpeed = 42;
-			auto faded = false;
-
-			continueArrowLabel.color = continueArrowLabel.color.changeAlpha(0);
 			
+			bool faded = false;
+
 			continueArrowTaskId = runDelayedTask(textFadeInSpeed, (d) {
 				if (continueArrowLabel.color.a >= 255)
 				{
@@ -2357,8 +2326,6 @@ public final class GameView : View
 				{
 					faded = true;
 				}
-
-				continueArrowLabel.show();
 
 				return faded;
 			}, true);

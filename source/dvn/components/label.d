@@ -17,6 +17,7 @@ public final class Label : Component
   dstring _text;
   dstring _textString;
   Color _color;
+  int _opacity;
   string _fontName;
   size_t _fontSize;
   bool _wrapText;
@@ -56,6 +57,7 @@ public final class Label : Component
     }));
 
     _shadowColor = "000".getColorByHex;
+    _opacity = 255;
     _lineSpacing = 0;
   }
 
@@ -100,9 +102,14 @@ public final class Label : Component
 /// 
     void color(Color newColor)
     {
+      auto isSame = (newColor.r == _color.r &&
+        newColor.g == _color.g &&
+        newColor.b == _color.b);
       _color = newColor;
 
-      updateRect(true);
+      _opacity = cast(int)newColor.a;
+
+      if (!isSame) updateRect(true);
     }
 
 /// 
@@ -511,6 +518,8 @@ public final class Label : Component
 			{
         if (texture._texture)
         {
+          EXT_SetTextureAlphaMod(texture._texture, cast(ubyte)_opacity);
+
           if (EXT_RenderCopy(screen, texture._texture, null, texture._rect) != 0)
           {
             import std.conv : to;
@@ -527,6 +536,8 @@ public final class Label : Component
 			{
         if (texture._texture)
         {
+          EXT_SetTextureAlphaMod(texture._texture, cast(ubyte)_opacity);
+
           if (EXT_RenderCopy(screen, texture._texture, null, texture._rect) != 0)
           {
             import std.conv : to;
