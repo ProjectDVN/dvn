@@ -133,26 +133,26 @@ Example:
 [act-8-rooftop-conversation]
 c=Yume,Uni_Smile
 Yume=...Yume.
-Yume=Have you noticed how the flowers bloom in April?
+=Have you noticed how the flowers bloom in April?
 narrator=250,250
-t=What does she mean? We're not in April.
+What does she mean? We're not in April.
 Yume=I think flowers and humans are alike.
-Yume=We also bloom best when we're being cared for.
+=We also bloom best when we're being cared for.
 ```
 
 Branching example
 
 ```ini
 [choice-scene]
-t=What should I do?
-o:StayWithYume=Stay with Yume.
-o:LeaveYume=Leave her behind.
+What should I do?
+StayWithYume -> Stay with Yume.
+LeaveYume -> Leave her behind.
 
 [StayWithYume]
-t=I decide to stay with her.
+I decide to stay with her.
 
 [LeaveYume]
-t=I can't stay here any longer.
+I can't stay here any longer.
 ```
 
 ## Who It's For
