@@ -89,14 +89,14 @@ public final class HistoryView : View
         searchTextBox.position = IntVector(
             (window.width / 2) - (searchTextBox.width / 2),
             42);
-        searchTextBox.textColor = settings.textBoxTextColor ? settings.textBoxTextColor.getColorByHex : "000".getColorByHex;
+        searchTextBox.textColor = settings.textBoxTextColor && settings.textBoxTextColor.length ? settings.textBoxTextColor.getColorByHex : "000".getColorByHex;
         searchTextBox.maxCharacters = 32;
         searchTextBox.textPadding = 8;
         searchTextBox.text = input.to!dstring;
         
-        searchTextBox.defaultPaint.backgroundColor = (settings.textBoxColor ? settings.textBoxColor : "fff").getColorByHex;
-        searchTextBox.hoverPaint.backgroundColor = (settings.textBoxColor ? settings.textBoxColor : "fff").getColorByHex.changeAlpha(220);
-        searchTextBox.focusPaint.backgroundColor = (settings.textBoxColor ? settings.textBoxColor : "fff").getColorByHex.changeAlpha(150);
+        searchTextBox.defaultPaint.backgroundColor = (settings.textBoxColor && settings.textBoxColor.length ? settings.textBoxColor : "fff").getColorByHex;
+        searchTextBox.hoverPaint.backgroundColor = (settings.textBoxColor && settings.textBoxColor.length ? settings.textBoxColor : "fff").getColorByHex.changeAlpha(220);
+        searchTextBox.focusPaint.backgroundColor = (settings.textBoxColor && settings.textBoxColor.length ? settings.textBoxColor : "fff").getColorByHex.changeAlpha(150);
 
         if (settings.textBoxBorderColor && settings.textBoxBorderColor.length)
         {
