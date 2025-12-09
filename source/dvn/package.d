@@ -92,6 +92,10 @@ public
   {
     initializeExternalApplicationState();
 
+    import dvn.extensions;
+
+    registerExtensionEvents();
+
     DvnEvents.getEvents().loadedExternalApplicationState();
 
     auto gameSettings = loadGameSettings("data/settings.json");
