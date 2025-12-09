@@ -9,6 +9,7 @@ import dvn.gamesettings;
 import std.algorithm : clamp;
 import std.math : abs;
 
+/// 
 public final class AudioManager
 {
     private:
@@ -23,8 +24,11 @@ public final class AudioManager
 
     public:
     final:
+/// 
     void beginFade(int from, int to, int fadeStepDelay = 180, int desiredSteps = 24)
     {
+        if (_handleFade) return;
+        
         _fadeFrom = clamp(from, 0, 100);
         _fadeTo   = clamp(to,   0, 100);
 

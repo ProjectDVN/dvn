@@ -25,15 +25,18 @@ import dvn.bundling;
 import dvn.ui;
 import dvn.characters;
 
+/// 
 public final class LoadingView : View
 {
 	public:
 	final:
+/// 
 	this(Window window)
 	{
 		super(window);
 	}
 
+/// 
 	protected override void onInitialize(bool useCache)
 	{
 		DvnEvents.getEvents().loadingGame();

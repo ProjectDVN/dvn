@@ -11,17 +11,23 @@ import dvn.application;
 import dvn.window;
 import dvn.resources;
 
+/// 
 public enum SwipeDirection
 {
+/// 
     up,
+/// 
     right,
+/// 
     down,
+/// 
     left
 }
 
 private DvnEvents[] _eventsHub;
 private DvnEvents _events;
 
+/// 
 public class DvnEvents
 {
     protected:
@@ -29,111 +35,185 @@ public class DvnEvents
 
     public:
     // Global
+/// 
     ubyte[] scriptBundleWrite(ubyte[] buffer) { return buffer; }
+/// 
     ubyte[] scriptBundleRead(ubyte[] buffer) { return buffer; }
+/// 
     ubyte[] imageBundleWrite(ubyte[] buffer, bool isName) { return buffer; }
+/// 
     ubyte[] imageBundleRead(ubyte[] buffer, bool isName) { return buffer; }
 
+/// 
     void loadedExternalApplicationState() {} // Ex. SDL has been initialized, do whatever the fuck you want with this
+/// 
     void loadedSettings(GameSettings settings) {}
+/// 
     void fontsLoaded(Application app) {}
+/// 
     void standardEffectsLoaded() {}
 
+/// 
     void loadingAllResources(Resource[string] resources) {}
+/// 
     void loadingResource(string key, Resource resource) {}
+/// 
     void loadedResource(string key, Resource resource) {}
+/// 
     void loadedAllResources() {}
+/// 
     void engineReady(Application app, Window[] windows) {}
 
+/// 
     void preFrameLoop(Window[] windows) {}
+/// 
     void preRenderFrameLoop(Window[] windows) {}
+/// 
     void postRenderFrameLoop(Window[] windows) {}
+/// 
     void postFrameLoop(Window[] windows) {}
+/// 
     void preRenderContent(Window window) {}
+/// 
     void postRenderContent(Window window) {}
+/// 
     void loadingGame() {}
+/// 
     void loadedGame() {}
+/// 
     void savingGame(SaveFile[string] saves, SaveFile saveFile) {}
+/// 
     void loadingViews(Window window) {}
+/// 
     void onViewChange(View oldView, View newView, string oldViewName, string newViewName) {}
 
     // Act View
+/// 
     void beginActView(string actName, string continueText, string background, string sceneName) {}
 
+/// 
     void renderActBackgroundImage(Image image) {}
+/// 
     void renderActTitleLabel(Label label) {}
+/// 
     void renderActBeginLabel(Label label) {}
 
+/// 
     void endActView() {}
 
     // Game View
+/// 
     void loadingGameScripts() {}
+/// 
     bool injectGameScript(SceneEntry scene, string key, string[] keyData, string value) { return true; }
+/// 
     void loadedGameScripts(SceneEntry[string] scenes, SaveFile saveFile) {}
     
+/// 
     void beginGameView(string sceneName, string loadBackground, string loadMusic) {}
     
+/// 
     void beginHandleScene(ref SceneEntry scene, ref SceneEntry nextScene, bool isEnding, SceneEntry[string] scenes) {}
     
+/// 
     void playingMusic(string music) {}
+/// 
     void playingSound(string sound) {}
+/// 
     void playingVoice(string voice) {}
 
+/// 
     void addClickSafeComponents(ref Component[] components) {}
 
-    // Background has been rendered, nothing else
+    /// Background has been rendered, nothing else
     void onEffectPre(SceneEffect effect) {}
-    // Every component has been or is being rendered (text is delayed so it might not be finished)
+    /// Every component has been or is being rendered (text is delayed so it might not be finished)
     void onEffectPost(SceneEffect effect) {}
 
+/// 
     void renderGameViewOverplayBegin(Panel overlay) {}
+/// 
     void renderGameViewBackground(Image background) {}
+/// 
     void renderGameViewCharacter(SceneCharacter character, Image image) {}
+/// 
     void renderGameViewImage(SceneImage image, Image imageComponent) {}
+/// 
     void renderGameViewVideo(SceneVideo video, Video videoComponent) {}
+/// 
     void renderGameViewAnimation(SceneAnimation animation, Animation animationComponent) {}
+/// 
     void renderGameViewLabel(SceneLabel label, Label labelComponent) {}
+/// 
     void renderGameViewDialoguePanelImage(Image image) {}
+/// 
     void renderGameViewDialoguePanel(Panel panel) {}
+/// 
     void renderGameViewCharacterName(SceneCharacterName characterName, Label label, Panel panel, Image namePanelImage) {}
+/// 
     void renderGameViewOption(Label option) {}
+/// 
     void renderGameViewOption(Button option) {}
+/// 
     void renderGameViewOptionsStart() {}
+/// 
     void renderGameViewOptionsFinished() {}
+/// 
     void renderGameViewSaveButton(Button button) {}
+/// 
     void renderGameViewExitButton(Button button) {}
+/// 
     void renderGameViewSettingsButton(Button button) {}
+/// 
     void renderGameViewAutoButton(Button button) {}
+/// 
     void renderGameViewQuickSaveButton(Button button) {}
+/// 
     void renderGameViewOverplayEnd(Panel overlay) {}
+/// 
     void renderGameViewTextStart(SceneEntry scene) {}
+/// 
     void renderGameViewTextFinished(Label textLabel) {}
 
+/// 
     bool onGameViewOptionClick(Label option) { return true; }
+/// 
     bool onGameViewOptionClick(Button option) { return true; }
 
+/// 
     void endGameView() {}
 
     // Settings View
+/// 
     void renderSettingsViewStart() {}
+/// 
     void renderSettingsDropDown(DropDown dropdown) {}
+/// 
     void renderSettingsCheckBox(CheckBox checkbox) {}
+/// 
     void renderSettingsButton(Button button) {}
+/// 
     void renderSettingsViewEnd() {}
 
     // Main Menu View
+/// 
     void renderMainMenuView(Window window, Component titleLabel, Component playLabel, Component loadLabel, Component historyLabel, Component settingsLabel, Component galleryLabel, Component exitLabel) {}
 
     // Video Loading View
+/// 
     void renderVideoLoadingView(Video video) {}
 
     // Load Game View
+/// 
     void renderLoadGameViewPrevLabel(Label label) {}
+/// 
     void renderLoadGameViewNextLabel(Label label) {}
+/// 
     void renderLoadGameViewLoadEntry(SaveFile saveFile, Image image, Label saveLabel) {}
 
     static:
     final:
+/// 
     void setEvents(DvnEvents events)
     {
         _eventsHub ~= events;
@@ -765,6 +845,7 @@ public class DvnEvents
         _events = new EventBuilder;
     }
 
+/// 
     DvnEvents getEvents()
     {
         if (!_events)
@@ -776,6 +857,7 @@ public class DvnEvents
     }
 }
 
+/// 
 public final class EventCollection
 {
   private:
@@ -790,6 +872,7 @@ public final class EventCollection
 
   public:
   final:
+/// 
   this()
   {
     clearEvents();
@@ -912,6 +995,7 @@ public final class EventCollection
     }
   }
 
+/// 
   bool fireMouseButtonDownEvent(MouseButton button, IntVector mousePosition)
   {
     if (_mouseButtonDownEvents)
@@ -928,6 +1012,7 @@ public final class EventCollection
     return true;
   }
 
+/// 
   bool fireMouseButtonUpEvent(MouseButton button, IntVector mousePosition)
   {
     if (_mouseButtonUpEvents)
@@ -944,6 +1029,7 @@ public final class EventCollection
     return true;
   }
 
+/// 
   bool fireMouseMoveEvent(IntVector mousePosition)
   {
     if (_mouseMoveEvents)
@@ -960,6 +1046,7 @@ public final class EventCollection
     return true;
   }
 
+/// 
   bool fireTextInputEvent(dchar unicode, dstring unicodeText)
   {
     if (_textInputEvents)
@@ -976,6 +1063,7 @@ public final class EventCollection
     return true;
   }
 
+/// 
   bool fireKeyboardDownEvent(KeyboardKey key)
   {
     if (_keyboardDownEvents)
@@ -992,6 +1080,7 @@ public final class EventCollection
     return true;
   }
 
+/// 
   bool fireKeyboardUpEvent(KeyboardKey key)
   {
     if (_keyboardUpEvents)
@@ -1008,6 +1097,7 @@ public final class EventCollection
     return true;
   }
 
+/// 
   bool fireMouseWheelEvent(int amount, IntVector position)
   {
     if (_mouseWheelEvents)
@@ -1027,6 +1117,7 @@ public final class EventCollection
 
 private size_t _eventId = 0;
 
+/// 
 public final class MouseButtonEventHandler
 {
   private:
@@ -1037,16 +1128,22 @@ public final class MouseButtonEventHandler
 
   public:
   final:
+/// 
   this(MouseButtonEventHandler handler) { _id = ++_eventId; _handler = handler._handler; _fnHandler = handler._fnHandler; }
 
+/// 
   this(bool delegate(MouseButton,IntVector) handler) { _id = ++_eventId; _handler = handler; }
 
+/// 
   this(bool function(MouseButton,IntVector) handler) { _id = ++_eventId; _fnHandler = handler; }
 
+/// 
   this(void delegate(MouseButton,IntVector) handler) { this((b,p) { handler(b,p); return true; }); }
 
+/// 
   this(void function(MouseButton,IntVector) handler) { this((b,p) { handler(b,p); return true; }); }
 
+/// 
   bool opCall(MouseButton button, IntVector mousePosition)
   {
     if (_handler) return _handler(button,mousePosition);
@@ -1055,6 +1152,7 @@ public final class MouseButtonEventHandler
   }
 }
 
+/// 
 public final class MouseMoveEventHandler
 {
   private:
@@ -1064,16 +1162,22 @@ public final class MouseMoveEventHandler
 
   public:
   final:
+/// 
   this(MouseMoveEventHandler handler) { _id = ++_eventId; _handler = handler._handler; _fnHandler = handler._fnHandler; }
 
+/// 
   this(bool delegate(IntVector) handler) { _id = ++_eventId; _handler = handler; }
 
+/// 
   this(bool function(IntVector) handler) { _id = ++_eventId; _fnHandler = handler; }
 
+/// 
   this(void delegate(IntVector) handler) { this((p) { handler(p); return true; }); }
 
+/// 
   this(void function(IntVector) handler) { this((p) { handler(p); return true; }); }
 
+/// 
   bool opCall(IntVector mousePosition)
   {
     if (_handler) return _handler(mousePosition);
@@ -1082,6 +1186,7 @@ public final class MouseMoveEventHandler
   }
 }
 
+/// 
 public final class TextInputEventHandler
 {
   private:
@@ -1091,16 +1196,22 @@ public final class TextInputEventHandler
 
   public:
   final:
+/// 
   this(TextInputEventHandler handler) { _id = ++_eventId; _handler = handler._handler; _fnHandler = handler._fnHandler; }
 
+/// 
   this(bool delegate(dchar,dstring) handler) { _id = ++_eventId; _handler = handler; }
 
+/// 
   this(bool function(dchar,dstring) handler) { _id = ++_eventId; _fnHandler = handler; }
 
+/// 
   this(void delegate(dchar,dstring) handler) { this((c,s) { handler(c,s); return true; }); }
 
+/// 
   this(void function(dchar,dstring) handler) { this((c,s) { handler(c,s); return true; }); }
 
+/// 
   bool opCall(dchar unicode, dstring unicodeText)
   {
     if (_handler) return _handler(unicode,unicodeText);
@@ -1109,6 +1220,7 @@ public final class TextInputEventHandler
   }
 }
 
+/// 
 public final class KeyboardEventHandler
 {
   private:
@@ -1118,16 +1230,22 @@ public final class KeyboardEventHandler
 
   public:
   final:
+/// 
   this(KeyboardEventHandler handler) { _id = ++_eventId; _handler = handler._handler; _fnHandler = handler._fnHandler; }
 
+/// 
   this(bool delegate(KeyboardKey) handler) { _id = ++_eventId; _handler = handler; }
 
+/// 
   this(bool function(KeyboardKey) handler) { _id = ++_eventId; _fnHandler = handler; }
 
+/// 
   this(void delegate(KeyboardKey) handler) { this((k) { handler(k); return true; }); }
 
+/// 
   this(void function(KeyboardKey) handler) { this((k) { handler(k); return true; }); }
 
+/// 
   bool opCall(KeyboardKey key)
   {
     if (_handler) return _handler(key);
@@ -1136,6 +1254,7 @@ public final class KeyboardEventHandler
   }
 }
 
+/// 
 public final class MouseWheelEventHandler
 {
   private:
@@ -1145,16 +1264,22 @@ public final class MouseWheelEventHandler
 
   public:
   final:
+/// 
   this(MouseWheelEventHandler handler) { _id = ++_eventId; _handler = handler._handler; _fnHandler = handler._fnHandler; }
 
+/// 
   this(bool delegate(int,IntVector) handler) { _id = ++_eventId; _handler = handler; }
 
+/// 
   this(bool function(int,IntVector) handler) { _id = ++_eventId; _fnHandler = handler; }
 
+/// 
   this(void delegate(int,IntVector) handler) { this((a,p) { handler(a,p); return true; }); }
 
+/// 
   this(void function(int,IntVector) handler) { this((a,p) { handler(a,p); return true; }); }
 
+/// 
   bool opCall(int amount,IntVector position)
   {
     if (_handler) return _handler(amount,position);

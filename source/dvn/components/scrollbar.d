@@ -11,6 +11,7 @@ import dvn.colors;
 import dvn.components.panel;
 import dvn.components.button;
 
+/// 
 public final class ScrollBar : Component
 {
   private:
@@ -33,6 +34,7 @@ public final class ScrollBar : Component
 
   public:
   final:
+/// 
   this(Window window, Panel scrollablePanel, string defaultName, string clickName, string hoverName)
   {
     super(window, false);
@@ -48,14 +50,16 @@ public final class ScrollBar : Component
     scrollablePanel.scrollBar = this;
   }
 
+/// 
   this(Window window, Panel scrollablePanel)
   {
     this(window, scrollablePanel, null, null, null);
   }
 
-  int minScroll;
-  int maxScroll;
+  private int minScroll;
+  private int maxScroll;
 
+/// 
   void createDecrementButton(dstring buttonTextVertical, dstring buttonTextHorizontal)
   {
     _decrementButtonTextVertical = buttonTextVertical;
@@ -144,6 +148,7 @@ public final class ScrollBar : Component
     }
   }
 
+/// 
   void createIncrementButton(dstring buttonTextVertical, dstring buttonTextHorizontal)
   {
     _incrementButtonTextVertical = buttonTextVertical;
@@ -240,6 +245,7 @@ public final class ScrollBar : Component
     }
   }
 
+/// 
   public void scrollToEnd()
   {
     auto scrollPosition = _scrollablePanel.getScrollPosition();
@@ -500,7 +506,9 @@ public final class ScrollBar : Component
 
   @property
   {
+/// 
     size_t fontSize() { return _fontSize; }
+/// 
     void fontSize(size_t newFontSize)
     {
       _fontSize = newFontSize;
@@ -508,7 +516,9 @@ public final class ScrollBar : Component
       updateRect(true);
     }
 
+/// 
     string fontName() { return _fontName; }
+/// 
     void fontName(string newFontName)
     {
       _fontName = newFontName;
@@ -516,7 +526,9 @@ public final class ScrollBar : Component
       updateRect(true);
     }
 
+/// 
     string defaultName() { return _defaultName; }
+/// 
     void defaultName(string newName)
     {
       _defaultName = newName;
@@ -524,7 +536,9 @@ public final class ScrollBar : Component
       updateRect(true);
     }
 
+/// 
     string clickName() { return _clickName; }
+/// 
     void clickName(string newName)
     {
       _clickName = newName;
@@ -532,7 +546,9 @@ public final class ScrollBar : Component
       updateRect(true);
     }
 
+/// 
     string hoverName() { return _hoverName; }
+/// 
     void hoverName(string newName)
     {
       _hoverName = newName;
@@ -540,7 +556,9 @@ public final class ScrollBar : Component
       updateRect(true);
     }
 
+/// 
     Color buttonTextColor() { return _buttonTextColor; }
+/// 
     void buttonTextColor(Color newColor)
     {
       _buttonTextColor = newColor;
@@ -548,15 +566,21 @@ public final class ScrollBar : Component
       updateRect(true);
     }
 
+/// 
     dstring decrementButtonTextVertical() { return _decrementButtonTextVertical; }
 
+/// 
     dstring decrementButtonTextHorizontal() { return _decrementButtonTextHorizontal; }
 
+/// 
     dstring incrementButtonTextVertical() { return _incrementButtonTextVertical; }
 
+/// 
     dstring incrementButtonTextHorizontal() { return _incrementButtonTextHorizontal; }
 
+/// 
     bool isVertical() { return _isVertical; }
+/// 
     void isVertical(bool setAsVertical)
     {
       _isVertical = setAsVertical;
@@ -564,49 +588,64 @@ public final class ScrollBar : Component
       updateRect(true);
     }
 
+/// 
     size_t buttonScrollAmount() { return cast(size_t)_buttonScrollAmount; }
+/// 
     void buttonScrollAmount(size_t newButtonScrollAmount)
     {
       _buttonScrollAmount = cast(int)newButtonScrollAmount;
     }
 
+/// 
     ButtonPaint scrollButtonDefaultPaint() { return _scrollButton ? _scrollButton.defaultPaint : null; }
 
+/// 
     ButtonPaint scrollButtonHoverPaint() { return _scrollButton ? _scrollButton.hoverPaint : null; }
 
+/// 
     ButtonPaint scrollButtonClickPaint() { return _scrollButton ? _scrollButton.clickPaint : null; }
 
+/// 
     ButtonPaint decrementButtonDefaultPaint() { return _decrementButton ? _decrementButton.defaultPaint : null; }
 
+/// 
     ButtonPaint decrementButtonHoverPaint() { return _decrementButton ? _decrementButton.hoverPaint : null; }
 
+/// 
     ButtonPaint decrementButtonClickPaint() { return _decrementButton ? _decrementButton.clickPaint : null; }
 
+/// 
     ButtonPaint incrementButtonDefaultPaint() { return _incrementButton ? _incrementButton.defaultPaint : null; }
 
+/// 
     ButtonPaint incrementButtonHoverPaint() { return _incrementButton ? _incrementButton.hoverPaint : null; }
 
+/// 
     ButtonPaint incrementButtonClickPaint() { return _incrementButton ? _incrementButton.clickPaint : null; }
   }
 
+/// 
   void setCustomButtonDraw(DrawButtonDelegate customButtonDraw)
   {
     if (_decrementButton) _decrementButton.setCustomButtonDraw(customButtonDraw);
     if (_incrementButton) _incrementButton.setCustomButtonDraw(customButtonDraw);
   }
 
+/// 
   void removeCustomButtonDraw()
   {
     if (_decrementButton) _decrementButton.removeCustomButtonDraw();
     if (_incrementButton) _incrementButton.removeCustomButtonDraw();
   }
 
+/// 
   void restyle()
   {
     if (_decrementButton) _decrementButton.restyle();
     if (_incrementButton) _incrementButton.restyle();
   }
 
+/// 
   override void repaint()
   {
     auto rect = super.clientRect;
@@ -616,11 +655,13 @@ public final class ScrollBar : Component
     createScrollButton();
   }
 
+/// 
   override void renderNativeComponent()
   {
     renderChildren();
   }
 
+/// 
   void updateScrollView()
   {
     restyle();

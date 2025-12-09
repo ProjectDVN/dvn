@@ -14,15 +14,18 @@ import dvn.gallery;
 
 import dvn.ui;
 
+/// 
 public final class GalleryView : View
 {
 	public:
 	final:
+/// 
 	this(Window window)
 	{
 		super(window);
 	}
 
+/// 
 	protected override void onInitialize(bool useCache)
 	{
 		EXT_DisableKeyboardState();
@@ -43,6 +46,7 @@ public final class GalleryView : View
 
     private int page = 0;
 
+/// 
     void renderLoadPage()
     {
 		auto window = super.window;

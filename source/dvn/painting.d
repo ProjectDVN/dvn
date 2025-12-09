@@ -7,6 +7,7 @@ import dvn.external;
 import dvn.component;
 public import dvn.colors;
 
+/// 
 public final class Paint
 {
   package(dvn)
@@ -27,6 +28,7 @@ public final class Paint
   }
 }
 
+/// 
 public final class Painting
 {
   private:
@@ -48,32 +50,40 @@ public final class Painting
 
   @property
   {
+/// 
     string name() { return _name; }
     
+/// 
     Paint[] bottomPaintings() { return _bottomPaintings; }
+/// 
     Paint[] topPaintings() { return _topPaintings; }
   }
 
+/// 
   void clearBackgroundPaint()
   {
     _bottomPaintings = [];
   }
 
+/// 
   void clearForegroundPaint()
   {
     _topPaintings = [];
   }
 
+/// 
   void paintBackground(Color color, FloatVector position, FloatVector size)
   {
     _bottomPaintings ~= new Paint(color, position, size);
   }
 
+/// 
   void paintForeground(Color color, FloatVector position, FloatVector size)
   {
     _topPaintings ~= new Paint(color, position, size);
   }
 
+/// 
   void apply()
   {
     if (_component)

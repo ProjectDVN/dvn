@@ -18,9 +18,10 @@ import core.thread : dur;
 
 import core.stdc.stdlib : exit;
 
+/// 
 mixin CreateCustomException!"ApplicationException";
 
-//shared static this()
+/// 
 void initializeExternalApplicationState()
 {
   EXT_Initialize();
@@ -53,11 +54,13 @@ private static void spawnedFunc(Tid uiTid)
 
 private __gshared Application _app;
 
+/// 
 public Application getApplication()
 {
   return _app;
 }
 
+/// 
 public final class Application
 {
   private:
@@ -75,11 +78,13 @@ public final class Application
 
   public:
   final:
+/// 
   this(int defaultFps = 60)
   {
     this(getColorByName("white"), defaultFps);
   }
 
+/// 
   this(Color defaultWindowColor,int defaultFps = 60)
   {
     if (defaultFps <= 0 || defaultFps > 240)
@@ -104,15 +109,20 @@ public final class Application
 
   @property
   {
+/// 
     Window[] windows() { return _windows; }
 
+/// 
     size_t messageLevel() { return _messageLevel; }
+/// 
     void messageLevel(size_t newMessageLevel)
     {
       _messageLevel = newMessageLevel;
     }
     
+/// 
     size_t concurrencyLevel() { return _concurrencyLevel; }
+/// 
     void concurrencyLevel(size_t newConcurrencyLevel)
     {
       if (newConcurrencyLevel == 0)
@@ -122,12 +132,18 @@ public final class Application
 
       _concurrencyLevel = newConcurrencyLevel;
     }
+/// 
     FontCollection fonts() { return _fonts; }
+/// 
     bool running() { return _running; }
+/// 
     bool isUIThread() { return _running && _uiTid == thisTid; }
+/// 
     Color defaultWindowColor() { return _defaultWindowColor; }
 
+/// 
     int fps() { return _fps; }
+/// 
     void fps(int newFps)
     {
       if (newFps <= 0 || newFps > 240)
@@ -138,7 +154,9 @@ public final class Application
       _fps = newFps;
     }
 
+/// 
     bool allowWASDMovement() { return _allowWASDMovement; }
+/// 
     void allowWASDMovement(bool shouldAllow)
     {
       _allowWASDMovement = shouldAllow;
@@ -153,7 +171,9 @@ public final class Application
       }
     }
 
+/// 
     bool isDebugMode() { return _isDebugMode; }
+/// 
     void isDebugMode(bool debugMode)
     {
       _isDebugMode = debugMode;
@@ -162,6 +182,7 @@ public final class Application
     AudioManager audio() { return _audio; }
   }
 
+/// 
   Window createWindow(string title, IntVector size, bool isFullScreen)
   {
     auto window = new Window(this, title, size, isFullScreen, _defaultWindowColor);
@@ -171,6 +192,7 @@ public final class Application
     return window;
   }
 
+/// 
   void updateWindows()
   {
     Window[] newWindows = [];
@@ -186,6 +208,7 @@ public final class Application
     _windows = newWindows;
   }
 
+/// 
   Window getRealWindow()
   {
     foreach (window; _windows)
@@ -199,16 +222,19 @@ public final class Application
     return _windows[0];
   }
 
+/// 
   void enableKeyboardState()
   {
     EXT_EnableKeyboardState();
   }
 
+/// 
   void disableKeyboardState()
   {
     EXT_DisableKeyboardState();
   }
 
+/// 
   void sleepCurrentThread(uint ms)
   {
     if (ms == 0) return;
@@ -223,6 +249,7 @@ public final class Application
     Thread.sleep(dur!("msecs")(ms));
   }
 
+/// 
   bool beginLoad(Action loadingFn, out Tid tid)
   {
     tid = _uiTid;
@@ -238,6 +265,7 @@ public final class Application
     return true;
   }
 
+/// 
   void sendMessage(Action action)
   {
     send(_uiTid, cast(shared)action);
@@ -260,6 +288,7 @@ public final class Application
     }
   }
 
+/// 
   void start(bool allowTextInput = true)
   {
     _uiTid = thisTid;
@@ -327,6 +356,7 @@ public final class Application
     }
   }
 
+/// 
   void stop()
   {
     _running = false;

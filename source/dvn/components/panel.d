@@ -10,6 +10,7 @@ import dvn.colors;
 import dvn.events;
 import dvn.components.scrollbar;
 
+/// 
 public final class Panel : Component
 {
   private:
@@ -20,11 +21,13 @@ public final class Panel : Component
   final:
   package(dvn) ScrollBar scrollBar;
 
+/// 
   this(Window window)
   {
     super(window, true);
   }
 
+/// 
   void makeScrollableWithWheel()
   {
     onMouseWheel(new MouseWheelEventHandler((a,p) {
@@ -63,14 +66,18 @@ public final class Panel : Component
 
   @property
   {
+/// 
     IntVector scrollMargin() { return _scrollMargin; }
+/// 
     void scrollMargin(IntVector margin)
     {
       _scrollMargin = margin;
     }
 
+/// 
     IntVector scrollPosition() { return _scrollPosition; }
 
+/// 
     int minScrollVertical()
     {
       return 0;
@@ -78,6 +85,7 @@ public final class Panel : Component
 
     import std.algorithm : max;
 
+/// 
     int maxScrollVertical()
     {
       int bottom = 0;
@@ -92,11 +100,13 @@ public final class Panel : Component
       return max(0, raw);
     }
 
+/// 
     int minScrollHorizontal()
     {
       return 0;
     }
 
+/// 
     int maxScrollHorizontal()
     {
       int right = 0;
@@ -112,6 +122,7 @@ public final class Panel : Component
     }
   }
 
+/// 
   void scroll(int x, int y)
   {
     _scrollPosition = IntVector(_scrollPosition.x + x, _scrollPosition.y + y);
@@ -119,6 +130,7 @@ public final class Panel : Component
     setScrollPosition(_scrollPosition);
   }
 
+/// 
   void scrollTo(int x, int y)
   {
     _scrollPosition = IntVector(x,y);
@@ -126,20 +138,24 @@ public final class Panel : Component
     setScrollPosition(_scrollPosition);
   }
 
+/// 
   void scrollX(int x)
   {
     scroll(x, 0);
   }
 
+/// 
   void scrollY(int y)
   {
     scroll(0, y);
   }
 
+/// 
   override void repaint()
   {
   }
 
+/// 
   override void renderNativeComponent()
   {
     renderChildren();

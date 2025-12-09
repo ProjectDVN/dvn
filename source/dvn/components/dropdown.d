@@ -15,6 +15,7 @@ import dvn.components.label;
 import dvn.components.panel;
 import dvn.components.scrollbar;
 
+/// 
 public final class DropDownPaint
 {
   private:
@@ -35,25 +36,32 @@ public final class DropDownPaint
   public:
   @property
   {
+    /// 
     Color backgroundColor() { return _backgroundColor; }
+    /// 
     void backgroundColor(Color color)
     {
       _backgroundColor = color;
     }
-
+/// 
     Color backgroundBottomColor() { return _backgroundBottomColor; }
+/// 
     void backgroundBottomColor(Color color)
     {
       _backgroundBottomColor = color;
     }
 
+/// 
     Color borderColor() { return _borderColor; }
+/// 
     void borderColor(Color color)
     {
       _borderColor = color;
     }
 
+/// 
     Color shadowColor() { return _shadowColor; }
+/// 
     void shadowColor(Color color)
     {
       _shadowColor = color;
@@ -61,6 +69,7 @@ public final class DropDownPaint
   }
 }
 
+/// 
 public alias DrawDropDownDelegate = void delegate(string name, Painting painting, Color backgroundColor, Color borderColor);
 
 private final class DropDownItem
@@ -71,6 +80,7 @@ private final class DropDownItem
   Variant value;
 }
 
+/// 
 public final class DropDown : Component
 {
   private:
@@ -182,11 +192,13 @@ public final class DropDown : Component
 
   public:
   final:
+/// 
   this(Window window)
   {
     this(window, null, null);
   }
 
+/// 
   this(Window window, string defaultName, string hoverName)
   {
     super(window, false);
@@ -280,6 +292,7 @@ public final class DropDown : Component
     restyle();
   }
 
+/// 
   override void clean()
   {
     if (_itemsPanel)
@@ -295,13 +308,16 @@ public final class DropDown : Component
 
   @property
   {
+/// 
     bool showAbove() { return _showAbove; }
+/// 
     void showAbove(bool shouldShowAbove)
     {
       _showAbove = shouldShowAbove;
     }
   }
 
+/// 
   void onItemChanged(void delegate(dstring) handler)
   {
     if (!handler)
@@ -363,8 +379,10 @@ public final class DropDown : Component
 
   @property
   {
+/// 
     bool showingItems() { return _itemsPanel && !_itemsPanel.isHidden; }
 
+/// 
     Variant value()
     {
       if (_selectedItem)
@@ -380,7 +398,9 @@ public final class DropDown : Component
       return Variant.init;
     }
 
+/// 
     string defaultName() { return _defaultName; }
+/// 
     void defaultName(string newName)
     {
       _defaultName = newName;
@@ -388,7 +408,9 @@ public final class DropDown : Component
       updateRect(true);
     }
 
+/// 
     string hoverName() { return _hoverName; }
+/// 
     void hoverName(string newName)
     {
       _hoverName = newName;
@@ -396,8 +418,10 @@ public final class DropDown : Component
       updateRect(true);
     }
 
+/// 
     dstring selectedItem() { return _selectedItem; }
 
+/// 
     dstring text() { return _text; }
     private void text(dstring newText)
     {
@@ -410,7 +434,9 @@ public final class DropDown : Component
       updateRect(true);
     }
 
+/// 
     Color textColor() { return _textColor; }
+/// 
     void textColor(Color newColor)
     {
       _textColor = newColor;
@@ -418,7 +444,9 @@ public final class DropDown : Component
       updateLabel();
     }
 
+/// 
     string fontName() { return _fontName; }
+/// 
     void fontName(string newFontName)
     {
       _fontName = newFontName;
@@ -430,7 +458,9 @@ public final class DropDown : Component
       updateRect(true);
     }
 
+/// 
     size_t fontSize() { return _fontSize; }
+/// 
     void fontSize(size_t newFontSize)
     {
       _fontSize = newFontSize;
@@ -442,7 +472,9 @@ public final class DropDown : Component
       updateRect(true);
     }
 
+/// 
     bool fitToSize() { return _fitToSize; }
+/// 
     void fitToSize(bool shouldFitToSize)
     {
       _fitToSize = shouldFitToSize;
@@ -454,11 +486,14 @@ public final class DropDown : Component
       updateRect(true);
     }
 
+/// 
     DropDownPaint defaultPaint() { return _defaultPaint; }
 
+/// 
     DropDownPaint hoverPaint() { return _hoverPaint; }
   }
 
+/// 
   void setCustomDropDownDraw(DrawDropDownDelegate customDropDownDraw)
   {
     _customDropDownDraw = customDropDownDraw;
@@ -466,6 +501,7 @@ public final class DropDown : Component
     restyle();
   }
 
+/// 
   void removeCustomDropDownDraw()
   {
     _customDropDownDraw = null;
@@ -473,6 +509,7 @@ public final class DropDown : Component
     restyle();
   }
 
+/// 
   void restyle()
   {
     drawDefaultDropDown();
@@ -481,6 +518,7 @@ public final class DropDown : Component
     updateRect(true);
   }
 
+/// 
   override void repaint()
   {
     auto rect = super.clientRect;
@@ -583,6 +621,7 @@ public final class DropDown : Component
     }
   }
 
+/// 
   override void renderNativeComponent()
   {
     auto screen = super.window.nativeScreen;
@@ -595,6 +634,7 @@ public final class DropDown : Component
     renderChildren();
   }
 
+/// 
   void setItem(dstring itemText)
   {
     if (!_dropDownItemsMap)
@@ -616,6 +656,7 @@ public final class DropDown : Component
     _onItemChanged(text);
   }
 
+/// 
   void addItem(T)(dstring itemText, T value = T.init)
   {
     addItem!T(itemText, (panel) {
@@ -632,6 +673,7 @@ public final class DropDown : Component
 
   private int _lastItemY;
 
+/// 
   void addItem(T)(dstring itemText, Component delegate(Panel) componentCreator, T value = T.init)
   {
     Variant variantValue = value;

@@ -757,6 +757,7 @@ public final class Button : Component
     }
   }
 
+  /// 
   override void clean()
   {
     if (_isImageRender)
@@ -770,6 +771,7 @@ public final class Button : Component
     super.clean();
   }
 
+  /// 
   override void renderNativeComponent()
   {
     auto screen = super.window.nativeScreen;

@@ -13,12 +13,14 @@ import dvn.application;
 import dvn.views.consoleview;
 import dvn.components;
 
+/// 
 public abstract class Effect
 {
   private:
   string _name;
 
   public:
+/// 
   this(string name)
   {
     _name = name;
@@ -26,19 +28,23 @@ public abstract class Effect
 
   @property
   {
+/// 
     string name() { return _name; }
   }
 
+/// 
   abstract void handle(string[] values);
 }
 
 private Effect[string] _effectHub;
 
+/// 
 void registerEffect(Effect effect)
 {
   _effectHub[effect.name] = effect;
 }
 
+/// 
 Effect getEffect(string name)
 {
   if (!_effectHub) return null;
@@ -46,14 +52,18 @@ Effect getEffect(string name)
   return _effectHub.get(name, null);
 }
 
+/// 
 public final class ScreenShakeEffect : Effect
 {
   private size_t _windowId;
   
+/// 
   public class ScreenEffectComponent
   {
     public:
+/// 
     IntVector originalPosition;
+/// 
     Component component;
   }
 
@@ -65,6 +75,7 @@ public final class ScreenShakeEffect : Effect
   private int intensity;
 
   public:
+/// 
   this()
   {
     super("ScreenShake");
@@ -124,6 +135,7 @@ public final class ScreenShakeEffect : Effect
     DvnEvents.setEvents(new ScreenEvents);
   }
 
+/// 
   override void handle(string[] values)
   {
     auto window = getApplication().getRealWindow();
@@ -152,6 +164,7 @@ public final class ScreenShakeEffect : Effect
   }
 }
 
+/// 
 public final class BackgroundMoveZoomEffect : Effect
 {
   private:
@@ -175,6 +188,7 @@ public final class BackgroundMoveZoomEffect : Effect
   bool snap;
 
   public:
+/// 
   this()
   {
     super("BackgroundMoveZoom");
@@ -286,6 +300,7 @@ public final class BackgroundMoveZoomEffect : Effect
     DvnEvents.setEvents(new ScreenEvents);
   }
 
+/// 
   override void handle(string[] values)
   {
     auto window = getApplication().getRealWindow();
@@ -333,6 +348,7 @@ public final class BackgroundMoveZoomEffect : Effect
   }
 }
 
+/// 
 void initializeStandardEffects()
 {
   registerEffect(new ScreenShakeEffect);

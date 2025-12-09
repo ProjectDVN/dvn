@@ -7,7 +7,7 @@ final class SvgException : Exception
 {
   public:
   /**
-  * Creates a new html exception.
+  * Creates a new svg exception.
   * Params:
   *   message =   The message.
   *   fn =        The file.

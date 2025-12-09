@@ -13,10 +13,12 @@ import dvn.music;
 
 import dvn.ui;
 
+/// 
 public final class ConsoleView : View
 {
 	public:
 	final:
+/// 
 	this(Window window)
 	{
 		super(window);
@@ -28,6 +30,7 @@ public final class ConsoleView : View
     private size_t _index;
     private Label[] _labels;
 
+/// 
 	protected override void onInitialize(bool useCache)
 	{
 		EXT_DisableKeyboardState();
@@ -58,6 +61,7 @@ public final class ConsoleView : View
         }
     }
 
+/// 
     void clearAll()
     {
         _index = 0;
@@ -70,6 +74,7 @@ public final class ConsoleView : View
         }
     }
 
+/// 
     void printLine(string msg, string color = "fff")
     {
         if (_index >= _labels.length)
@@ -90,28 +95,41 @@ public final class ConsoleView : View
     }
 }
 
+/// 
 void logInfo(string msg)      { printLineToConsole(msg, "0cf"); }
+/// 
 void logWarning(string msg)   { printLineToConsole(msg, "f80"); }
+/// 
 void logError(string msg)     { printLineToConsole(msg, "f00"); }
+/// 
 void logDialogue(string msg)  { printLineToConsole(msg, "fcf"); }
+/// 
 void logNetwork(string msg)   { printLineToConsole(msg, "ff0"); }
 
+/// 
 void logInfo(Char, Args...)(in Char[] fmt, Args args)      { import std.string : format; printLineToConsole(format(fmt, args), "0cf"); }
+/// 
 void logWarning(Char, Args...)(in Char[] fmt, Args args)   { import std.string : format; printLineToConsole(format(fmt, args), "f80"); }
+/// 
 void logError(Char, Args...)(in Char[] fmt, Args args)     { import std.string : format; printLineToConsole(format(fmt, args), "f00"); }
+/// 
 void logDialogue(Char, Args...)(in Char[] fmt, Args args)  { import std.string : format; printLineToConsole(format(fmt, args), "fcf"); }
+/// 
 void logNetwork(Char, Args...)(in Char[] fmt, Args args)   { import std.string : format; printLineToConsole(format(fmt, args), "ff0"); }
 
+/// 
 void printLineToConsoleColor(Char, Args...)(in Char[] fmt, string color, Args args)
 {
     import std.string : format; 
     printLineToConsole(format(fmt, args), color);
 }
+/// 
 void printLineToConsole(Char, Args...)(in Char[] fmt, Args args)
 {
     import std.string : format; 
     printLineToConsole(format(fmt, args));
 }
+/// 
 void printLineToConsole(string msg, string color = "fff")
 {
     auto app = getApplication();

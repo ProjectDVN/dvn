@@ -26,6 +26,7 @@ package(dvn) void initializeTextTools()
   }
 }
 
+/// 
 bool isForeignCharacter(dchar c)
 {
   uint code = cast(uint)c;
@@ -35,6 +36,7 @@ bool isForeignCharacter(dchar c)
   return safeCharacters && !safeCharacters.get(code, false);
 }
 
+/// 
 bool isForeignText(dstring s)
 {
   foreach (dchar c; s)

@@ -15,6 +15,7 @@ import dvn.components.label;
 import dvn.components.panel;
 import dvn.components.scrollbar;
 
+/// 
 public final class Video : Component
 {
     private:
@@ -30,6 +31,7 @@ public final class Video : Component
 
     public:
     final:
+/// 
     this(Window window, string framesFolder, bool repeat = false)
     {
         import std.file : dirEntries, SpanMode;
@@ -58,28 +60,36 @@ public final class Video : Component
     
     @property
     {
+/// 
         bool finished() { return _finished; }
 
+/// 
         bool repeat() { return _repeat; }
 
+/// 
         size_t frameIndex() { return _frameIndex; }
+/// 
         void frameIndex(size_t frameIndexStart)
         {
             _frameIndex = frameIndexStart;
         }
 
+/// 
         size_t frameCount() { return _frameCount; }
+/// 
         void frameCount(size_t newFrameCount)
         {
             _frameCount = newFrameCount;
         }
     }
 
+/// 
     void onFinishedVideo(EVENT event)
     {
         _onFinishedEvents ~= event;
     }
 
+/// 
     void fireFinishedVideo()
     {
         if (!_onFinishedEvents)
@@ -93,11 +103,13 @@ public final class Video : Component
         }
     }
 
+/// 
     override void repaint()
     {
 
     }
 
+/// 
     override void renderNativeComponent()
     {
         if (_finished)

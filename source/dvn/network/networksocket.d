@@ -13,6 +13,7 @@ import std.datetime : Clock;
 
 import dvn.network.networkpacket;
 
+/// 
 public final class NetworkSocket
 {
     private:
@@ -23,6 +24,7 @@ public final class NetworkSocket
 
     public:
     final:
+/// 
     this(void delegate(Throwable) errorHandler, void delegate(NetworkPacket) packetHandler = null)
     {
         _socket = new Socket(AddressFamily.INET, SocketType.STREAM, ProtocolType.TCP);
@@ -33,21 +35,26 @@ public final class NetworkSocket
 
     @property
     {
+/// 
         Socket socket() { return _socket; }
 
+/// 
         bool isDisconnected() { return _disconnected; }
     }
 
+/// 
     void connect(string ip, ushort port)
     {
         _socket.connect(new InternetAddress(ip, port));
     }
 
+/// 
     void close()
     {
         _socket.close();
     }
 
+/// 
     void send(NetworkPacket packet, bool allowViewChange = true)
     {
         synchronized
@@ -179,6 +186,7 @@ private void handleSocket(string ip, ushort port, shared NetworkSocket s)
     }
 }
 
+/// 
 NetworkSocket handle(string ip, ushort port, void delegate(Throwable) errorHandler, void delegate(NetworkPacket) packetHandler = null)
 {
     auto socket = new NetworkSocket(errorHandler, packetHandler);

@@ -5,6 +5,7 @@ module dvn.i18n;
 
 import dvn.meta;
 
+/// 
 mixin CreateCustomException!"LocalizationException";
 
 private alias STRING_MAP = string[string];
@@ -13,6 +14,7 @@ private alias LocalizationMap = STRING_MAP[string];
 private LocalizationMap[string] _languageMaps;
 private LocalizationMap _defaultMap;
 
+/// 
 void loadLanguageMap(string path, string name, bool isDefault = false)
 {
   if (!path || !path.length || !name || !name.length)
@@ -67,6 +69,7 @@ void loadLanguageMap(string path, string name, bool isDefault = false)
   _languageMaps[name] = localizationMap;
 }
 
+/// 
 bool tryGetLocalizationEntry(string language, string key, string value, out string result)
 {
   result = null;
@@ -97,6 +100,7 @@ bool tryGetLocalizationEntry(string language, string key, string value, out stri
   return true;
 }
 
+/// 
 string parseLocalizedString(string language, string s)
 {
   import std.conv : to;

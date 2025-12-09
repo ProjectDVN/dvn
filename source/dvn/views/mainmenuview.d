@@ -12,15 +12,18 @@ import dvn.events;
 
 import dvn.ui;
 
+/// 
 public final class MainMenuView : View
 {
 	public:
 	final:
+/// 
 	this(Window window)
 	{
 		super(window);
 	}
 
+/// 
 	protected override void onInitialize(bool useCache)
 	{
 		EXT_DisableKeyboardState();

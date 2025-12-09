@@ -8,6 +8,7 @@ import std.bitmanip : bigEndianToNative, nativeToBigEndian, littleEndianToNative
 import std.traits : isIntegral, isFloatingPoint;
 import std.conv : bitCast;
 
+/// 
 public class NetworkPacket
 {
     private:
@@ -19,6 +20,7 @@ public class NetworkPacket
 
     public:
     final:
+/// 
     this(NetworkPacket packet)
     {
         assert(packet !is null, "NetworkPacket must not be null");
@@ -30,6 +32,7 @@ public class NetworkPacket
         _packetEndian = packet._packetEndian;
     }
     
+/// 
     this(ubyte[] buffer, Endian endian = Endian.bigEndian)
     {
         assert(buffer !is null, "NetworkPacket buffer must not be null");
@@ -46,6 +49,7 @@ public class NetworkPacket
         }
     }
 
+/// 
     this(int id, int size, Endian endian = Endian.bigEndian)
     {
         _packetEndian = endian;
@@ -62,32 +66,40 @@ public class NetworkPacket
 
     @property
     {
+/// 
         Endian packetEndian() const { return _packetEndian; }
+/// 
         void packetEndian(Endian e) { _packetEndian = e; }
 
+/// 
         int packetId()
         {
             return _packetId;
         }
 
+/// 
         int packetVirtualSize()
         {
             return _packetVirtualSize;
         }
 
+/// 
         int packetPhysicalSize()
         {
             return _buffer ? cast(int)_buffer.length : 0;
         }
 
+/// 
         size_t offset() { return _offset; }
 
+/// 
         void offset(size_t newOffset)
         {
             _offset = newOffset;
         }
     }
 
+/// 
     void writeStringUTF32(dstring value)
     {
         auto stringBuffer = cast(ubyte[])value;
@@ -95,6 +107,7 @@ public class NetworkPacket
         writeBuffer(stringBuffer);
     }
 
+/// 
     void write(T)(T value)
         if (isIntegral!T || isFloatingPoint!T)
     {
@@ -130,6 +143,7 @@ public class NetworkPacket
         }
     }
 
+/// 
     void writeStringListUTF32(dstring[] list)
     {
         write!int(cast(int)list.length);
@@ -139,6 +153,7 @@ public class NetworkPacket
         }
     }
 
+/// 
     void writeBuffer(ubyte[] value)
     {
         write!int(cast(int)value.length);
@@ -149,6 +164,7 @@ public class NetworkPacket
         }
     }
 
+/// 
     void writeStaticBuffer(ubyte[] value)
     {
         foreach (v; value)
@@ -157,6 +173,7 @@ public class NetworkPacket
         }
     }
 
+/// 
     T read(T)()
         if (isIntegral!T || isFloatingPoint!T)
     {
@@ -198,6 +215,7 @@ public class NetworkPacket
         }
     }
 
+/// 
     dstring readStringUTF32()
     {
         auto str = cast(dstring)readBuffer();
@@ -205,6 +223,7 @@ public class NetworkPacket
         return (str is null || str.length == 0) ? "" : str;
     }
 
+/// 
     dstring[] readStringListUTF32()
     {
         auto length = read!int;
@@ -224,6 +243,7 @@ public class NetworkPacket
         return list;
     }
 
+/// 
     ubyte[] readBuffer()
     {
         auto length = read!int;
@@ -238,6 +258,7 @@ public class NetworkPacket
         return buff;
     }
 
+/// 
     ubyte[] readStaticBuffer(int length)
     {
         ubyte[] buff = new ubyte[length];
@@ -250,6 +271,7 @@ public class NetworkPacket
         return buff;
     }
 
+/// 
     ubyte[] finalizePacket()
     {
         return _buffer ? _buffer.dup : null;

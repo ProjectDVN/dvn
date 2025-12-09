@@ -19,57 +19,102 @@ import dvn.effects;
 import dvn.ui;
 import dvn.bundling;
 
+/// 
 public enum SceneComponentId : size_t
 {
+/// 
 	none = 0,
+/// 
 	background,
+/// 
 	label,
+/// 
 	character,
+/// 
 	characterName,
+/// 
 	image,
+/// 
 	video,
+/// 
 	animation,
+/// 
 	textPanel,
+/// 
 	text,
+/// 
 	option
 }
 
+/// 
 public final class SceneEntry
 {
 	public:
 	final:
+/// 
 	string original;
+/// 
 	string name;
+/// 
 	string act;
+/// 
 	string actContinueButton;
+/// 
 	string music;
+/// 
 	string sound;
+/// 
 	string voice;
+/// 
 	bool fadeMusic;
+/// 
 	string background;
+/// 
 	SceneLabel[] labels;
+/// 
 	SceneCharacter[] characters;
+/// 
 	SceneCharacterName[] characterNames;
+/// 
 	SceneImage[] images;
+/// 
 	SceneVideo[] videos;
+/// 
 	SceneAnimation[] animations;
+/// 
 	SceneEffect[] effects;
+/// 
 	string textColor;
+/// 
 	string textFont;
+/// 
 	string text;
+/// 
 	string nextScene;
+/// 
 	SceneOption[] options;
+/// 
 	string view;
+/// 
 	bool hideDialogue;
+/// 
 	bool hideButtons;
+/// 
 	bool isNarrator;
+/// 
 	int narratorX;
+/// 
 	int narratorY;
+/// 
 	int chance;
+/// 
 	bool stopMusic;
+/// 
 	bool stopSound;
+/// 
 	int delay;
 
+/// 
 	SceneCharacter[] copyCharacters()
 	{
 		SceneCharacter[] chs = [];
@@ -89,6 +134,7 @@ public final class SceneEntry
 		return chs;
 	}
 
+/// 
 	void log()
 	{
 		string info = "";
@@ -113,23 +159,33 @@ public final class SceneEntry
 	}
 }
 
+/// 
 public final class SceneEffect
 {
 	public:
 	final:
+/// 
 	string id;
+/// 
 	string[] values;
+/// 
 	string render;
 }
 
+/// 
 public final class SceneLabel
 {
 	public:
 	final:
+/// 
 	string text;
+/// 
 	size_t fontSize;
+/// 
 	int x;
+/// 
 	int y;
+/// 
 	string color;
 }
 
@@ -137,15 +193,24 @@ public final class SceneCharacter
 {
 	public:
 	final:
+/// 
 	string name;
+/// 
 	string image;
+/// 
 	string position;
+/// 
 	int x;
+/// 
 	int y;
+/// 
 	string movement;
+/// 
 	int movementSpeed;
+/// 
 	bool characterFadeIn;
 
+/// 
 	SceneCharacter copyCharacter()
 	{
 		auto c = new SceneCharacter();
@@ -161,54 +226,80 @@ public final class SceneCharacter
 	}
 }
 
+/// 
 public final class SceneCharacterName
 {
 	public:
 	final:
+/// 
 	string name;
+/// 
 	string color;
+/// 
 	string position;
 }
 
+/// 
 public final class SceneOption
 {
 	public:
 	final:
+/// 
 	string text;
+/// 
 	string nextScene;
+/// 
 	int chance;
 }
 
+/// 
 public final class SceneImage
 {
 	public:
 	final:
+/// 
 	string source;
+/// 
 	int x;
+/// 
 	int y;
+/// 
 	string position;
 }
 
+/// 
 public final class SceneVideo
 {
 	public:
 	final:
+/// 
 	string source;
+/// 
 	int x;
+/// 
 	int y;
+/// 
 	int width;
+/// 
 	int height;
+/// 
 	string position;
 }
 
+/// 
 public final class SceneAnimation
 {
 	public:
 	final:
+/// 
 	string source;
+/// 
 	int x;
+/// 
 	int y;
+/// 
 	string position;
+/// 
 	bool repeat;
 }
 
@@ -225,6 +316,7 @@ private int _calls;
 
 private bool _skipToNextChoice;
 
+/// 
 void setSaveState(string id, uint seed = 0, int calls = 0)
 {
 	_saveId = id;
@@ -241,6 +333,7 @@ void setSaveState(string id, uint seed = 0, int calls = 0)
 	_calls = calls;
 }
 
+/// 
 void syncRuntimeFromSave()
 {
 	random = Random(_seed);
@@ -250,11 +343,13 @@ void syncRuntimeFromSave()
 	}
 }
 
+/// 
 string getCurrentSaveId()
 {
 	return _saveId;
 }
 
+/// 
 SaveFile getCurrentSaveFile()
 {
 	auto settings = getGlobalSettings();
@@ -267,6 +362,7 @@ SaveFile getCurrentSaveFile()
 	return settings.saves.get(getCurrentSaveId(), null);
 }
 
+/// 
 uint getSaveIdSeed()
 {
     import std.regex : replaceAll, regex;
@@ -292,39 +388,54 @@ uint getSaveIdSeed()
 private bool isAuto;
 private string _lastScene;
 
+/// 
 public string getLastScene()
 {
 	return _lastScene;
 }
 
+/// 
 public class CoverageNode
 {
 	public:
 	final:
+/// 
 	string name;
+/// 
 	string text;
+/// 
 	bool isOption;
+/// 
 	string[] children;
+/// 
 	CoverageOption[] options;
 }
 
+/// 
 public class CoverageOption
 {
 	public:
 	final:
+/// 
 	string text;
+/// 
 	string scene;
 }
 
+/// 
 public class Coverage
 {
 	public:
 	final:
+/// 
 	CoverageNode[] nodes;
+/// 
 	CoverageNode[] endScenes;
+/// 
 	string[] missingAssets;
 }
 
+/// 
 public final class GameView : View
 {
 	private:
@@ -333,6 +444,7 @@ public final class GameView : View
 
 	public:
 	final:
+/// 
 	this(Window window)
 	{
 		super(window);
@@ -341,6 +453,7 @@ public final class GameView : View
 		_soundEffects = [];
 	}
 
+/// 
 	protected override void onInitialize(bool useCache)
 	{
 		EXT_EnableKeyboardState();
@@ -348,6 +461,7 @@ public final class GameView : View
 
 	private SaveFile _lastSaveFile;
 
+/// 
     void loadGame(SaveFile saveFile = null)
     {
 		_lastSaveFile = saveFile;
@@ -881,6 +995,7 @@ public final class GameView : View
 		}
     }
 
+/// 
 	void coverageTest()
 	{
 		import std.file : exists, readText, write;
@@ -1054,6 +1169,7 @@ public final class GameView : View
 	private bool[string] _lastCharacterNames;
 	private string _lastChoice;
 	private ulong continueArrowTaskId;
+/// 
     void initializeGame(string sceneName, string loadBackground = "", string loadMusic = "", string originalSceneName = "", string sceneText = "", bool forceRender = false)
     {
 		logInfo("Loading scene: '%s' | '%s' | '%s'", sceneName, loadBackground, loadMusic);

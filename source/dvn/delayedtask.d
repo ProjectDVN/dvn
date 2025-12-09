@@ -10,6 +10,7 @@ import dvn.external;
 private ulong _delayedTaskId;
 private DelayedTask[ulong] _tasks;
 
+/// 
 public class DelayedTask
 {
     private:
@@ -21,6 +22,7 @@ public class DelayedTask
     bool _repeat;
 
     public:
+/// 
     this(uint delay, bool delegate(DelayedTask) task, bool repeat = false)
     {
         _delay = delay;
@@ -32,8 +34,10 @@ public class DelayedTask
         _repeat = repeat;
     }
 
+/// 
     @property bool executed() { return _executed; }
 
+/// 
     void handle(uint ms)
     {
         if (_lastMS == 0)
@@ -63,11 +67,13 @@ public class DelayedTask
     }
 }
 
+/// 
 ulong runDelayedTask(uint delay, void delegate() task, bool repeat = false)
 {
     return runDelayedTask(delay, (d) { task(); return false; }, repeat);
 }
 
+/// 
 ulong runDelayedTask(uint delay, bool delegate(DelayedTask) task, bool repeat = false)
 {
     auto delayedTask = new DelayedTask(delay, task, repeat);
@@ -77,6 +83,7 @@ ulong runDelayedTask(uint delay, bool delegate(DelayedTask) task, bool repeat = 
     return delayedTask._id;
 }
 
+/// 
 void removeDelayedTask(ulong id)
 {
     if (!_tasks)
@@ -87,6 +94,7 @@ void removeDelayedTask(ulong id)
     _tasks.remove(id);
 }
 
+/// 
 void handleDelayedTasks()
 {
     if (!_tasks)

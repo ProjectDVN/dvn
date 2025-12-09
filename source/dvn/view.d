@@ -11,6 +11,7 @@ import dvn.layout;
 
 private size_t _viewId = 0;
 
+/// 
 public abstract class View : ILayout
 {
   private:
@@ -43,30 +44,42 @@ public abstract class View : ILayout
   {
     @property
     {
+/// 
       size_t id() { return _id; }
+/// 
       Window window() { return _window; }
 
+/// 
       size_t componentsLength() { return _components ? _components.length : 0; }
 
+/// 
       int width() { return _window.width; }
+/// 
       int height() { return _window.height; }
+/// 
       IntVector size() { return _window.size; }
 
+/// 
       int x() { return 0; }
+/// 
       int y() { return 0; }
+/// 
       IntVector position() { return IntVector(0,0); }
     }
 
+/// 
     Component[] getComponents()
     {
       return _components.dup;
     }
 
+/// 
     void disableUpdate()
     {
       _updateDisabled = true;
     }
 
+/// 
     void enableUpdate()
     {
       _updateDisabled = false;
@@ -75,6 +88,7 @@ public abstract class View : ILayout
       _window.update();
     }
 
+/// 
     void addComponent(Component component)
     {
       if (!component)
@@ -95,6 +109,7 @@ public abstract class View : ILayout
       update();
     }
 
+/// 
     void removeComponent(Component component)
     {
       if (!component)
@@ -119,6 +134,7 @@ public abstract class View : ILayout
       update();
     }
 
+/// 
     void clean()
     {
       if (_components)
@@ -141,6 +157,7 @@ public abstract class View : ILayout
   }
 
   protected:
+/// 
   this(Window window)
   {
     _window = window;
@@ -150,5 +167,6 @@ public abstract class View : ILayout
     _id = ++_viewId;
   }
 
+/// 
   abstract void onInitialize(bool useCache);
 }

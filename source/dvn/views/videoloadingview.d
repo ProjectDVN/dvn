@@ -13,15 +13,18 @@ import dvn.music;
 
 import dvn.ui;
 
+/// 
 public final class VideoLoadingView : View
 {
 	public:
 	final:
+/// 
 	this(Window window)
 	{
 		super(window);
 	}
 
+/// 
 	protected override void onInitialize(bool useCache)
 	{
 		EXT_DisableKeyboardState();

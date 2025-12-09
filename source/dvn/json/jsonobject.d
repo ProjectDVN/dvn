@@ -14,6 +14,7 @@ import dvn.json.conv;
 import dvn.json.jsonobjectmember;
 import dvn.json.jsontype;
 
+/// 
 final class Json(S)
 if (isSomeString!S)
 {
@@ -41,11 +42,13 @@ if (isSomeString!S)
   }
 
   public:
+/// 
   this()
   {
     _jsonType = JsonType.jsonNull;
   }
 
+/// 
   bool addMember(S key, JsonObject member)
   {
     auto obj = new JsonMapMember(key, _members ? _members.length : 0, member);
@@ -54,6 +57,7 @@ if (isSomeString!S)
     return true;
   }
 
+/// 
   bool getMember(S key, out JsonObject member)
   {
     if (_jsonType == JsonType.jsonNull)
@@ -88,6 +92,7 @@ if (isSomeString!S)
     return member !is null;
   }
 
+/// 
   bool getMembers(out JsonObject[S] members)
   {
     if (_jsonType == JsonType.jsonNull)
@@ -110,6 +115,7 @@ if (isSomeString!S)
     return true;
   }
 
+/// 
   bool addItem(JsonObject item)
   {
     _items ~= item;
@@ -117,6 +123,7 @@ if (isSomeString!S)
     return true;
   }
 
+/// 
   bool getItem(size_t index, out JsonObject item)
   {
     if (_jsonType == JsonType.jsonNull)
@@ -142,6 +149,7 @@ if (isSomeString!S)
     return item !is null;
   }
 
+/// 
   bool getItems(out JsonObject[] items)
   {
     if (_jsonType == JsonType.jsonNull)
@@ -160,6 +168,7 @@ if (isSomeString!S)
     return true;
   }
 
+/// 
   bool setText(S text)
   {
     _text = text;
@@ -167,6 +176,7 @@ if (isSomeString!S)
     return true;
   }
 
+/// 
   bool getText(out S text)
   {
     if (_jsonType == JsonType.jsonNull)
@@ -185,6 +195,7 @@ if (isSomeString!S)
     return true;
   }
 
+/// 
   bool setNumber(T)(T number)
   if (isScalarType!T)
   {
@@ -199,6 +210,7 @@ if (isSomeString!S)
     return true;
   }
 
+/// 
   bool getNumber(T = double)(out T number)
   if (isScalarType!T)
   {
@@ -225,6 +237,7 @@ if (isSomeString!S)
     }
   }
 
+/// 
   bool setBoolean(bool booleanValue)
   {
     _booleanValue = booleanValue;
@@ -232,6 +245,7 @@ if (isSomeString!S)
     return true;
   }
 
+/// 
   bool getBoolean(out bool value)
   {
     if (_jsonType == JsonType.jsonNull)
@@ -253,14 +267,17 @@ if (isSomeString!S)
 
   @property
   {
+/// 
     JsonType jsonType() { return _jsonType; }
 
+/// 
     void jsonType(JsonType newJsonType)
     {
       _jsonType = newJsonType;
     }
   }
 
+/// 
   JsonObject opIndex(S key)
   {
     JsonObject obj;
@@ -272,6 +289,7 @@ if (isSomeString!S)
     return null;
   }
 
+/// 
   JsonObject opIndex(size_t index)
   {
     JsonObject obj;
@@ -283,6 +301,7 @@ if (isSomeString!S)
     return null;
   }
 
+/// 
   S toPrettyString(size_t tabCount = 0, bool initTab = true)
   {
     S tabs = "";
@@ -398,6 +417,7 @@ if (isSomeString!S)
     }
   }
 
+/// 
   override string toString()
   {
     return toStringImpl.to!string;

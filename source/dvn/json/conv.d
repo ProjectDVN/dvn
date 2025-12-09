@@ -5,7 +5,7 @@ module dvn.json.conv;
 
 import std.traits : isSomeString;
 
-// TODO: Better implementation ...
+/// 
 bool tryParse(From,To)(From fromValue, out To toValue)
 {
   import std.conv : to, ConvException;
@@ -22,6 +22,7 @@ bool tryParse(From,To)(From fromValue, out To toValue)
   }
 }
 
+/// 
 bool canParseNumeric(S)(S s)
 if (isSomeString!S)
 {

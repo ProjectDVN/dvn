@@ -6,6 +6,7 @@ module dvn.sheetcollection;
 import dvn.window;
 import dvn.external;
 
+/// 
 public final class SheetCollection
 {
   private:
@@ -17,16 +18,19 @@ public final class SheetCollection
 
   public:
   final:
+/// 
   this(Window window)
   {
     _window = window;
   }
 
+/// 
   EXT_Sheet getSheet(string name)
   {
     return _sheets.get(name, EXT_Sheet.init);
   }
 
+/// 
   void addSheet(string name, string path, IntVector columnSize, int columnCount)
   {
     auto sheet = EXT_CREATE_SHEET(_window.nativeScreen, path);
@@ -34,6 +38,7 @@ public final class SheetCollection
     _sheets[name] = EXT_Sheet(sheet, columnSize, columnCount);
   }
 
+/// 
   void addSheetBuffer(string name, ubyte[] buffer, IntVector columnSize, int columnCount)
   {
     auto sheet = EXT_CREATE_SHEET_BUFFER(_window.nativeScreen, buffer);
@@ -41,6 +46,7 @@ public final class SheetCollection
     _sheets[name] = EXT_Sheet(sheet, columnSize, columnCount);
   }
 
+/// 
   void addSheetEntry(string name, string sheetName, int row, int col)
   {
     SHEET_ENTRY_DELEGATE create = ()
@@ -54,11 +60,13 @@ public final class SheetCollection
     _sheetEntries[name] = create;
   }
 
+/// 
   bool hasSheetEntry(string entryName)
   {
     return cast(bool)(entryName in _sheetEntries);
   }
 
+/// 
   bool getSheetEntry(string entryName, out EXT_SheetRender* sheetRender)
   {
     sheetRender = null;
@@ -74,6 +82,7 @@ public final class SheetCollection
     return sheetRender !is null && sheetRender.entry !is null && sheetRender.texture !is null;
   }
 
+/// 
   bool getSheetEntry(string sheetName, int row, int col, out EXT_SheetRender* sheetRender)
   {
     sheetRender = null;

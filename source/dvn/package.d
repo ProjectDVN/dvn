@@ -53,6 +53,7 @@ public
 
   import dvn.characters;
 
+/// 
   void displayView(string name)
   {
     runDelayedTask(0, {
@@ -60,6 +61,7 @@ public
     });
   }
 
+/// 
   void displayLastSceneView()
   {
     import dvn.views.gameview : getLastScene;
@@ -74,6 +76,7 @@ public
     });
   }
 
+/// 
   void displayScene(string scene)
   {
     import dvn.views.settingsview : backToScene;
@@ -88,6 +91,7 @@ public
     });
   }
 
+/// 
   void runDVN()
   {
     initializeExternalApplicationState();

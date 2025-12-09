@@ -11,6 +11,7 @@ import dvn.colors;
 import dvn.components.label;
 import dvn.painting;
 
+/// 
 public final class TextBoxPaint
 {
   private:
@@ -29,19 +30,25 @@ public final class TextBoxPaint
   public:
   @property
   {
+/// 
     Color backgroundColor() { return _backgroundColor; }
+/// 
     void backgroundColor(Color color)
     {
       _backgroundColor = color;
     }
 
+/// 
     Color borderColor() { return _borderColor; }
+/// 
     void borderColor(Color color)
     {
       _borderColor = color;
     }
 
+/// 
     Color shadowColor() { return _shadowColor; }
+/// 
     void shadowColor(Color color)
     {
       _shadowColor = color;
@@ -49,8 +56,10 @@ public final class TextBoxPaint
   }
 }
 
+/// 
 public alias DrawTextBoxDelegate = void delegate(string name, Painting painting, Color backgroundColor, Color borderColor, Color shadowColor);
 
+/// 
 public final class TextBox : Component
 {
   private:
@@ -184,11 +193,13 @@ public final class TextBox : Component
 
   public:
   final:
+/// 
   this(Window window)
   {
     this(window, null, null, null);
   }
 
+/// 
   this(Window window, string defaultName, string focusName, string hoverName)
   {
     super(window, false);
@@ -401,7 +412,9 @@ public final class TextBox : Component
 
   @property
   {
+/// 
     string defaultName() { return _defaultName; }
+/// 
     void defaultName(string newName)
     {
       _defaultName = newName;
@@ -409,7 +422,9 @@ public final class TextBox : Component
       updateRect(true);
     }
 
+/// 
     string focusName() { return _focusName; }
+/// 
     void focusName(string newName)
     {
       _focusName = newName;
@@ -417,7 +432,9 @@ public final class TextBox : Component
       updateRect(true);
     }
 
+/// 
     string hoverName() { return _hoverName; }
+/// 
     void hoverName(string newName)
     {
       _hoverName = newName;
@@ -425,7 +442,9 @@ public final class TextBox : Component
       updateRect(true);
     }
 
+/// 
     dstring text() { return _text; }
+/// 
     void text(dstring newText)
     {
       _text = newText;
@@ -433,7 +452,9 @@ public final class TextBox : Component
       updateLabel();
     }
 
+/// 
     Color textColor() { return _textColor; }
+/// 
     void textColor(Color newColor)
     {
       _textColor = newColor;
@@ -441,7 +462,9 @@ public final class TextBox : Component
       updateLabel();
     }
 
+/// 
     string fontName() { return _fontName; }
+/// 
     void fontName(string newFontName)
     {
       _fontName = newFontName;
@@ -449,7 +472,9 @@ public final class TextBox : Component
       updateLabel();
     }
 
+/// 
     size_t fontSize() { return _fontSize; }
+/// 
     void fontSize(size_t newFontSize)
     {
       _fontSize = newFontSize;
@@ -457,7 +482,9 @@ public final class TextBox : Component
       updateLabel();
     }
 
+/// 
     int textPadding() { return _textPadding; }
+/// 
     void textPadding(int newPadding)
     {
       _textPadding = newPadding;
@@ -465,7 +492,9 @@ public final class TextBox : Component
       updateLabel();
     }
 
+/// 
     bool centerText() { return _centerText; }
+/// 
     void centerText(bool shouldCenterText)
     {
       _centerText = shouldCenterText;
@@ -473,13 +502,18 @@ public final class TextBox : Component
       updateLabel();
     }
 
+/// 
     TextBoxPaint defaultPaint() { return _defaultPaint; }
 
+/// 
     TextBoxPaint hoverPaint() { return _hoverPaint; }
 
+/// 
     TextBoxPaint focusPaint() { return _focusPaint; }
 
+/// 
     dchar hideCharacter() { return _hideCharacter; }
+/// 
     void hideCharacter(dchar character)
     {
       _hideCharacter = character;
@@ -487,7 +521,9 @@ public final class TextBox : Component
       updateLabel();
     }
 
+/// 
     size_t maxCharacters() { return _maxCharacters; }
+/// 
     void maxCharacters(size_t amount)
     {
       _maxCharacters = amount;
@@ -496,6 +532,7 @@ public final class TextBox : Component
     }
   }
 
+/// 
   void setCustomTextBoxDraw(DrawTextBoxDelegate customTextBoxDraw)
   {
     _customTextBoxDraw = customTextBoxDraw;
@@ -503,6 +540,7 @@ public final class TextBox : Component
     restyle();
   }
 
+/// 
   void removeCustomTextBoxDraw()
   {
     _customTextBoxDraw = null;
@@ -510,6 +548,7 @@ public final class TextBox : Component
     restyle();
   }
 
+/// 
   void restyle()
   {
     drawDefaultTextBox();
@@ -519,6 +558,7 @@ public final class TextBox : Component
     updateRect(true);
   }
 
+/// 
   override void repaint()
   {
     auto rect = super.clientRect;
@@ -646,6 +686,7 @@ public final class TextBox : Component
     }
   }
 
+/// 
   override void renderNativeComponent()
   {
     auto screen = super.window.nativeScreen;

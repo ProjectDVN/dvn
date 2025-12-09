@@ -15,6 +15,7 @@ import dvn.components.label;
 import dvn.components.panel;
 import dvn.components.scrollbar;
 
+/// 
 public final class CheckBox : Component
 {
     private:
@@ -25,6 +26,7 @@ public final class CheckBox : Component
 
     public:
     final:
+    /// 
     this(Window window)
     {
         super(window, false);
@@ -39,7 +41,9 @@ public final class CheckBox : Component
 
     @property
     {
+        /// 
         bool checked() { return _isChecked; }
+        /// 
         void checked(bool isChecked)
         {
             _isChecked = isChecked;
@@ -55,8 +59,9 @@ public final class CheckBox : Component
             _onChanged();
             updateRect(true);
         }
-
+        /// 
         Color checkColor() { return _checkColor; }
+        /// 
         void checkColor(Color newColor)
         {
             _checkColor = newColor;
@@ -78,6 +83,7 @@ public final class CheckBox : Component
         }
     }
 
+    /// 
     void initialize()
     {
         _checkMark = new Panel(window);
@@ -95,6 +101,7 @@ public final class CheckBox : Component
         _checkMark.hide();
     }
 
+    /// 
     override void repaint()
     {
         auto rect = super.clientRect;
@@ -108,11 +115,13 @@ public final class CheckBox : Component
         }
     }
 
+    /// 
     override void renderNativeComponent()
     {
         renderChildren();
     }
 
+    /// 
     void onChanged(void delegate() handler)
     {
         if (!handler)
@@ -123,6 +132,7 @@ public final class CheckBox : Component
         _onChanged = handler;
     }
 
+    /// 
     void toggleCheck()
     {
         checked = !_isChecked;

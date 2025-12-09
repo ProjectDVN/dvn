@@ -16,6 +16,7 @@ import dvn.ui;
 
 private size_t _windowId;
 
+/// 
 public final class Window
 {
   private:
@@ -116,6 +117,7 @@ public final class Window
     _overlayRectangle = EXT_CreateRectangle(Rectangle(0,0,_size.x, _size.y));
   }
 
+/// 
   void enableDebugPanel()
   {
     _debugPanel = new Panel(this);
@@ -125,6 +127,7 @@ public final class Window
     _debugPanel.fillColor = "000".getColorByHex.changeAlpha(150);
   }
 
+/// 
   bool toggleDebugPanel()
   {
     if (_debugPanel)
@@ -142,6 +145,7 @@ public final class Window
   private Label[string] _debugLabels;
   private Label _lastLabel;
 
+/// 
   void addDebugInformation(string key, string value)
   {
     if (!_debugPanel) return;
@@ -184,6 +188,7 @@ public final class Window
     label.show();
   }
 
+/// 
   void disableDebugPanel()
   {
     if (_debugPanel)
@@ -195,6 +200,7 @@ public final class Window
     }
   }
 
+/// 
   void remove()
   {
     _removed = true;
@@ -204,6 +210,7 @@ public final class Window
     application.updateWindows();
   }
 
+/// 
   bool isNativeWindow(EXT_Window window)
   {
     return _nativeWindow == window;
@@ -211,16 +218,20 @@ public final class Window
 
   @property
   {
+/// 
     bool isDebugMode() { return _debugMode; }
+/// 
     void isDebugMode(bool debugMode)
     {
       _debugMode = debugMode;
     }
+/// 
     bool isRemoved()
     {
       return _removed;
     }
 
+/// 
     bool isActive()
     {
         auto flags = EXT_GetWindowFlags(_nativeWindow);
@@ -236,11 +247,13 @@ public final class Window
     }
   }
 
+/// 
   void disableUpdate()
   {
     _updateDisabled = true;
   }
 
+/// 
   void enableUpdate()
   {
     _updateDisabled = false;
@@ -250,37 +263,50 @@ public final class Window
 
   @property
   {
+/// 
     Color overlayColor() { return _overlayColor; }
 
+/// 
     void overlayColor(Color newColor)
     {
       _overlayColor = newColor;
     }
 
+/// 
     bool useOverlay() { return _useOverlay; }
+/// 
     void useOverlay(bool shouldUseOverlay)
     {
       _useOverlay = shouldUseOverlay;
     }
 
+/// 
     Application application() { return _application; }
 
+/// 
     Color backgroundColor() { return _backgroundColor; }
 
+/// 
     void backgroundColor(Color newBackgroundColor)
     {
       _backgroundColor = newBackgroundColor;
     }
 
+/// 
     size_t id() { return _id; }
 
+/// 
     string title() { return _title; }
 
+/// 
     IntVector size() { return _size; }
 
+/// 
     bool isFullScreen() { return _isFullScreen; }
 
+/// 
     int width() { return _size.x; }
+/// 
     int height() { return _size.y; }
 
     package(dvn)
@@ -288,14 +314,19 @@ public final class Window
       EventCollection events() { return _events; }
     }
 
+/// 
     EXT_Window nativeWindow() { return _nativeWindow; }
 
+/// 
     EXT_Screen nativeScreen() { return _nativeScreen; }
 
+/// 
     size_t componentsLength() { return _components ? _components.length : 0; }
+/// 
     size_t visibleComponentsLength() { return _renderComponents ? _renderComponents.length : 0; }
   }
 
+/// 
   void setCustomPreRender(void delegate(EXT_Window,EXT_Screen) preRenderHandler)
   {
     _preRenderHandler = preRenderHandler;
@@ -309,12 +340,14 @@ public final class Window
     }
   }
 
+/// 
   void setCustomRender(void delegate(EXT_Window,EXT_Screen) renderHandler, void delegate(EXT_Window,EXT_Screen) clearRenderHandler)
   {
     _renderHandler = renderHandler;
     _clearRenderHandler = clearRenderHandler;
   }
 
+/// 
   void clearCustomRender()
   {
     _renderHandler = null;
@@ -327,46 +360,55 @@ public final class Window
     }
   }
 
+/// 
   void addSheet(string name, string path, IntVector columnSize, int columnCount)
   {
     _sheetCollection.addSheet(name, path, columnSize, columnCount);
   }
 
+/// 
   void addSheetBuffer(string name, ubyte[] buffer, IntVector columnSize, int columnCount)
   {
     _sheetCollection.addSheetBuffer(name, buffer, columnSize, columnCount);
   }
 
+/// 
   EXT_Sheet getSheet(string name)
   {
     return _sheetCollection.getSheet(name);
   }
 
+/// 
   void addSheetEntry(string name, string sheetName, int row, int col)
   {
     _sheetCollection.addSheetEntry(name, sheetName, row, col);
   }
 
+/// 
   bool getSheetEntry(string entryName, out EXT_SheetRender* sheetRender)
   {
     return _sheetCollection.getSheetEntry(entryName, sheetRender);
   }
 
+/// 
   bool getSheetEntry(string sheetName, int row, int col, out EXT_SheetRender* sheetRender)
   {
     return _sheetCollection.getSheetEntry(sheetName, row, col, sheetRender);
   }
   
+/// 
   bool hasSheetEntry(string entryName)
   {
     return _sheetCollection.hasSheetEntry(entryName);
   }
 
+/// 
   bool isCurrentView(T : View)(T view)
   {
     return _currentView && view && _currentView.id == view.id;
   }
 
+/// 
   void addView(T : View)(string name)
   {
     auto window = this;
@@ -374,6 +416,7 @@ public final class Window
     _viewCreators[name] = { return cast(View)new T(window); };
   }
 
+/// 
   T getActiveView(T : View)(string name)
   {
     if (!_activeViews) return T.init;
@@ -383,6 +426,7 @@ public final class Window
     return view;
   }
 
+/// 
   View getCurrentActiveView()
   {
     if (!_activeViews || !_activeViews.length) return null;
@@ -390,6 +434,7 @@ public final class Window
     return _activeViews.values[0];
   }
 
+/// 
   void changeView(string name, bool saveCurrentView = false, void delegate(View) onInitialized = null)
   {
     logInfo("Changing view: %s", name);
@@ -449,6 +494,7 @@ public final class Window
     logInfo("Changed view: %s", name);
   }
 
+/// 
   void refreshCurrentView(void delegate(View) onRefreshed)
   {
     auto newView = _currentViewName;
@@ -465,6 +511,7 @@ public final class Window
     });
   }
 
+/// 
   void fadeToView(string name, Color fadeColor, bool saveCurrentView = false, void delegate(View) onInitialized = null)
   {
     fadeOut(fadeColor,
@@ -475,6 +522,7 @@ public final class Window
     });
   }
 
+/// 
   void fadeOut(Color fadeColor, void delegate() fadedOutHandler = null)
   {
     if (_isFadingOut) return;
@@ -489,6 +537,7 @@ public final class Window
     _lastFadeTime = 0;
   }
 
+/// 
   void fadeIn(void delegate() fadedInHandler = null)
   {
     if (_isFadingIn) return;
@@ -506,6 +555,7 @@ public final class Window
     _lastFadeTime = 0;
   }
 
+/// 
   void addComponent(Component component)
   {
     if (!component)
@@ -520,6 +570,7 @@ public final class Window
     update();
   }
 
+/// 
   void removeComponent(Component component)
   {
     if (!component)
@@ -545,6 +596,7 @@ public final class Window
   private size_t _lastFadeTime;
   private size_t _lastFpsUpdate;
 
+/// 
   void render()
   {
     import dvn.gamesettings : getGlobalSettings;

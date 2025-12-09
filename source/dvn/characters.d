@@ -8,6 +8,7 @@ import dvn.json;
 
 import std.file : readText;
 
+/// 
 void loadCharacters(Resource[string] generalResources)
 {
     auto text = readText("data/game/characters.json");

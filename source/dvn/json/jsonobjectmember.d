@@ -5,6 +5,7 @@ module dvn.json.jsonobjectmember;
 
 import dvn.json.jsonobject;
 
+/// 
 final class JsonObjectMember(S)
 {
   private:
@@ -15,6 +16,7 @@ final class JsonObjectMember(S)
   S _key;
 
   public:
+/// 
   this(S key, size_t index, JsonObject obj)
   {
     _key = key;
@@ -24,13 +26,17 @@ final class JsonObjectMember(S)
 
   @property
   {
+/// 
     S key() { return _key; }
 
+/// 
     size_t index() { return _index; }
 
+/// 
     JsonObject obj() { return _object; }
   }
 
+/// 
   override int opCmp(Object o)
   {
     auto obj = cast(JsonObjectMember!S)o;

@@ -42,11 +42,13 @@ struct Rectangle
   int h;
 }
 
+/// 
 Rectangle minimumSize(Rectangle rect)
 {
   return Rectangle(rect.x, rect.y, rect.w <= 0 ? 1 : rect.w, rect.h <= 0 ? 1 : rect.h);
 }
 
+/// 
 Rectangle intersectRectangle(Rectangle a, Rectangle b)
 {
   import std.math : fmin,fmax;

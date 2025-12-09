@@ -6,6 +6,7 @@ module dvn.colors;
 public import dvn.external : Color;
 import dvn.meta;
 
+/// 
 mixin CreateCustomException!"ColorException";
 
 private
@@ -19,6 +20,7 @@ private
     string name;
   }
 
+/// 
   ColorData[] getColorData()
   {
     ColorData[] data = [];
@@ -166,13 +168,22 @@ private
   }
 }
 
+/// 
 Color getColorByHex(string hex)
 {
   import std.conv : to;
+  import std.string : strip;
 
-  if (!hex || !hex.length)
+  if (!hex || !hex.strip.length)
   {
     throw new ColorException("Missing hex input.");
+  }
+
+  hex = hex.strip;
+
+  if (hex[0] == '#' && hex.length > 1)
+  {
+    hex = hex[1 .. $].strip;
   }
 
   string hexR = "";
@@ -235,6 +246,7 @@ Color getColorByHex(string hex)
   return getColorByRGB(r,g,b,a);
 }
 
+/// 
 Color getColorByInteger(uint integer)
 {
   return Color(
@@ -244,6 +256,7 @@ Color getColorByInteger(uint integer)
     cast(ubyte)integer);
 }
 
+/// 
 uint getIntegerByColor(Color color)
 {
     int ret = 0;
@@ -263,6 +276,7 @@ uint getIntegerByColor(Color color)
     return cast(uint)ret;
 }
 
+/// 
 string getHexByColor(Color color)
 {
   import std.string : format;
@@ -272,6 +286,7 @@ string getHexByColor(Color color)
   return hex;
 }
 
+/// 
 string getNameByColor(Color color)
 {
   import std.string : format;
@@ -294,6 +309,7 @@ string getNameByColor(Color color)
   }
 }
 
+/// 
 Color getColorByName(string name, int alpha = 0xff)
 {
   Color transparent() { return getColorByRGB(0x00, 0x00, 0x00, 0x00); }
@@ -318,11 +334,13 @@ Color getColorByName(string name, int alpha = 0xff)
 	}
 }
 
+/// 
 Color getColorByRGB(int r, int g, int b, int a = 0xff)
 {
 	return Color(cast(ubyte)r,cast(ubyte)g,cast(ubyte)b,cast(ubyte)a);
 }
 
+/// 
 Color changeAlpha(Color color, int a)
 {
   return Color(color.r, color.g, color.b, cast(ubyte)a);

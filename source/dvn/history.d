@@ -5,17 +5,25 @@ module dvn.history;
 
 import dvn.meta;
 
+/// 
 mixin CreateCustomException!"DialogueHistoryException";
 
+/// 
 public final class DialogueHistory
 {
     public:
     final:
+/// 
     string text;
+/// 
     string[] options;
+/// 
     string sceneName;
+/// 
     string sceneBackground;
+/// 
     string sceneMusic;
+/// 
     string originalScene;
 }
 
@@ -23,6 +31,7 @@ private DialogueHistory[] _history;
 private bool[string] _historyKeys;
 private bool[string] _historyText;
 
+/// 
 void loadDialogueHistory()
 {
     import std.file : readText, exists;
@@ -51,6 +60,7 @@ void loadDialogueHistory()
     }
 }
 
+/// 
 void addDialogueHistory(string text, string[] options, string sceneName, string sceneBackground, string sceneMusic, string originalScene)
 {
     if (_historyKeys && (sceneName in _historyKeys))
@@ -82,6 +92,7 @@ void addDialogueHistory(string text, string[] options, string sceneName, string 
     write("data/game/history.json", serializedJson);
 }
 
+/// 
 DialogueHistory[] searchDialogueHistory(string input)
 {
     import std.algorithm : canFind;
@@ -117,6 +128,7 @@ DialogueHistory[] searchDialogueHistory(string input)
     return results;
 }
 
+/// 
 bool isInHistory(string input)
 {
     return _historyText && (input in _historyText);

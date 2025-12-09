@@ -3,6 +3,7 @@
 */
 module dvn.meta;
 
+/// 
 mixin template CreateCustomException(string name)
 {
   import std.format : format;
@@ -18,8 +19,10 @@ mixin template CreateCustomException(string name)
   }}, name));
 }
 
+/// 
 mixin CreateCustomException!"ArgumentException";
 
+/// 
 template EnforceEventOverrides(Base, Derived)
 {
     bool EnforceEventOverrides()

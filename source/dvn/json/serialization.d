@@ -13,16 +13,22 @@ import dvn.json.jsonobject;
 import dvn.json.jsontype;
 import dvn.json.meta;
 
+/// 
 struct JsonIgnore {}
 
+/// 
 struct JsonRequired {}
 
+/// 
 struct JsonField { string fieldName; }
 
+/// 
 struct JsonRead { string handler; }
 
+/// 
 struct JsonWrite { string handler; }
 
+/// 
 T deserializeJson(T,S = string)(S jsonString)
 if (isSomeString!S)
 {
@@ -37,6 +43,7 @@ if (isSomeString!S)
   return T.init;
 }
 
+/// 
 bool deserializeJsonSafe(T,S = string)(S jsonString, out T value, out S[] errorMessages)
 if (isSomeString!S)
 {
@@ -51,6 +58,7 @@ if (isSomeString!S)
   return deserializeJsonObjectSafe(json, value, errorMessages);
 }
 
+/// 
 T deserializeJsonObject(T,S = string)(Json!S json)
 {
   T value;
@@ -64,6 +72,7 @@ T deserializeJsonObject(T,S = string)(Json!S json)
   return T.init;
 }
 
+/// 
 bool deserializeJsonObjectSafe(T,S = string)(Json!S json, out T value, out S[] errorMessages)
 {
   static if (is(T == class) || is(T == struct))
@@ -268,6 +277,7 @@ bool deserializeJsonObjectSafe(T,S = string)(Json!S json, out T value, out S[] e
   }
 }
 
+/// 
 S serializeJson(T,S = string)(T value, bool pretty = false)
 {
   S jsonString;
@@ -279,6 +289,7 @@ S serializeJson(T,S = string)(T value, bool pretty = false)
   return null;
 }
 
+/// 
 bool serializeJsonSafe(T,S = string)(T value, out S jsonString, bool pretty = false)
 {
   Json!S json;
@@ -300,6 +311,7 @@ bool serializeJsonSafe(T,S = string)(T value, out S jsonString, bool pretty = fa
   return true;
 }
 
+/// 
 Json!S serializeJsonObject(T,S = string)(T value)
 {
   Json!S json;
@@ -311,6 +323,7 @@ Json!S serializeJsonObject(T,S = string)(T value)
   return null;
 }
 
+/// 
 bool serializeJsonObjectSafe(T,S = string)(T value, out Json!S json)
 {
   json = new Json!S;

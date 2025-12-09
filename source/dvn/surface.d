@@ -6,18 +6,28 @@ module dvn.surface;
 import dvn.external;
 import dvn.atlas;
 
+/// 
 public enum Direction : int
 {
+/// 
   north,
+/// 
   northEast,
+/// 
   east,
+/// 
   southEast,
+/// 
   south,
+/// 
   southWest,
+/// 
   west,
+/// 
   northWest
 }
 
+/// 
 public final class Model
 {
   private:
@@ -37,6 +47,7 @@ public final class Model
 
   public:
   final:
+/// 
   this(IntVector size, Surface[] surfaces, Surface[] surfacesNorth)
   {
     _surfaces = surfaces;
@@ -53,13 +64,17 @@ public final class Model
 
   @property
   {
+/// 
     bool hasOffset() { return _hasOffset; }
+/// 
     void hasOffset(bool setHasOffset)
     {
       _hasOffset = setHasOffset;
     }
 
+/// 
     IntVector size() { return _size; }
+/// 
     void size(IntVector newSize)
     {
       _size = newSize;
@@ -68,7 +83,9 @@ public final class Model
       _rect.h = _size.y;
     }
 
+/// 
     IntVector position() { return _position; }
+/// 
     void position(IntVector newPosition)
     {
       _position = newPosition;
@@ -88,7 +105,9 @@ public final class Model
       }
     }
 
+/// 
     double scale() { return _scale; }
+/// 
     void scale(double newScale)
     {
       if (_hasOffset)
@@ -102,11 +121,14 @@ public final class Model
       }
     }
 
+/// 
     string currentAction() { return _currentAction; }
 
+/// 
     Direction currentDirection() { return _currentDirection; }
   }
 
+/// 
   void removeSurface(size_t index, size_t indexNorth)
   {
     _surfaces[index] = null;
@@ -115,26 +137,31 @@ public final class Model
     setAction(_currentAction, _currentDirection, true, true);
   }
 
+/// 
   void changeStaticSurfaceAll(size_t index, size_t indexNorth, string atlas, string name)
   {
     changeSurface(index, indexNorth, atlas, name, ["default"], [Direction.north, Direction.northEast, Direction.northWest, Direction.east, Direction.south, Direction.southEast, Direction.southWest, Direction.west]);
   }
 
+/// 
   void changeStaticSurfaceStandard(size_t index, size_t indexNorth, string atlas, string name)
   {
     changeSurface(index, indexNorth, atlas, name, ["default"], [Direction.north, Direction.east, Direction.south, Direction.west]);
   }
 
+/// 
   void changeSurfaceAll(size_t index, size_t indexNorth, string atlas, string name, string[] actions)
   {
     changeSurface(index, indexNorth, atlas, name, actions, [Direction.north, Direction.northEast, Direction.northWest, Direction.east, Direction.south, Direction.southEast, Direction.southWest, Direction.west]);
   }
 
+/// 
   void changeSurfaceStandard(size_t index, size_t indexNorth, string atlas, string name, string[] actions)
   {
     changeSurface(index, indexNorth, atlas, name, actions, [Direction.north, Direction.east, Direction.south, Direction.west]);
   }
 
+/// 
   void changeSurface(size_t index, size_t indexNorth, string atlasName, string name, string[] actions, Direction[] directions)
   {
     auto atlas = getAtlas(atlasName);
@@ -149,17 +176,20 @@ public final class Model
     changeSurface(index, indexNorth, surface);
   }
 
+/// 
   void changeSurface(size_t index, size_t indexNorth, Surface surface)
   {
     _surfaces[index] = surface;
     _surfacesNorth[indexNorth] = surface;
   }
 
+/// 
   void setDirection(Direction direction, bool force = false)
   {
     setAction(_currentAction, direction, force);
   }
 
+/// 
   void setAction(string name, Direction direction, bool force = false, bool forceActiveLoad = false)
   {
     if (_currentDirection != direction || !_activeSurfaces || forceActiveLoad)
@@ -188,6 +218,7 @@ public final class Model
     }
   }
 
+/// 
   void moveState()
   {
     if (!_activeSurfaces) return;
@@ -200,6 +231,7 @@ public final class Model
     }
   }
 
+/// 
   void resetState()
   {
     if (!_activeSurfaces) return;
@@ -212,6 +244,7 @@ public final class Model
     }
   }
 
+/// 
   void render(EXT_Window window, EXT_Screen screen)
   {
     if (!_activeSurfaces) return;
@@ -237,6 +270,7 @@ public final class Model
   }
 }
 
+/// 
 public final class Surface
 {
   private:
@@ -252,10 +286,12 @@ public final class Surface
 
   public:
   final:
+/// 
   this()
   {
   }
 
+/// 
   void render(EXT_Window window, EXT_Screen screen, EXT_Rectangle rect)
   {
     if (!_currentAssetEntry) return;
@@ -264,6 +300,7 @@ public final class Surface
     EXT_RenderCopy(screen, assetEntry.texture, _currentAssetState, rect);
   }
 
+/// 
   void resetState()
   {
     if (!_currentAssetEntry) return;
@@ -272,6 +309,7 @@ public final class Surface
     _currentAssetState = _currentAssetEntry.states[_currentAssetEntryState];
   }
 
+/// 
   void moveState()
   {
     if (!_currentAssetEntry) return;
@@ -286,6 +324,7 @@ public final class Surface
     }
   }
   
+/// 
   void setAction(string name, Direction direction, bool force = false)
   {
     if (_currentActionName != name || force)
@@ -310,11 +349,13 @@ public final class Surface
     }
   }
 
+/// 
   void createAsset(string action)
   {
     _assets[action] = new Asset;
   }
 
+/// 
   void setAsset(EXT_TextureAsset* asset, Direction direction, string action)
   {
     auto assetAction = _assets.get(action, null);
@@ -324,12 +365,14 @@ public final class Surface
     assetAction.setAsset(asset, direction);
   }
 
+/// 
   void setDefaultAsset(string action)
   {
     _defaultAsset = _assets.get(action, null);
   }
 }
 
+/// 
 public final class Asset
 {
   private:
@@ -344,11 +387,13 @@ public final class Asset
 
   public:
   final:
+/// 
   this()
   {
 
   }
 
+/// 
   void setAsset(EXT_TextureAsset* asset, Direction direction)
   {
     final switch (direction)
@@ -364,6 +409,7 @@ public final class Asset
     }
   }
 
+/// 
   EXT_TextureAsset* getAssetByDirection(Direction direction)
   {
     final switch (direction)

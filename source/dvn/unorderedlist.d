@@ -3,6 +3,7 @@
 */
 module dvn.unorderedlist;
 
+/// 
 public struct UnorderedList(T)
 {
   private:
@@ -11,6 +12,7 @@ public struct UnorderedList(T)
   size_t count;
 
   public:
+/// 
   this(size_t maxQueueSize)
   {
     items = new T[maxQueueSize];
@@ -19,13 +21,17 @@ public struct UnorderedList(T)
 
   @property
   {
+/// 
     bool has() { return count > 0; }
 
+/// 
     size_t length() { return index; }
 
+/// 
     size_t capacity() { return items.length; }
   }
 
+/// 
   void add(T item)
   {
     if (index >= items.length) return;
@@ -40,6 +46,7 @@ public struct UnorderedList(T)
     }
   }
 
+/// 
   T pop()
   {
     if (count == 0) throw new Exception("no items");

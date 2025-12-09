@@ -33,6 +33,7 @@ public final class Label : Component
 
   public:
   final:
+/// 
   this(Window window)
   {
     super(window, false);
@@ -60,17 +61,23 @@ public final class Label : Component
 
   @property
   {
+/// 
     int lineSpacing() { return _lineSpacing; }
+/// 
     void lineSpacing(int value)
     {
       _lineSpacing = value;
     }
+/// 
     bool isLink() { return _isLink; }
+/// 
     void isLink(bool newIsLink)
     {
       _isLink = newIsLink;
     }
+/// 
     dstring text() { return _textString; }
+/// 
     void text(dstring newText)
     {
       _textString = newText;
@@ -78,7 +85,9 @@ public final class Label : Component
       updateRect(true);
     }
 
+/// 
     bool shadow() { return _shadow; }
+/// 
     void shadow(bool useShadow)
     {
       _shadow = useShadow;
@@ -86,7 +95,9 @@ public final class Label : Component
       updateRect(true);
     }
 
+/// 
     Color color() { return _color; }
+/// 
     void color(Color newColor)
     {
       _color = newColor;
@@ -94,7 +105,9 @@ public final class Label : Component
       updateRect(true);
     }
 
+/// 
     Color shadowColor() { return _shadowColor; }
+/// 
     void shadowColor(Color newColor)
     {
       _shadowColor = newColor;
@@ -102,7 +115,9 @@ public final class Label : Component
       updateRect(true);
     }
 
+/// 
     string fontName() { return _fontName; }
+/// 
     void fontName(string newFontName)
     {
       _fontName = newFontName;
@@ -110,7 +125,9 @@ public final class Label : Component
       updateRect(true);
     }
 
+/// 
     size_t fontSize() { return _fontSize; }
+/// 
     void fontSize(size_t newFontSize)
     {
       _fontSize = newFontSize;
@@ -119,6 +136,7 @@ public final class Label : Component
     }
   }
 
+/// 
   void wrapText(size_t wrapWidth)
   {
     _wrapWidth = wrapWidth;
@@ -242,6 +260,7 @@ public final class Label : Component
     return calculateText;
   }
 
+/// 
   override void repaint()
   {
     import std.array : replace, split;
@@ -401,6 +420,7 @@ public final class Label : Component
   	}
   }
 
+/// 
   protected override bool measureComponentSize(out IntVector size)
   {
     size = super.size;
@@ -480,6 +500,7 @@ public final class Label : Component
     return true;
   }
 
+/// 
   override void renderNativeComponent()
   {
     auto screen = super.window.nativeScreen;
@@ -517,6 +538,7 @@ public final class Label : Component
 		}
   }
 
+/// 
   override void clean()
   {
     if (_shadowEntries && _shadowEntries.length)

@@ -30,6 +30,7 @@ public final class RawImage : Component
 
     public:
     final:
+/// 
     this(Window window, string path)
     {
         import std.string : toStringz;
@@ -50,6 +51,7 @@ public final class RawImage : Component
         opacity = 255;
     }
 
+/// 
     this(Window window, string path, IntVector originalSize)
     {
         import std.string : toStringz;
@@ -72,9 +74,12 @@ public final class RawImage : Component
 
     @property
     {
+/// 
         IntVector originalSize() { return _originalSize; }
 
+/// 
         int opacity() { return _opacity; }
+/// 
         void opacity(int newOpacity)
         {
             if (!_texture)
@@ -91,6 +96,7 @@ public final class RawImage : Component
         }
     }
 
+/// 
     override void repaint()
     {
          auto rect = super.clientRect;
@@ -101,6 +107,7 @@ public final class RawImage : Component
         _rect2.h = super.height;
     }
 
+/// 
     override void clean()
     {
         EXT_DestroyTexture(_texture);
@@ -111,6 +118,7 @@ public final class RawImage : Component
         super.clean();
     }
 
+/// 
     override void renderNativeComponent()
     {
         if (!_texture || _cleaned)

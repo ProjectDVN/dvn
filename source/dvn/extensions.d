@@ -36,6 +36,7 @@ static if (__traits(compiles, { auto e = import("extensions.txt"); }))
 
     mixin(generateExtensions);
 
+/// 
     DvnEvents[] buildExtensionEvents()
     {
         DvnEvents[] result;
@@ -60,6 +61,7 @@ static if (__traits(compiles, { auto e = import("extensions.txt"); }))
     }
 
 
+/// 
     void registerExtensionEvents()
     {
         foreach (ev; buildExtensionEvents())
@@ -70,11 +72,13 @@ static if (__traits(compiles, { auto e = import("extensions.txt"); }))
 }
 else
 {
+/// 
     DvnEvents[] buildExtensionEvents()
     {
         return [];
     }
 
+/// 
     void registerExtensionEvents()
     {
 

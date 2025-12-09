@@ -30,6 +30,7 @@ public
 }
 
 public:
+/// 
 void takeScreenshot(Window window, string path)
 {
     import std.string : toStringz;

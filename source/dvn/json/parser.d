@@ -17,6 +17,7 @@ import dvn.json.jsonobject;
 import dvn.json.jsonobjectmember;
 import dvn.json.jsontype;
 
+/// 
 Json!S parseJson(S = string)(S jsonString)
 if (isSomeString!S)
 {
@@ -31,6 +32,7 @@ if (isSomeString!S)
   return null;
 }
 
+/// 
 bool parseJsonSafe(S = string)(S jsonString, out Json!S json, out S[] errorMessages)
 if (isSomeString!S)
 {

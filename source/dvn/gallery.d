@@ -3,6 +3,7 @@
 */
 module dvn.gallery;
 
+/// 
 string[] getGalleryPaged(int page)
 {
     import std.file : dirEntries, SpanMode, exists;

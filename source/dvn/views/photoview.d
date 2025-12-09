@@ -13,15 +13,18 @@ import dvn.gallery;
 
 import dvn.ui;
 
+/// 
 public final class PhotoView : View
 {
 	public:
 	final:
+/// 
 	this(Window window)
 	{
 		super(window);
 	}
 
+/// 
 	protected override void onInitialize(bool useCache)
 	{
 		EXT_DisableKeyboardState();
@@ -38,6 +41,7 @@ public final class PhotoView : View
 		}
     }
 
+/// 
     void showPhoto(string path)
     {
 		auto window = super.window;

@@ -8,31 +8,40 @@ import std.conv : to;
 import std.array : join;
 import std.file : exists, readText;
 
+/// 
 public final class CreditsData
 {
     public:
     final:
+/// 
     string music;
+/// 
     CreditsInfo[] entries;
 }
 
+/// 
 public final class CreditsInfo
 {
     public:
     final:
+/// 
     string title;
+/// 
     string[] people;
 }
 
+/// 
 public final class CreditsView : View
 {
     public:
     final:
+/// 
     this(Window window)
     {
         super(window);
     }
 
+/// 
     protected override void onInitialize(bool useCache)
     {
         EXT_DisableKeyboardState();

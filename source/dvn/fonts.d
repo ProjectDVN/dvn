@@ -8,6 +8,7 @@ import dvn.meta;
 
 mixin CreateCustomException!"FontException";
 
+/// 
 public final class FontCollection
 {
   private:
@@ -16,6 +17,7 @@ public final class FontCollection
 
   public:
   final:
+/// 
   this()
   {
     _backupFonts = [];
@@ -23,9 +25,11 @@ public final class FontCollection
 
   @property
   {
+/// 
     size_t length() { return _fonts ? _fonts.length : 0; }
   }
 
+/// 
   void addBackupFont(string name)
   {
     if (get(name) is null)
@@ -36,6 +40,7 @@ public final class FontCollection
     _backupFonts ~= name;
   }
 
+/// 
   void load(string name, string path)
   {
     import std.file : exists;
@@ -58,11 +63,13 @@ public final class FontCollection
     _fonts[name] = new Font(name, path);
   }
 
+/// 
   Font get(string name)
   {
     return _fonts.get(name, null);
   }
 
+/// 
   bool tryGet(string name, out Font font)
   {
     font = _fonts.get(name, null);
@@ -70,6 +77,7 @@ public final class FontCollection
     return font !is null;
   }
 
+/// 
   bool supportsChar(string name, dchar c)
 	{
 		auto runtimeFont = get(name);
@@ -81,6 +89,7 @@ public final class FontCollection
 		return EXT_FontGlyphSupport(rawFont, c) > 0;
 	}
 
+/// 
 	bool supportsText(string name, dstring s)
 	{
 		foreach (c; s)
@@ -94,6 +103,7 @@ public final class FontCollection
 		return true;
 	}
 
+/// 
   Font getWithFallback(string name, dstring text)
   {
     if (!_backupFonts || !_backupFonts.length)
@@ -115,6 +125,7 @@ public final class FontCollection
     return get(name);
   }
 
+/// 
   bool tryGetWithFallback(string name, dstring text, out Font font)
   {
     font = getWithFallback(name, text);
@@ -122,6 +133,7 @@ public final class FontCollection
     return font !is null;
   }
 
+/// 
   void unload(string name)
   {
     if (!_fonts) return;
@@ -130,6 +142,7 @@ public final class FontCollection
   }
 }
 
+/// 
 public final class Font
 {
   private:
@@ -138,6 +151,7 @@ public final class Font
 
   public:
   final:
+/// 
   this(string name, string path)
   {
     _name = name;
@@ -146,7 +160,9 @@ public final class Font
 
   @property
   {
+/// 
     string name() { return _name; }
+/// 
     string path() { return _path; }
   }
 }

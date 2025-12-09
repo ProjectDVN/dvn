@@ -8,10 +8,12 @@ import std.path : baseName, CaseSensitive;
 
 import dvn.meta;
 
+/// 
 mixin CreateCustomException!"MusicException";
 
 private string[string] _music;
 
+/// 
 void loadMusic(string path)
 {
     if (!path || !path.length)
@@ -33,6 +35,7 @@ void loadMusic(string path)
     _music = music;
 }
 
+/// 
 string getMusicPath(string music)
 {
     if (!music)

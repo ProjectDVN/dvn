@@ -15,20 +15,24 @@ import dvn.views.consoleview;
 
 import dvn.ui;
 
+/// 
 public final class ActView : View
 {
     public:
 	final:
+/// 
 	this(Window window)
 	{
 		super(window);
 	}
 
+/// 
 	protected override void onInitialize(bool useCache)
 	{
 		EXT_EnableKeyboardState();
 	}
 
+/// 
     void initialzieAct(string actName, string continueText, string background, string sceneName)
     {
         logInfo("Act-View: %s", actName);

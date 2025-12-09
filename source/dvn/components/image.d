@@ -7,6 +7,7 @@ import dvn.component;
 import dvn.external;
 import dvn.window;
 
+/// 
 public final class Image : Component
 {
   private:
@@ -30,6 +31,7 @@ public final class Image : Component
 
   public:
   final:
+/// 
   this(Window window, string name, bool isFilePath = false)
   {
     super(window, false);
@@ -69,6 +71,7 @@ public final class Image : Component
     opacity = 255;
   }
 
+/// 
   this(Window window, EXT_SheetRender* sheetRender)
   {
     super(window, false);
@@ -100,7 +103,9 @@ public final class Image : Component
       _rect.h = size.y;
       _scale = newScale;
     }
+/// 
     string name() { return _name; }
+/// 
     void name(string newName)
     {
       _name = newName;
@@ -108,7 +113,9 @@ public final class Image : Component
       updateRect(true);
     }
 
+/// 
     int opacity() { return _opacity; }
+/// 
     void opacity(int newOpacity)
     {
       if (!_isFilePath)
@@ -133,6 +140,7 @@ public final class Image : Component
     }
   }
 
+/// 
   void makeCover()
   {
     _coverMode = true;
@@ -167,6 +175,7 @@ public final class Image : Component
     }
   }
 
+/// 
   void unmakeCover()
   {
     _coverMode = false;
@@ -174,6 +183,7 @@ public final class Image : Component
     updateRect(true);
   }
 
+/// 
   protected override bool measureComponentSize(out IntVector size)
   {
     if (_coverMode)
@@ -230,6 +240,7 @@ public final class Image : Component
     return true;
   }
 
+/// 
   void setRawPosition(IntVector position)
   {
     if (_sheetRender)
@@ -247,6 +258,7 @@ public final class Image : Component
     _rect.y = cast(int)position.y;
   }
 
+/// 
   override void repaint()
   {
     auto rect = super.clientRect;
@@ -303,6 +315,7 @@ public final class Image : Component
     }
   }
 
+/// 
   override void clean()
   {
     if (_cleaned)
@@ -318,6 +331,7 @@ public final class Image : Component
     super.clean();
   }
 
+/// 
   override void renderNativeComponent()
   {
     auto screen = super.window.nativeScreen;

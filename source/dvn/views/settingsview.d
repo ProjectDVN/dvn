@@ -14,15 +14,18 @@ import dvn.ui;
 
 public string backToScene;
 
+/// 
 public final class SettingsView : View
 {
 	public:
 	final:
+/// 
 	this(Window window)
 	{
 		super(window);
 	}
 
+/// 
 	protected override void onInitialize(bool useCache)
 	{
 		EXT_DisableKeyboardState();

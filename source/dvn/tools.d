@@ -5,6 +5,7 @@ module dvn.tools;
 
 import std.datetime : SysTime, Duration, DateTime, UTC, dur;
 
+/// 
 long timeToTimestamp(SysTime time)
 {
     Duration unixTime = time - SysTime(DateTime(1970, 1, 1), UTC());
@@ -14,6 +15,7 @@ long timeToTimestamp(SysTime time)
     return milliseconds;
 }
 
+/// 
 SysTime timestampToTime(long milliseconds)
 {
     auto baseTime = SysTime(DateTime(1970, 1, 1), UTC());
@@ -27,6 +29,7 @@ import std.algorithm : min, max;
 import std.utf : byDchar;
 import std.array : array;
 
+/// 
 int computeLevenshteinDistance(dchar[] s1, dchar[] s2)
 {
     size_t len1 = s1.length;
@@ -60,6 +63,7 @@ int computeLevenshteinDistance(dchar[] s1, dchar[] s2)
     return matrix[len1][len2];
 }
 
+/// 
 int computeLevenshteinDistance(string source1, string source2)
 {
     auto s1 = source1.byDchar.array;
@@ -68,6 +72,7 @@ int computeLevenshteinDistance(string source1, string source2)
     return computeLevenshteinDistance(s1, s2);
 }
 
+/// 
 double levenshteinSimilarity(string source1, string source2)
 {
     if (source1 is null) source1 = "";

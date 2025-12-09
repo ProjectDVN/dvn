@@ -9,48 +9,69 @@ import std.path : baseName, CaseSensitive;
 import dvn.meta;
 import dvn.json;
 
+/// 
 mixin CreateCustomException!"ResourceException";
 
+/// 
 public final class Resource
 {
   public:
   final:
+/// 
   this() {}
+/// 
   string path;
+/// 
   string[] randomPath;
+/// 
   ResourceSize size;
+/// 
   int columns;
+/// 
   ResourceEntry[] entries;
+/// 
   string[] directions;
+/// 
   @JsonIgnore ubyte[] buffer;
 }
 
+/// 
 public final class ResourceSize
 {
   public:
   final:
+/// 
   this() {}
+/// 
   int width;
+/// 
   int height;
 }
 
+/// 
 public final class ResourceEntry
 {
   public:
   final:
+/// 
   this() {}
+/// 
   string name;
+/// 
   int row;
+/// 
   int col;
 }
 
 private Resource[string] _resources;
 
+/// 
 Resource[string] getResources()
 {
   return _resources;
 }
 
+/// 
 void appendResources(Resource[string] originalResources, string path)
 {
   import std.file : readText;
@@ -70,6 +91,7 @@ void appendResources(Resource[string] originalResources, string path)
   }
 }
 
+/// 
 Resource[string] loadResources(string path = "", bool forceLoadResource = false)
 {
   if ((!forceLoadResource && _resources) || !path || !path.length)
@@ -92,6 +114,7 @@ Resource[string] loadResources(string path = "", bool forceLoadResource = false)
   return resources;
 }
 
+/// 
 string[] addResourcesFromFolder(Resource[string] resources, string path, string prefix, int width, int height)
 {
   string[] resourceNames = [];

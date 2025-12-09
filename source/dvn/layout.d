@@ -5,20 +5,28 @@ module dvn.layout;
 
 import dvn.ui;
 
+/// 
 public interface ILayout
 {
     @property
     {
+/// 
         int width();
+/// 
         int height();
+/// 
         IntVector size();
 
+/// 
         int x();
+/// 
         int y();
+/// 
         IntVector position();
     }
 }
 
+/// 
 public final class GridRow
 {
     private:
@@ -26,6 +34,7 @@ public final class GridRow
 
     public:
     final:
+/// 
     this()
     {
         _children = [];
@@ -36,18 +45,23 @@ public final class GridRow
         package(dvn) Component[] children() { return _children; }
     }
 
+/// 
     void add(Component component)
     {
         _children ~= component;
     }
 }
 
+/// 
 public enum GridSizeMode
 {
+/// 
     autoMode,
+/// 
     fixed
 }
 
+/// 
 public final class GridLayout
 {
     private:
@@ -61,6 +75,7 @@ public final class GridLayout
 
     public:
     final:
+/// 
     this(ILayout parent,
         int spacing,
         GridSizeMode columnMode = GridSizeMode.autoMode,
@@ -75,6 +90,7 @@ public final class GridLayout
         _rows = [];
     }
 
+/// 
     GridRow addRow()
     {
         auto row = new GridRow;
@@ -82,6 +98,7 @@ public final class GridLayout
         return row;
     }
 
+/// 
     void update()
     {
         import std.algorithm : max;
@@ -159,15 +176,25 @@ public final class GridLayout
     }
 }
 
+/// 
 public enum Anchor
 {
+/// 
     topLeft,
+/// 
     top,
+/// 
     topRight,
+/// 
     left,
+/// 
     center,
+/// 
     right,
+/// 
     bottomLeft,
+/// 
     bottom,
+/// 
     bottomRight
 }

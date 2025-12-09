@@ -8,143 +8,235 @@ import dvn.events;
 
 mixin CreateCustomException!"GameSettingsException";
 
+/// 
 public final class GameSettings
 {
   public:
   final:
   this() {}
 
+/// 
   string[string] fonts;
+/// 
   string[] backupFonts;
+/// 
   string defaultFont;
+/// 
   string defaultTextColor;
 
+/// 
   bool muteMusic;
+/// 
   bool muteSoundEffects;
+/// 
   int volume;
 
+/// 
   string mainScript;
+/// 
   int textSpeed;
+/// 
   string title;
+/// 
   string loadTitle;
+/// 
   SaveFile[string] saves;
 
+/// 
   bool fullScreen;
 
+/// 
   string[string] defaultCharacterNameColors;
+/// 
   string dialoguePanelBackgroundColor;
+/// 
   string dialoguePanelBorderColor;
+/// 
   string namePanelBackgroundColor;
+/// 
   string namePanelBorderColor;
 
+/// 
   string loadText;
+/// 
   string backText;
 
+/// 
   string[string] meta;
 
+/// 
   string saveButtonText;
+/// 
   string exitButtonText;
+/// 
   string settingsButtonText;
+/// 
   string autoButtonTextOn;
+/// 
   string autoButtonTextOff;
+/// 
   string quickSaveButtonText;
   
+/// 
   string customStartView;
 
+/// 
   string videoLoadingScreen;
+/// 
   string videoLoadingMusic;
 
+/// 
   bool disableLoadScreenMusic;
+/// 
   SettingsImage dialoguePanelImage;
+/// 
   SettingsImage namePanelImage;
 
+/// 
   string loadingMusic;
+/// 
   string mainMusic;
 
+/// 
   string mainBackgroundVideo;
 
+/// 
   string buttonTextColor;
+/// 
   string buttonBackgroundColor;
+/// 
   string buttonBackgroundBottomColor;
+/// 
   string buttonBorderColor;
+/// 
   string dropdownTextColor;
+/// 
   string dropDownBackgroundColor;
+/// 
   string dropDownBorderColor;
+/// 
   string checkBoxBackgroundColor;
+/// 
   string checkBoxBorderColor;
+/// 
   string textBoxColor;
+/// 
   string textBoxTextColor;
+/// 
   string textBoxBorderColor;
+/// 
 
+/// 
   bool displayOptionsAsButtons;
+/// 
   bool enableAutoSave;
+/// 
   bool fadeInText;
 
+/// 
   int textMargin;
+/// 
   int textWrapSize;
+/// 
   bool fadeInCharacters;
+/// 
   bool hideSavedLabel;
+/// 
   bool useLegacySceneButtons;
 
+/// 
   int saveFileTextMatchPercentage;
 
+/// 
   bool useLegacyCharacters;
+/// 
   string useLegacyCharacterSplit;
 
+/// 
   bool disableSwipeGesture;
+/// 
   bool disableContinueArrow;
+/// 
   int autoSpeed;
 
+/// 
   bool clickTextBoxtoAdvance;
+/// 
   int textPanelOpacityLevel;
+/// 
   bool hideAutoIndicator;
+/// 
   bool highlightNewText;
+/// 
   string highlightNewTextColor;
 
+/// 
   int windowFadeTime;
+/// 
   int voiceTimingMultiplier;
 
+/// 
   int dialogueTextLineSpacing;
+/// 
   bool immersionMode;
+/// 
   bool disableEffects;
 }
 
+/// 
 public final class SettingsImage
 {
   public:
   final:
+/// 
   string path;
+/// 
   SettingsSize size;
 }
 
+/// 
 public final class SettingsSize
 {
   public:
   final:
+/// 
   int width;
+/// 
   int height;
 }
 
+/// 
 public final class SaveFile
 {
   public:
   final:
   this() {}
 
+/// 
   string id;
+/// 
   string date;
+/// 
   string originalScene;
+/// 
   string scene;
+/// 
   string text;
+/// 
   string background;
+/// 
   string music;
+/// 
   string[string] meta;
+/// 
   uint seed;
+/// 
   int calls;
 }
 
 private SaveFile[] saveFiles;
 
+/// 
 void saveGame(GameSettings settings, string id, string originalScene, string scene, string text, string background, string music, uint seed, int calls)
 {
   import std.uuid : randomUUID;
@@ -229,6 +321,7 @@ void saveGame(GameSettings settings, string id, string originalScene, string sce
   updateSaveFiles(settings);
 }
 
+/// 
 void updateSaveFiles(GameSettings settings)
 {
   SaveFile[] s = [];
@@ -249,6 +342,7 @@ void updateSaveFiles(GameSettings settings)
   saveFiles = s;
 }
 
+/// 
 SaveFile[] getSaveFilesPaged(int page)
 {
   SaveFile[] s = [];
@@ -269,6 +363,7 @@ SaveFile[] getSaveFilesPaged(int page)
 
 private GameSettings _settings;
 
+/// 
 GameSettings loadGameSettings(string path)
 {
   if (_settings || !path || !path.length)
@@ -299,13 +394,16 @@ GameSettings loadGameSettings(string path)
 
 private __gshared GameSettings globalSettings;
 
+/// 
 void setGlobalSettings(GameSettings settings)
 {
   globalSettings = settings;
 }
 
+/// 
 GameSettings getGlobalSettings() { return globalSettings; }
 
+/// 
 void saveGameSettings(string path)
 {
   if (!globalSettings || !path || !path.length)

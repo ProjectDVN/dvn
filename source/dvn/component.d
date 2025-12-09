@@ -11,6 +11,7 @@ import dvn.events;
 import dvn.painting;
 import dvn.layout;
 
+/// 
 mixin CreateCustomException!"ComponentException";
 
 private
@@ -169,6 +170,7 @@ public abstract class Component : ILayout
     }
   }
 
+/// 
   public void fireMouseButtonDown(MouseButton button, IntVector mousePosition)
   {
     if (!_onMouseButtonDown)
@@ -182,6 +184,7 @@ public abstract class Component : ILayout
     }
   }
 
+/// 
   public void fireMouseButtonUp(MouseButton button, IntVector mousePosition)
   {
     if (!_onMouseButtonUp)
@@ -195,6 +198,7 @@ public abstract class Component : ILayout
     }
   }
 
+/// 
   public void fireMouseMove(IntVector mousePosition)
   {
     if (!_onMouseMove)
@@ -208,6 +212,7 @@ public abstract class Component : ILayout
     }
   }
 
+/// 
   public void fireTextInput(dchar c)
   {
     import std.conv : to;
@@ -223,6 +228,7 @@ public abstract class Component : ILayout
     }
   }
 
+/// 
   public void fireKeyboardDown(KeyboardKey key)
   {
     if (!_onKeyboardDown)
@@ -236,6 +242,7 @@ public abstract class Component : ILayout
     }
   }
 
+/// 
   public void fireKeyboardUp(KeyboardKey key)
   {
     if (!_onKeyboardUp)
@@ -249,6 +256,7 @@ public abstract class Component : ILayout
     }
   }
 
+/// 
   public void fireMouseWheel(int amount, IntVector position)
   {
     if (!_onMouseWheel)
@@ -262,6 +270,7 @@ public abstract class Component : ILayout
     }
   }
 
+/// 
   public void update()
   {
     if (_cleaned) return;
@@ -281,6 +290,7 @@ public abstract class Component : ILayout
     updateEvents();
   }
 
+/// 
   public void updateRect(bool updateParent)
   {
     if (_cleaned || _forceRender)
@@ -492,6 +502,7 @@ public abstract class Component : ILayout
     }
   }
 
+/// 
   public void updateRect()
   {
     updateRect(true);
@@ -500,6 +511,7 @@ public abstract class Component : ILayout
   public:
   final
   {
+/// 
     void enableSwiping(bool delegate(MouseButton,SwipeDirection,IntVector) swipe, int tolerance = 150)
     {
       bool isHoldingDown = false;
@@ -565,23 +577,27 @@ public abstract class Component : ILayout
       }));
     }
 
+/// 
     void show()
     {
       _isHidden = false;
       updateRect(true);
     }
 
+/// 
     void hide()
     {
       _isHidden = true;
       updateRect(true);
     }
 
+/// 
     void addComponent(Component component)
     {
       addComponent(component, false);
     }
 
+/// 
     protected void addComponent(Component component, bool forceAddComponent = false)
     {
       if (!_allowChildren && !forceAddComponent)
@@ -611,6 +627,7 @@ public abstract class Component : ILayout
       else update();
     }
 
+/// 
     void removeComponent(Component component, bool updateRect = true)
     {
       if (!component)
@@ -638,6 +655,7 @@ public abstract class Component : ILayout
       else update();
     }
 
+/// 
     void clearComponents()
     {
       if (!_components)
@@ -655,6 +673,7 @@ public abstract class Component : ILayout
       update();
     }
 
+/// 
     void onMouseButtonDown(MouseButtonEventHandler handler, bool ignoreIntersection = false)
     {
       if (ignoreIntersection)
@@ -680,6 +699,7 @@ public abstract class Component : ILayout
       else update();
     }
 
+/// 
     void onMouseButtonUp(MouseButtonEventHandler handler, bool ignoreIntersection = false)
     {
       if (ignoreIntersection)
@@ -705,6 +725,7 @@ public abstract class Component : ILayout
       else update();
     }
 
+/// 
     void onKeyboardDown(KeyboardEventHandler handler, bool ignoreFocus = false)
     {
       if (ignoreFocus)
@@ -728,6 +749,7 @@ public abstract class Component : ILayout
       else update();
     }
 
+/// 
     void onKeyboardUp(KeyboardEventHandler handler, bool ignoreFocus = false)
     {
       if (ignoreFocus)
@@ -751,11 +773,13 @@ public abstract class Component : ILayout
       else update();
     }
 
+/// 
     void onMouseMove(MouseMoveEventHandler handler)
     {
       _onMouseMove ~= handler;
     }
 
+/// 
     void onTextInput(TextInputEventHandler handler, bool ignoreFocus = false)
     {
       _onTextInput ~= new TextInputEventHandler((c,s)
@@ -772,6 +796,7 @@ public abstract class Component : ILayout
       else update();
     }
 
+/// 
     void onMouseWheel(MouseWheelEventHandler handler, bool ignoreIntersection = false)
     {
       if (ignoreIntersection)
@@ -795,15 +820,12 @@ public abstract class Component : ILayout
       else update();
     }
 
+/// 
     bool intersectsWith(IntVector position)
     {
       return _boundsRectangle.w > 0 && _boundsRectangle.h > 0 && .intersectsWith(position.x, position.y, _boundsRectangle.x, _boundsRectangle.y, _boundsRectangle.w, _boundsRectangle.h);
     }
 
-    // package(dvn) void setBoundsSize(IntVector size)
-    // {
-    //   //_boundsRectangle = Rectangle(_rect.x, _rect.y, size.x, size.y);
-    // }
     package(dvn) IntVector getScrollPosition()
     {
       return _scrollPosition;
@@ -816,6 +838,7 @@ public abstract class Component : ILayout
       updateRect(true);
     }
 
+/// 
     void gainFocus()
     {
       if (_focus) return;
@@ -831,6 +854,7 @@ public abstract class Component : ILayout
       updateRect(true);
     }
 
+/// 
     void loseFocus()
     {
       if (!_focus) return;
@@ -840,6 +864,7 @@ public abstract class Component : ILayout
       updateRect(true);
     }
 
+/// 
     void clearPaintings()
     {
       if (_paintingsAll)
@@ -882,6 +907,7 @@ public abstract class Component : ILayout
       updateRect(true);
     }
 
+/// 
     Painting beginPainting(string paintingName)
     {
       auto painting = _paintings.get(paintingName, null);
@@ -908,6 +934,7 @@ public abstract class Component : ILayout
       return painting;
     }
 
+/// 
     void setActivePainting(string paintingName)
     {
       if (!_paintings)
@@ -934,17 +961,20 @@ public abstract class Component : ILayout
       }
     }
 
+/// 
     void enable()
     {
       _disabled = false;
     }
 
+/// 
     void disable()
     {
       _disabled = true;
     }
   }
 
+/// 
   void clean()
   {
     _cleaned = true;
@@ -967,46 +997,64 @@ public abstract class Component : ILayout
   {
     final
     {
+/// 
       ulong dataId() { return _dataId; }
+/// 
       void dataId(ulong newDataId)
       {
         _dataId = newDataId;
       }
       
+/// 
       Painting currentPainting() { return _currentPainting; }
 
+/// 
       package(dvn) bool allowChildren() { return _allowChildren; }
 
+/// 
       size_t id() { return _id; }
 
+/// 
       protected Rectangle clientRect() { return _clientRect; }
 
+/// 
       bool isHidden() { return _isHidden || !_isRenderVisible; }
 
+/// 
       bool hasFocus() { return _focus; }
 
+/// 
       bool isDisabled() { return _disabled; }
 
+/// 
       bool isEnabled() { return !_disabled; }
 
+/// 
       Color fillColor() { return _fillColor; }
+/// 
       void fillColor(Color color)
       {
         _fillColor = color;
       }
+/// 
       Color borderColor() { return _borderColor; }
+/// 
       void borderColor(Color color)
       {
         _borderColor = color;
       }
 
+/// 
       Color topcolor() { return _topColor; }
+/// 
       void topColor(Color color)
       {
         _topColor = color;
       }
 
+/// 
       IntVector size() { return _size; }
+/// 
       void size(IntVector newSize)
       {
         _size = newSize;
@@ -1014,10 +1062,14 @@ public abstract class Component : ILayout
         updateRect(true);
       }
 
+/// 
       int width() { return _size.x; }
+/// 
       int height() { return _size.y; }
 
+/// 
       IntVector position() { return _position; }
+/// 
       void position(IntVector newPosition)
       {
         _position = newPosition;
@@ -1025,25 +1077,36 @@ public abstract class Component : ILayout
         updateRect(true);
       }
 
+/// 
       int x() { return _position.x; }
+/// 
       int y() { return _position.y; }
 
+/// 
       Component parent() { return _parent; }
 
+/// 
       Window window() { return _window; }
+/// 
       View view() { return _view; }
+/// 
       package(dvn) void view(View newView)
       {
         _view = newView;
       }
 
+/// 
       size_t componentsLength() { return _components ? _components.length : 0; }
+/// 
       size_t visibleComponentsLength() { return _renderComponents ? _renderComponents.length : 0; }
 
+/// 
       protected Component[] children() { return _components ? _components : []; }
 
+/// 
       Anchor anchor() { return _anchor; }
 
+/// 
       void anchor(Anchor anchor)
       {
         _anchor = anchor;
@@ -1108,6 +1171,7 @@ public abstract class Component : ILayout
     }
   }
 
+/// 
   void moveBelow(Component other, int spacing = 0, bool center = false)
   {
       const y = other.y + other.height + spacing;
@@ -1125,6 +1189,7 @@ public abstract class Component : ILayout
       position = IntVector(x, y);
   }
 
+/// 
   void moveAbove(Component other, int spacing = 0, bool center = false)
   {
       const y = other.y - this.height - spacing;
@@ -1142,6 +1207,7 @@ public abstract class Component : ILayout
       position = IntVector(x, y);
   }
 
+/// 
   void moveRightOf(Component other, int spacing = 0, bool center = false)
   {
       const x = other.x + other.width + spacing;
@@ -1159,6 +1225,7 @@ public abstract class Component : ILayout
       position = IntVector(x, y);
   }
 
+/// 
   void moveLeftOf(Component other, int spacing = 0, bool center = false)
   {
       const x = other.x - this.width - spacing;
@@ -1180,21 +1247,24 @@ public abstract class Component : ILayout
   private bool _forceRender = false;
   private bool _skipForceRender = false;
 
+/// 
   void forceRender()
   {
     _forceRender = true;
     _skipForceRender = false;
   }
 
+/// 
   void skipForceRender()
   {
     _skipForceRender = true;
   }
 
   
-  // Update the native component - use rect() to determine viewport
+  /// Update the native component - use rect() to determine viewport
   abstract void repaint();
 
+/// 
   bool measureComponentSize(out IntVector size)
   {
     size = _size;
@@ -1203,6 +1273,7 @@ public abstract class Component : ILayout
 
 
   protected:
+/// 
   this(Window window, bool allowChildren)
   {
     if (!window)
@@ -1234,7 +1305,7 @@ public abstract class Component : ILayout
     _id = ++_componentId;
   }
 
-  // Render to screen
+  /// Render to screen
   abstract void renderNativeComponent();
 
   package(dvn)

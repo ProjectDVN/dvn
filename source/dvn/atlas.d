@@ -7,36 +7,51 @@ import dvn.external;
 import dvn.meta;
 import dvn.surface;
 
+/// 
 mixin CreateCustomException!"AtlasException";
 
+/// 
 public final class AtlasInformation
 {
   public:
   final:
+/// 
   this() {}
+/// 
   size_t pages;
+/// 
   size_t textureCount;
 }
 
+/// 
 public final class AtlasTextureCollection
 {
   public:
   final:
+/// 
   this() {}
+/// 
   string name;
+/// 
   AtlasTexture[] textures;
 }
 
+/// 
 public final class AtlasTexture
 {
   public:
   final:
+/// 
   this() {}
+/// 
   string name;
+/// 
   Rectangle rect;
+/// 
   size_t columns;
 }
 
+/// 
 public final class AtlasTextureEntry
 {
   private:
@@ -46,6 +61,7 @@ public final class AtlasTextureEntry
 
   public:
   final:
+/// 
   this(string atlasName, size_t page, AtlasTexture texture)
   {
     _atlasName = atlasName;
@@ -53,12 +69,14 @@ public final class AtlasTextureEntry
     _texture = texture;
   }
 
+/// 
   EXT_TextureAsset* createAsset()
   {
     return EXT_GetTextureAsset(_atlasName, cast(int)_page, _texture.rect, cast(int)_texture.columns);
   }
 }
 
+/// 
 public final class AtlasSurfaceCollection
 {
   private:
@@ -66,11 +84,13 @@ public final class AtlasSurfaceCollection
 
   public:
   final:
+/// 
   void addEntry(string name, AtlasTextureEntry entry)
   {
     _entries[name] = entry;
   }
 
+/// 
   private EXT_TextureAsset* createAsset(string name, string action, Direction direction)
   {
     import std.conv : to;
@@ -78,6 +98,7 @@ public final class AtlasSurfaceCollection
     return createAsset(format("%s_%s_%s", name, action, direction.to!string));
   }
 
+/// 
   private EXT_TextureAsset* createAsset(string name)
   {
     auto asset = _entries.get(name, null);
@@ -87,6 +108,7 @@ public final class AtlasSurfaceCollection
     return asset.createAsset();
   }
 
+/// 
   Surface createStaticSurface(string name)
   {
     auto surface = new Surface;
@@ -100,6 +122,7 @@ public final class AtlasSurfaceCollection
     return surface;
   }
 
+/// 
   Surface createSurface(string name, string[] actions, Direction[] directions)
   {
     auto surface = new Surface;
@@ -122,11 +145,13 @@ public final class AtlasSurfaceCollection
 
 private AtlasSurfaceCollection[string] _atlases;
 
+/// 
 AtlasSurfaceCollection getAtlas(string name)
 {
   return _atlases.get(name, null);
 }
 
+/// 
 AtlasSurfaceCollection loadImage(EXT_Screen screen, string path, IntVector size)
 {
   EXT_InitializeTextureAtlas(path, 1);
@@ -147,6 +172,7 @@ AtlasSurfaceCollection loadImage(EXT_Screen screen, string path, IntVector size)
   return collection;
 }
 
+/// 
 Surface getImage(EXT_Screen screen, string path, IntVector size)
 {
   auto atlas = _atlases.get(path, null);
@@ -168,6 +194,7 @@ Surface getImage(EXT_Screen screen, string path, IntVector size)
   return surface;
 }
 
+/// 
 void loadAtlas(EXT_Screen screen, string path, string name)
 {
   if (!path || !path.length || !name || !name.length)

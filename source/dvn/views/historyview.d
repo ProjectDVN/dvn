@@ -13,15 +13,18 @@ import dvn.history;
 
 import dvn.ui;
 
+/// 
 public final class HistoryView : View
 {
 	public:
 	final:
+/// 
 	this(Window window)
 	{
 		super(window);
 	}
 
+/// 
 	protected override void onInitialize(bool useCache)
 	{
 		EXT_EnableKeyboardState();
@@ -40,6 +43,7 @@ public final class HistoryView : View
         showResults("");
     }
 
+/// 
     void showResults(string input)
     {
 		auto window = super.window;

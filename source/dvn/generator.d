@@ -14,15 +14,21 @@ import dvn.painting;
 import dvn.external;
 import dvn.i18n;
 
+/// 
 mixin CreateCustomException!"GeneratorException";
 
+/// 
 public final class UITheme
 {
   public:
   final:
+/// 
   this() {}
+/// 
   UIColors colors;
+/// 
   string defaultFont;
+/// 
   string defaultFontSize;
 }
 
@@ -30,14 +36,20 @@ public final class UIColor
 {
   public:
   final:
+/// 
   this() {}
+/// 
   string hex;
+/// 
   string name;
+/// 
   int alpha;
+/// 
   int[] rgba;
 
   import dvn.colors;
 
+/// 
   Color getColor()
   {
     if (hex && hex.length)
@@ -82,80 +94,123 @@ public final class UIColor
   }
 }
 
+/// 
 public final class UIColors
 {
   public:
   final:
+/// 
   this() {}
+/// 
   UIColor text;
+/// 
   UIColorCollection defaultColors;
+/// 
   UIColorCollection activeColors;
 }
 
+/// 
 public final class UIColorCollection
 {
   public:
   final:
+/// 
   this() {}
+/// 
   UIColor background;
+/// 
   UIColor backgroundBottom;
+/// 
   UIColor border;
+/// 
   UIColor shadow;
 }
 
 private alias UIItem = UIItemEntry[string];
 
+/// 
 public final class UIGenerator
 {
   public:
   final:
   this() {}
+/// 
   string themeName;
+/// 
   UITheme theme;
+/// 
   UIItem[] items;
 }
 
+/// 
 public final class UIItemEntry
 {
   // shared
+/// 
   int[] position;
+/// 
   string location;
+/// 
   string[string] visibleWhen;
+/// 
   int[] margin;
+/// 
   int[] size;
+/// 
   string name;
+/// 
   string relativeX;
+/// 
   string relativeY;
+/// 
   string relativeW;
+/// 
   string relativeH;
+/// 
   string[] events;
+/// 
   int addIndex;
+/// 
   string fontName;
+/// 
   size_t fontSize;
 
   // button, image, video & animation
+/// 
   string source;
 
   // video & animation
+/// 
   bool repeat;
 
   // label
+/// 
   string text;
+/// 
   bool shadow;
+/// 
   bool link;
 
   // panel
+/// 
   bool hasDisplay;
+/// 
   UIItem[] items;
 
   // textbox
+/// 
   int maxCharacters;
+/// 
   int textPadding;
+/// 
   string hideCharacter;
 
   // button
+/// 
   bool fitToSize;
+/// 
   string sourceHover;
+/// 
   int[] sourceSize;
 }
 
@@ -163,6 +218,7 @@ private UIGenerator[string] _generators;
 private UITheme[string] _themes;
 private UITheme _defaultTheme;
 
+/// 
 void loadGenerator(string path, string name)
 {
   if (!path || !path.length || !name || !name.length)
@@ -189,6 +245,7 @@ void loadGenerator(string path, string name)
   _generators[name] = uiGenerator;
 }
 
+/// 
 void loadTheme(string path, string name, bool isDefault = false)
 {
   if (!path || !path.length || !name || !name.length)
@@ -220,6 +277,7 @@ void loadTheme(string path, string name, bool isDefault = false)
   }
 }
 
+/// 
 bool tryGetGenerator(string name, out UIGenerator generator)
 {
   generator = null;
@@ -247,11 +305,13 @@ bool tryGetGenerator(string name, out UIGenerator generator)
   return generator !is null;
 }
 
+/// 
 void generateUI(string language, Window window, UIGenerator generator, void delegate(Component,string,string) eventHandler)
 {
   generateUI(language, window, null, generator, eventHandler);
 }
 
+/// 
 void generateUI(string language, Window window, View view, UIGenerator generator, void delegate(Component,string,string) eventHandler)
 {
   if (!window) return;
