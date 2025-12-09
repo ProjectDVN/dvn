@@ -397,7 +397,7 @@ public final class SettingsView : View
             return value - 5;
         }, "-", "+", (value)
         {
-            settings.autoSpeed = value;
+            settings.textPanelOpacityLevel = value;
 
             saveSettings();
         });
