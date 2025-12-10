@@ -226,7 +226,7 @@ public final class HistoryView : View
                 }));
             };};
 
-            if (history.text)
+            if (history.text && history.text.length)
             {
                 auto historyLabel = new Label(window);
                 historyLabel.fontName = settings.defaultFont;
@@ -251,7 +251,7 @@ public final class HistoryView : View
 
                 y += historyLabel.height + 8;
             }
-            else if (history.options)
+            else if (history.options && history.options.length)
             {
                 foreach (o; history.options)
                 {
