@@ -208,7 +208,7 @@ public final class HistoryView : View
         int y = 0;
         foreach (history; result)
         {
-            auto closure = (Label oLabel, DialogueHistory oHistory) { return () {
+            auto closure = (Label oLabel, DialogueHistory oHistory, string text, bool isOption) { return () {
                 oLabel.onMouseButtonUp(new MouseButtonEventHandler((b,p) {
                     window.fadeToView("GameView", getColorByName("black"), false, (view) {
                         EXT_StopMusic();
@@ -221,7 +221,7 @@ public final class HistoryView : View
                         auto gameView = cast(GameView)view;
                         gameView.loadGame();
 
-                        gameView.initializeGame(oHistory.sceneName, oHistory.sceneBackground, oHistory.sceneMusic, oHistory.originalScene, oHistory.text);
+                        gameView.initializeGame(oHistory.sceneName, oHistory.sceneBackground, oHistory.sceneMusic, oHistory.originalScene, text, isOption);
                     });
                 }));
             };};
@@ -232,7 +232,14 @@ public final class HistoryView : View
                 historyLabel.fontName = settings.defaultFont;
                 historyLabel.fontSize = 18;
                 historyLabel.color = "fff".getColorByHex;
-                historyLabel.text = toMaxCharacters(history.text).to!dstring;
+                auto historyText = history.text;
+                if (history.speakers && history.speakers.length)
+                {
+                    import std.array : join;
+                    
+                    historyText = history.speakers.join(", ") ~ ": " ~ historyText;
+                }
+                historyLabel.text = toMaxCharacters(historyText).to!dstring;
                 historyLabel.shadow = true;
                 historyLabel.isLink = true;
                 historyLabel.position = IntVector(8, y);
@@ -240,7 +247,7 @@ public final class HistoryView : View
                 historyLabel.updateRect();
                 historyPanel.addComponent(historyLabel);
 
-                closure(historyLabel, history)();
+                closure(historyLabel, history, history.text, false)();
 
                 y += historyLabel.height + 8;
             }
@@ -260,7 +267,7 @@ public final class HistoryView : View
                     historyLabel.updateRect();
                     historyPanel.addComponent(historyLabel);
 
-                    closure(historyLabel, history)();
+                    closure(historyLabel, history, o, true)();
 
                     y += historyLabel.height + 8;
                 }

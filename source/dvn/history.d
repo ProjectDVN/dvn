@@ -14,6 +14,8 @@ public final class DialogueHistory
     public:
     final:
 /// 
+    string[] speakers;
+/// 
     string text;
 /// 
     string[] options;
@@ -30,6 +32,33 @@ public final class DialogueHistory
 private DialogueHistory[] _history;
 private bool[string] _historyKeys;
 private bool[string] _historyText;
+
+void clearHistoryDuplicates()
+{
+    import dvn.collections;
+
+    import std.algorithm : reverse;
+    import std.array : array;
+
+    auto hashset = new HashSet!string;
+
+    DialogueHistory[] newHistory = [];
+
+    foreach_reverse (h; _history)
+    {
+        if (hashset.has(h.sceneName))
+        {
+            continue;   
+        }
+
+        hashset.add(h.sceneName);
+
+        newHistory ~= h;
+    }
+
+    _history = newHistory;
+    _history = _history.reverse.array;
+}
 
 /// 
 void loadDialogueHistory()
@@ -53,6 +82,8 @@ void loadDialogueHistory()
 
     _history = history;
 
+    clearHistoryDuplicates();
+
     foreach (h; _history)
     {
         _historyText[h.text] = true;
@@ -61,14 +92,11 @@ void loadDialogueHistory()
 }
 
 /// 
-void addDialogueHistory(string text, string[] options, string sceneName, string sceneBackground, string sceneMusic, string originalScene)
+void addDialogueHistory(string[] speakers, string text, string[] options, string sceneName, string sceneBackground, string sceneMusic, string originalScene)
 {
-    if (_historyKeys && (sceneName in _historyKeys))
-    {
-        return;
-    }
-
     auto history = new DialogueHistory;
+
+    history.speakers = speakers;
     history.text = text;
     history.options = options;
     history.sceneName = sceneName;
@@ -79,6 +107,8 @@ void addDialogueHistory(string text, string[] options, string sceneName, string 
     _historyKeys[history.sceneName] = true;
     _historyText[history.text] = true;
     _history ~= history;
+
+    clearHistoryDuplicates();
 
     import std.file : write;
     import dvn.json;

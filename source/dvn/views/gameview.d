@@ -1306,7 +1306,7 @@ public final class GameView : View
 	private string _lastChoice;
 	private ulong continueArrowTaskId;
 /// 
-    void initializeGame(string sceneName, string loadBackground = "", string loadMusic = "", string originalSceneName = "", string sceneText = "", bool forceRender = false)
+    void initializeGame(string sceneName, string loadBackground = "", string loadMusic = "", string originalSceneName = "", string sceneText = "", bool isOptionComparison = false, bool forceRender = false)
     {
 		logInfo("Loading scene: '%s' | '%s' | '%s'", sceneName, loadBackground, loadMusic);
 
@@ -1367,11 +1367,33 @@ public final class GameView : View
 		if (originalSceneName && originalSceneName.length &&
 			sceneText && sceneText.length)
 		{
-			auto similarity = levenshteinSimilarity(sceneText, scene.text);
+			bool isValidComparison = false;
 
-			auto saveFileTextMatchPercentage = settings.saveFileTextMatchPercentage >= 1 ? settings.saveFileTextMatchPercentage : 90;
+			if (isOptionComparison && scene.options)
+			{
+				foreach (option; scene.options)
+				{
+					auto similarity = levenshteinSimilarity(sceneText, option.text);
 
-			if (similarity < (cast(double)saveFileTextMatchPercentage / 100))
+					auto saveFileTextMatchPercentage = settings.saveFileTextMatchPercentage >= 1 ? settings.saveFileTextMatchPercentage : 90;
+
+					if (similarity >= (cast(double)saveFileTextMatchPercentage / 100))
+					{
+						isValidComparison = true;
+						break;
+					}
+				}
+			}
+			else
+			{
+				auto similarity = levenshteinSimilarity(sceneText, scene.text);
+
+				auto saveFileTextMatchPercentage = settings.saveFileTextMatchPercentage >= 1 ? settings.saveFileTextMatchPercentage : 90;
+
+				isValidComparison = similarity >= (cast(double)saveFileTextMatchPercentage / 100);
+			}
+
+			if (!isValidComparison)
 			{
 				scene = _scenes.get(originalSceneName, null);
 
@@ -1569,7 +1591,7 @@ public final class GameView : View
 		if (scene.delay && !forceRender)
 		{
 			runDelayedTask(scene.delay, {
-				initializeGame(sceneName, loadBackground, loadMusic, originalSceneName, sceneText, true);
+				initializeGame(sceneName, loadBackground, loadMusic, originalSceneName, sceneText, isOptionComparison, true);
 			});
 			return;
 		}
@@ -2378,19 +2400,21 @@ public final class GameView : View
 			_calls++;
 
 			auto historyText = scene.text;
+			string[] historySpeakers = [];
 
 			if (scene.characterNames && scene.characterNames.length)
 			{
 				import std.array : join;
 				
-				string[] names = [];
+				//string[] names = [];
 
 				foreach (name; scene.characterNames)
 				{
-					names ~= name.name;
+					//names ~= name.name;
+					historySpeakers ~= name.name;
 				}
 
-				historyText = names.join(",") ~ ": " ~ historyText;
+				//historyText = names.join(",") ~ ": " ~ historyText;
 			}
 
 			textLabel = new Label(window);
@@ -2402,7 +2426,7 @@ public final class GameView : View
 						.getColorByHex;
 			}
 
-			addDialogueHistory(historyText, null, scene.name, _lastBackgroundSource, _lastMusic, scene.original);
+			addDialogueHistory(historySpeakers, historyText, null, scene.name, _lastBackgroundSource, _lastMusic, scene.original);
 
 			textLabel.dataId = SceneComponentId.text;
 
@@ -2559,7 +2583,7 @@ public final class GameView : View
 				optionHistory ~= option.text;
 			}
 
-			addDialogueHistory(null, optionHistory, scene.name, _lastBackgroundSource, _lastMusic, scene.original);
+			addDialogueHistory([], null, optionHistory, scene.name, _lastBackgroundSource, _lastMusic, scene.original);
 
 			if (settings.displayOptionsAsButtons)
 			{
