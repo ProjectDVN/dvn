@@ -6,6 +6,7 @@ module dvn.bundling;
 import std.file : write,read,dirEntries,SpanMode,exists,remove,readText,append;
 import std.stdio : File;
 import std.string : representation;
+import std.path : baseName;
 
 import dvn.events;
 import dvn.resources;
@@ -48,9 +49,15 @@ bool writeBundleScript()
 
   foreach (scriptFile; scriptFiles)
   {
+    import std.array : replace, split;
+    
     auto scriptText = readText(scriptFile);
+    auto scriptBaseName = baseName(scriptFile).split(".")[0];
 
-    _script ~= scriptText ~ "\r\n";
+    _script ~= scriptText
+      .replace("[*", "[" ~ scriptBaseName)
+      .replace(":*", ":" ~ scriptBaseName)
+       ~ "\r\n";
   }
 
   auto buffer = representation(_script);

@@ -6,6 +6,8 @@ module dvn.views.gameview;
 import std.conv : to;
 import std.string : format;
 import std.random : Random,uniform;
+import std.path : baseName;
+import std.array : split, replace;
 
 import dvn.resources;
 import dvn.gamesettings;
@@ -611,6 +613,8 @@ public final class GameView : View
 				foreach (scriptLine; lines)
 				{
 					auto scriptFile = scriptLine.file;
+					auto scriptBaseName = baseName(scriptFile).split(".")[0];
+					
 					auto l = scriptLine.text;
 					auto lineCount = scriptLine.lineNumber;
 					//lineCount++;
@@ -619,7 +623,10 @@ public final class GameView : View
 						continue;
 					}
 
-					auto line = l.strip;
+					auto line = l
+						.replace("[*", "[" ~ scriptBaseName)
+						.replace(":*", ":" ~ scriptBaseName)
+						.strip;
 
 					if (line[0] == '#')
 					{
