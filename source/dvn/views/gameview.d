@@ -1578,7 +1578,7 @@ public final class GameView : View
 
 		if (scene.characters)
 		{
-			foreach (character; scene.characters)
+			void handleCharacter(SceneCharacter character)
 			{
 				if (character.image && character.position)
 				{
@@ -1821,6 +1821,11 @@ public final class GameView : View
 
 					DvnEvents.getEvents().renderGameViewCharacter(character, chImage);
 				}
+			}
+
+			foreach (character; scene.characters)
+			{
+				handleCharacter(character);
 			}
 		}
 
