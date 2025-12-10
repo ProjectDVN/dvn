@@ -1948,11 +1948,6 @@ extern(C) private void handleCallbackSoundFinished(int channel) nothrow
 {
   try
   {
-    if (!_finishedSoundCallbacks)
-    {
-      return;
-    }
-
     auto chunk = _activeChunks.get(channel, null);
     
     if (chunk)
@@ -1960,6 +1955,11 @@ extern(C) private void handleCallbackSoundFinished(int channel) nothrow
       Mix_FreeChunk(chunk);
 
       _activeChunks.remove(channel);
+    }
+
+    if (!_finishedSoundCallbacks)
+    {
+      return;
     }
 
     auto finished = _finishedSoundCallbacks.get(channel, null);
