@@ -1109,7 +1109,7 @@ public abstract class Component : ILayout
       size_t visibleComponentsLength() { return _renderComponents ? _renderComponents.length : 0; }
 
 /// 
-      protected Component[] children() { return _components ? _components : []; }
+      public Component[] children() { return _components ? _components : []; }
 
 /// 
       Anchor anchor() { return _anchor; }
