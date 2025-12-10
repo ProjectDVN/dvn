@@ -1931,6 +1931,7 @@ void EXT_StopMusic()
 }
 
 private alias EXT_SoundChunk = Mix_Chunk*;
+private EXT_SoundChunk[int] _activeChunks;
 private EXT_SoundChunk[string] _soundEffects;
 private alias FINISHED_SOUND_DELEGATE = void delegate(int);
 private __gshared FINISHED_SOUND_DELEGATE[int] _finishedSoundCallbacks;
@@ -1952,11 +1953,22 @@ extern(C) private void handleCallbackSoundFinished(int channel) nothrow
       return;
     }
 
+    auto chunk = _activeChunks.get(channel, null);
+    
+    if (chunk)
+    {
+      Mix_FreeChunk(chunk);
+
+      _activeChunks.remove(channel);
+    }
+
     auto finished = _finishedSoundCallbacks.get(channel, null);
 
     if (finished)
     {
       finished(channel);
+
+      _finishedSoundCallbacks.remove(channel);
     }
   }
   catch (Throwable t)
@@ -2043,23 +2055,26 @@ double EXT_GetChunkDurationSeconds(EXT_SoundChunk chunk, AudioFormatSpec spec)
 }
 
 /// 
-int EXT_PlaySound(string path)
+int EXT_PlaySound(string path, bool useCache = true)
 {
   long length;
-  return EXT_PlaySound(path, length);
+  return EXT_PlaySound(path, length, useCache);
 }
 /// 
-int EXT_PlaySound(string path, out long length)
+int EXT_PlaySound(string path, out long length, bool useCache = true)
 {
+  length = 0;
+
   if (EXT_PlaySoundOverride)
   {
     return EXT_PlaySoundOverride(path);
   }
+  
   import std.string : toStringz;
 
   auto sound = _soundEffects.get(path, null);
 
-  if (!sound)
+  if (!sound || !useCache)
   {
     sound = Mix_LoadWAV(path.toStringz);
 
@@ -2068,10 +2083,13 @@ int EXT_PlaySound(string path, out long length)
       return -1;
     }
 
-    length = cast(long)EXT_GetChunkDurationSeconds(sound, EXT_GetMixerSpec());
-
-    _soundEffects[path] = sound;
+    if (useCache)
+    {
+      _soundEffects[path] = sound;
+    }
   }
+  
+  length = cast(long)EXT_GetChunkDurationSeconds(sound, EXT_GetMixerSpec());
 
   if (!_allSoundsDisabled && !_soundEffectsDisabled)
   {
@@ -2082,7 +2100,25 @@ int EXT_PlaySound(string path, out long length)
       Mix_ChannelFinished(&handleCallbackSoundFinished);
     }
 
-    return Mix_PlayChannel(-1, sound, 0);
+    auto channel = Mix_PlayChannel(-1, sound, 0);
+
+    if (!useCache)
+    {
+      if (channel >= 0)
+      {
+        _activeChunks[channel] = sound;
+      }
+      else
+      {
+        Mix_FreeChunk(sound);
+      }
+    }
+
+    return channel;
+  }
+  else if (!useCache)
+  {
+    Mix_FreeChunk(sound);
   }
 
   return -1;

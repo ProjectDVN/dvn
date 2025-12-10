@@ -1467,7 +1467,7 @@ public final class GameView : View
 			if (voice && voice.length)
 			{
 				long voiceLength;
-				_lastVoiceChannel = EXT_PlaySound(voice, voiceLength);
+				_lastVoiceChannel = EXT_PlaySound(voice, voiceLength, false);
 
 				if (settings.voiceTimingMultiplier > 1)
 				{
