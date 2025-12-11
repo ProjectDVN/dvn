@@ -1183,11 +1183,11 @@ EXT_Window EXT_CreateWindow(string title, IntVector size, bool isFullScreen)
   {
     import dvn.delayedtask;
     runDelayedTask(500, {
-      auto flags = SDL_GetWindowFlags(window);
+      // auto flags = SDL_GetWindowFlags(window);
 
-      bool hasKeyboardFocus = (flags & SDL_WINDOW_INPUT_FOCUS) != 0;
+      // bool hasKeyboardFocus = (flags & SDL_WINDOW_INPUT_FOCUS) != 0;
       
-      if (!hasKeyboardFocus)
+      // if (!hasKeyboardFocus)
       {
           SDL_RaiseWindow(window);
           SDL_SetWindowInputFocus(window);

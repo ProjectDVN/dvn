@@ -350,11 +350,11 @@ public final class SettingsView : View
                 import dvn.delayedtask;
                 runDelayedTask(500, {
                     import dvn.external;
-                    auto flags = EXT_GetWindowFlags(window.nativeWindow);
+                    // auto flags = EXT_GetWindowFlags(window.nativeWindow);
 
-                    bool hasKeyboardFocus = (flags & EXT_WINDOW_INPUT_FOCUS) != 0;
+                    // bool hasKeyboardFocus = (flags & EXT_WINDOW_INPUT_FOCUS) != 0;
                     
-                    if (!hasKeyboardFocus)
+                    // if (!hasKeyboardFocus)
                     {
                         EXT_RaiseWindow(window.nativeWindow);
                         EXT_SetWindowInputFocus(window.nativeWindow);

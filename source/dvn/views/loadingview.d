@@ -303,9 +303,15 @@ public final class LoadingView : View
 
 			if (!settings.fullScreen) EXT_ShowWindow(mainWindow.nativeWindow);
 
+    		import dvn.delayedtask;
+			runDelayedTask(500, {
+				mainWindow.giveFocus();
+			});
+
 			window.remove();
 
-			new GameView(mainWindow).coverageTest();
+			new GameView(mainWindow)
+				.coverageTest();
 
 			auto app = getApplication();
 			DvnEvents.getEvents().engineReady(app, app.windows);

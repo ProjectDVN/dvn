@@ -857,11 +857,11 @@ public abstract class Component : ILayout
         import dvn.delayedtask;
         runDelayedTask(100, {
             import dvn.external;
-            auto flags = EXT_GetWindowFlags(window.nativeWindow);
+            // auto flags = EXT_GetWindowFlags(window.nativeWindow);
 
-            bool hasKeyboardFocus = (flags & EXT_WINDOW_INPUT_FOCUS) != 0;
+            // bool hasKeyboardFocus = (flags & EXT_WINDOW_INPUT_FOCUS) != 0;
             
-            if (!hasKeyboardFocus)
+            // if (!hasKeyboardFocus)
             {
                 EXT_RaiseWindow(window.nativeWindow);
                 EXT_SetWindowInputFocus(window.nativeWindow);

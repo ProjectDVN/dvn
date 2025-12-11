@@ -199,7 +199,23 @@ public final class Window
       _debugLabels.clear();
     }
   }
+/// 
+  void giveFocus()
+  {
+    version (Windows)
+    {
+        import dvn.external;
+        // auto flags = EXT_GetWindowFlags(window.nativeWindow);
 
+        // bool hasKeyboardFocus = (flags & EXT_WINDOW_INPUT_FOCUS) != 0;
+        
+        // if (!hasKeyboardFocus)
+        {
+            EXT_RaiseWindow(_nativeWindow);
+            EXT_SetWindowInputFocus(_nativeWindow);
+        }
+    }
+  }
 /// 
   void remove()
   {
