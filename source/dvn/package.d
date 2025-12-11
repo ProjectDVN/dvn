@@ -52,7 +52,23 @@ public
   import dvn.audio;
 
   import dvn.characters;
+  private string[] _sceneMeta;
 
+/// 
+  void clearSceneMeta()
+  {
+    _sceneMeta = [];
+  }
+/// 
+  void setSceneMeta(string[] meta)
+  {
+    _sceneMeta = meta;
+  }
+///
+  string[] getLastSceneMeta()
+  {
+    return _sceneMeta ? _sceneMeta : [];
+  }
 /// 
   void displayView(string name)
   {

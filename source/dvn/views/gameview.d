@@ -54,6 +54,8 @@ public final class SceneEntry
 	public:
 	final:
 /// 
+	string[] meta;
+/// 
 	string original;
 /// 
 	string name;
@@ -714,6 +716,10 @@ public final class GameView : View
 
 						switch (key)
 						{
+							case "meta":
+								entry.meta ~= value;
+								break;
+
 							case "delay":
 							case "d":
 								entry.delay = value.to!int;
@@ -1533,6 +1539,15 @@ public final class GameView : View
                 });
             });
 			return;
+		}
+
+		import dvn : clearSceneMeta,setSceneMeta;
+
+		clearSceneMeta();
+
+		if (scene.meta && scene.meta.length)
+		{
+			setSceneMeta(scene.meta);
 		}
 
 		if (scene.view && scene.view.length)
