@@ -3085,6 +3085,7 @@ public final class GameView : View
 
 		window.addDebugInformation("Scene Name", sceneName);
 		window.addDebugInformation("Current Scene", scene.name);
+		window.addDebugInformation("Next Scene", nextScene ? nextScene.name : "N/A");
 		window.addDebugInformation("Last Choice", _lastChoice ? _lastChoice : "N/A");
 		window.addDebugInformation("Last Background Image", backgroundSource);
 
@@ -3160,6 +3161,7 @@ public final class GameView : View
 						window.addDebugInformation("FPS", "0");
 						window.addDebugInformation("Scene Name", sceneName);
 						window.addDebugInformation("Current Scene", scene.name);
+						window.addDebugInformation("Next Scene", nextScene ? nextScene.name : "N/A");
 						window.addDebugInformation("Last Choice", _lastChoice ? _lastChoice : "N/A");
 						window.addDebugInformation("Last Background Image", backgroundSource);
 						window.addDebugInformation("Skip To Next Choice", _skipToNextChoice.to!string);
