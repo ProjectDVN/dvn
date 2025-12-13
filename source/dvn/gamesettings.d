@@ -181,6 +181,8 @@ public final class GameSettings
   bool immersionMode;
 /// 
   bool disableEffects;
+/// 
+  int historyMaxEntries;
 }
 
 /// 

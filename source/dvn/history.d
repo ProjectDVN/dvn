@@ -133,29 +133,55 @@ DialogueHistory[] searchDialogueHistory(string input)
 
     if (!input || !input.strip.length)
     {
-        return _history ? _history : [];
+        results = _history ? _history : [];
     }
-
-    foreach (h; _history)
+    else
     {
-        if (h.text && h.text.toLower.canFind(input.toLower))
+        foreach (h; _history)
         {
-            results ~= h;
-        }
-        else if (h.options)
-        {
-            foreach (o; h.options)
+            if (h.text && h.text.toLower.canFind(input.toLower))
             {
-                if (o && o.toLower.canFind(input.toLower))
+                results ~= h;
+            }
+            else if (h.options)
+            {
+                foreach (o; h.options)
                 {
-                    results ~= h;
-                    break;
+                    if (o && o.toLower.canFind(input.toLower))
+                    {
+                        results ~= h;
+                        break;
+                    }
                 }
             }
         }
     }
 
-    return results;
+    if (!results || !results.length)
+    {
+        return [];
+    }
+
+    import dvn.gamesettings;
+    auto settings = getGlobalSettings();
+    auto maxEntries = settings.historyMaxEntries;
+
+    if (maxEntries < 0)
+    {
+        maxEntries = 1;
+    }
+    else if (maxEntries >= 1000)
+    {
+        maxEntries = 1000;
+    }
+    else if (maxEntries == 0)
+    {
+        maxEntries = 150;
+    }
+
+    auto start = results.length > maxEntries ? results.length - maxEntries : 0;
+
+    return results[start .. $];
 }
 
 /// 
