@@ -1867,6 +1867,26 @@ public final class GameView : View
 				}
 			}
 
+			if (scene.characters.length == 2)
+			{
+				bool hasDifferentPosition = false;
+
+				foreach (character; scene.characters)
+				{
+					if (character.position != "bottomCenter")
+					{
+						hasDifferentPosition = true;
+						break;
+					}
+				}
+
+				if (!hasDifferentPosition)
+				{
+					scene.characters[0].position = "bottomSlightLeft";
+					scene.characters[1].position = "bottomSlightRight";
+				}
+			}
+
 			foreach (character; scene.characters)
 			{
 				handleCharacter(character);
