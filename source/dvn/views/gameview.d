@@ -637,6 +637,11 @@ public final class GameView : View
 
 					if (line[0] == '[' && line[$-1] == ']')
 					{
+						if (entry && entry.nextScene && entry.nextScene == "~")
+						{
+							entry.nextScene = line[1 .. $-1];
+						}
+
 						entry = new SceneEntry;
 						chance = 100;
 						entry.chance = chance;
