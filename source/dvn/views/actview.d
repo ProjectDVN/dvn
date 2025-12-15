@@ -85,7 +85,7 @@ public final class ActView : View
             return false;
         }));
 
-        DvnEvents.getEvents().renderActBeginLabel(actTitleLabel);
+        DvnEvents.getEvents().renderActBeginLabel(beginLabel);
 
         DvnEvents.getEvents().endActView();
     }
