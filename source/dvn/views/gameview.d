@@ -943,7 +943,7 @@ public final class GameView : View
 									entry.name = original ~ "-??????????-" ~ customSceneIdCounter.to!string;
 
 									entry.music = lastEntry.music;
-									entry.sound = lastEntry.sound;
+									//entry.sound = lastEntry.sound;
 									entry.background = lastEntry.background;
 									entry.labels = lastEntry.labels;
 									entry.characters = lastEntry.copyCharacters;
@@ -1046,7 +1046,7 @@ public final class GameView : View
 										entry.name = original ~ "-??????????-" ~ customSceneIdCounter.to!string;
 
 										entry.music = lastEntry.music;
-										entry.sound = lastEntry.sound;
+										//entry.sound = lastEntry.sound;
 										entry.background = lastEntry.background;
 										entry.labels = lastEntry.labels;
 										entry.characters = lastEntry.copyCharacters;
