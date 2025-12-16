@@ -183,6 +183,8 @@ public final class GameSettings
   bool disableEffects;
 /// 
   int historyMaxEntries;
+///
+  bool allowSameCharacterMultiple;
 }
 
 /// 

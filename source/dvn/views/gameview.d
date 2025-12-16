@@ -1627,6 +1627,8 @@ public final class GameView : View
 
 		if (scene.characters)
 		{
+			Image[string] characterImages;
+
 			void handleCharacter(SceneCharacter character)
 			{
 				if (character.image && character.position)
@@ -1634,6 +1636,18 @@ public final class GameView : View
 					auto chImage = new Image(window, character.image);
 					chImage.dataId = SceneComponentId.character;
 					addComponent(chImage);
+
+					if (!settings.allowSameCharacterMultiple && characterImages)
+					{
+						auto cImage = characterImages.get(character.name, null);
+
+						if (cImage)
+						{
+							cImage.hide();
+						}
+					}
+
+					characterImages[character.name] = chImage;
 
 					auto shouldFadeIn = false;
 
