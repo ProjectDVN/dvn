@@ -181,6 +181,10 @@ To create your first visual novel see: https://projectdvn.com/docs/getting-start
 
 ![DVN Preview](https://tcwtnc.com/images/bench.png "DVN Preview")
 
+![DVN Preview](https://stayalive.tcwtnc.com/assets/screens/shot5.png "DVN Preview")
+
+![DVN Preview](https://stayalive.tcwtnc.com/assets/screens/shot6.png "DVN Preview")
+
 ---
 
 ### Building
@@ -204,6 +208,7 @@ If you wish to contribute just go ahead and do a pull-request or create an issue
 ### Visual Novels Using Project DVN
 
 * [The Classroom Where Tomorrow Never Comes](https://tcwtnc.com/)
+* [stay;alive](https://stayalive.tcwtnc.com/)
 
 ---
 
