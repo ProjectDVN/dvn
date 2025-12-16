@@ -489,8 +489,8 @@ public final class GameView : View
 
 			import std.file : dirEntries, SpanMode, readText;
 			import std.string : strip, stripLeft, stripRight;
-			import std.array : replace, split;
-			import std.algorithm : canFind, startsWith;
+			import std.array : replace, split, array;
+			import std.algorithm : canFind, startsWith, filter;
 
 			DvnEvents.getEvents().loadingGameScripts();
 			
@@ -721,6 +721,10 @@ public final class GameView : View
 
 						switch (key)
 						{
+							case "removeCharacter":
+							case "rc":
+								entry.characters = entry.characters.filter!(c => c.name != value).array;
+								break;
 							case "meta":
 								entry.meta ~= value;
 								break;
