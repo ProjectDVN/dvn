@@ -1631,7 +1631,7 @@ public final class GameView : View
 
 		if (scene.characters)
 		{
-			Image[string] characterImages;
+			import std.algorithm : countUntil;
 
 			void handleCharacter(SceneCharacter character)
 			{
@@ -1641,17 +1641,18 @@ public final class GameView : View
 					chImage.dataId = SceneComponentId.character;
 					addComponent(chImage);
 
-					if (!settings.allowSameCharacterMultiple && characterImages)
-					{
-						auto cImage = characterImages.get(character.name, null);
+					// if (!settings.allowSameCharacterMultiple && characterImages)
+					// {
+					// 	auto ch = characterImages.get(character.name, null);
+					// 	auto chImage = ch[0];
 
-						if (cImage)
-						{
-							cImage.hide();
-						}
-					}
+					// 	if (cImage)
+					// 	{
+					// 		cImage.hide();
+					// 	}
+					// }
 
-					characterImages[character.name] = chImage;
+					//characterImages[character.name] = chImage;
 
 					auto shouldFadeIn = false;
 
@@ -1889,6 +1890,38 @@ public final class GameView : View
 					DvnEvents.getEvents().renderGameViewCharacter(character, chImage);
 				}
 			}
+
+			SceneCharacter[] charactersNew;
+
+			if (settings.allowSameCharacterMultiple)
+			{
+				charactersNew = scene.characters;
+			}
+			else
+			{
+				foreach (character; scene.characters)
+				{
+					auto originalIndex = charactersNew.countUntil!(c => c.name == character.name);
+					
+					if (originalIndex == -1)
+					{
+						charactersNew ~= character;
+					}
+					else
+					{
+						auto originalCharacter = charactersNew[originalIndex];
+
+						if (scene.characters.length >= 2 && character.position == "bottomCenter")
+						{
+							character.position = originalCharacter.position;
+						}
+
+						charactersNew[originalIndex] = character;
+					}
+				}
+			}
+
+			scene.characters = charactersNew;
 
 			if (scene.characters.length == 2)
 			{
