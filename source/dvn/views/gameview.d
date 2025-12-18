@@ -603,6 +603,7 @@ public final class GameView : View
 				bool isNarrator = false;
 				int narratorX = 0;
 				int narratorY = 0;
+				SceneCharacter[] characters = [];
 
 				string textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
 				lineCount = 0;
@@ -798,7 +799,7 @@ public final class GameView : View
 									character.name = value.split(",")[0].strip;
 								}
 								character.position = "bottomCenter";
-								entry.characters ~= character;
+								characters ~= character;
 								break;
 
 							case "charMovement":
@@ -970,6 +971,9 @@ public final class GameView : View
 									chance = 100;
 								}
 
+								entry.characters ~= characters;
+								characters = [];
+
 								entry.voice = voice;
 								entry.characterNames = charNames;
 								entry.isNarrator = isNarrator;
@@ -1072,6 +1076,9 @@ public final class GameView : View
 										entry.chance = chance;
 										chance = 100;
 									}
+
+									entry.characters ~= characters;
+									characters = [];
 
 									entry.voice = voice;
 									entry.characterNames = charNames;
