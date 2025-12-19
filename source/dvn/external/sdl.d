@@ -2178,9 +2178,22 @@ int EXT_UpdateFps()
 /// 
 int EXT_FontGlyphSupport(EXT_Font font, dchar c)
 {
-  import std.conv : to;
+    import std.conv : to;
 
-  return TTF_GlyphIsProvided(font, cast(ushort)(c.to!wchar));
+    if (c <= 0xFFFF)
+    {
+        return TTF_GlyphIsProvided(font, cast(ushort)c);
+    }
+    else
+    {
+        ushort highSurrogate = cast(ushort)(0xD800 + ((c - 0x10000) >> 10));
+        ushort lowSurrogate  = cast(ushort)(0xDC00 + ((c - 0x10000) & 0x3FF));
+
+        int highOK = TTF_GlyphIsProvided(font, highSurrogate);
+        int lowOK  = TTF_GlyphIsProvided(font, lowSurrogate);
+
+        return highOK && lowOK;
+    }
 }
 
 private alias TextureAtlas = EXT_Texture[];
