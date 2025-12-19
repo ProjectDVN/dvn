@@ -69,7 +69,7 @@ DVN is the opposite
 * Themes + Layout Generator
 * Localization / i18n with template functions
 * Multiple Windows Support (You can open multiple windows with application instances or even multiple vn instances)
-* Hot reloading of scripts (Requires you to enter main menu however)
+* Hot reloading of scripts (Both current scene and of last save file.)
 * Custom render functions with low-level access (OpenGL or custom rendering)
   * Allows custom render hooks for ex. 3D, 2D, custom pipelines etc.
 * Lots of game configurations and customization

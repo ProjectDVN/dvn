@@ -490,7 +490,7 @@ public final class GameView : View
 			import std.file : dirEntries, SpanMode, readText;
 			import std.string : strip, stripLeft, stripRight;
 			import std.array : replace, split, array;
-			import std.algorithm : canFind, startsWith, filter;
+			import std.algorithm : canFind, startsWith, filter, countUntil, map;
 
 			DvnEvents.getEvents().loadingGameScripts();
 			
@@ -556,10 +556,10 @@ public final class GameView : View
 						.replace("\r", "")
 						.split("\n");
 
-						int lineCount = 0;
+					int currentLineCount = 0;
 					foreach (l; lines)
 					{
-						lineCount++;
+						currentLineCount++;
 						if (!l || !l.strip.length)
 						{
 							continue;
@@ -574,14 +574,14 @@ public final class GameView : View
 
 							foreach (sceneLine; sceneLines)
 							{
-								finalText ~= ScriptLine(sceneLine, scriptFile.file, lineCount);
+								finalText ~= ScriptLine(sceneLine, scriptFile.file, currentLineCount);
 							}
 						}
 						else
 						{
 							auto text = l ~ "\r\n";
 
-							finalText ~= ScriptLine(text, scriptFile.file, lineCount);
+							finalText ~= ScriptLine(text, scriptFile.file, currentLineCount);
 						}
 					}
 				}
@@ -629,11 +629,37 @@ public final class GameView : View
 					auto line = l
 						.replace("[*", "[" ~ scriptBaseName)
 						.replace(":*", ":" ~ scriptBaseName)
+						.replace("->*", "->" ~ scriptBaseName)
 						.strip;
 
 					if (line[0] == '#')
 					{
 						continue;
+					}
+
+					string nextBackground;
+					string nextMusic;
+
+					if (line[0] == '[' && line[$-1] == ')')
+					{
+						auto bracketEnd = line.countUntil("]");
+
+						auto sceneData = line[bracketEnd+1 .. $].strip;
+						sceneData = sceneData[1 .. $-1].strip;
+
+						auto sceneDataEntries = sceneData.split(",").map!(a => a.strip).array;
+
+						if (sceneDataEntries.length >= 1)
+						{
+							nextBackground = sceneDataEntries[0];
+						}
+
+						if (sceneDataEntries.length > 1)
+						{
+							nextMusic = sceneDataEntries[1];
+						}
+
+						line = line[0 .. bracketEnd+1];
 					}
 
 					if (line[0] == '[' && line[$-1] == ']')
@@ -644,6 +670,17 @@ public final class GameView : View
 						}
 
 						entry = new SceneEntry;
+
+						if (nextBackground)
+						{
+							entry.background = nextBackground;
+						}
+
+						if (nextMusic)
+						{
+							entry.music = nextMusic;
+						}
+
 						chance = 100;
 						entry.chance = chance;
 						entry.name = line[1 .. $-1];
@@ -671,7 +708,22 @@ public final class GameView : View
 						if (!line.canFind("=") && line.canFind("->"))
 						{
 							auto optionData = line.split("->");
-							line = "o:" ~ optionData[0].strip ~ "=" ~ optionData[1].stripLeft;
+
+							if (line.startsWith("->"))
+							{
+								if (line == "->")
+								{
+									line = "then=~";
+								}
+								else
+								{
+									line = "then=" ~ optionData[1];
+								}
+							}
+							else
+							{
+								line = "o:" ~ optionData[0].strip ~ "=" ~ optionData[1].stripLeft;
+							}
 
 							kv = line.split("=");
 						}
@@ -722,6 +774,14 @@ public final class GameView : View
 
 						switch (key)
 						{
+							case "continue":
+							case "then":
+							case "next":
+								if (lastEntry)
+								{
+									lastEntry.nextScene = value;
+								}
+								break;
 							case "removeCharacter":
 							case "rc":
 								entry.characters = entry.characters.filter!(c => c.name != value).array;
@@ -985,6 +1045,7 @@ public final class GameView : View
 								narratorY = 0;
 								
 								entry.text = value;
+
 								if (keyData.length == 2)
 								{
 									entry.nextScene = keyData[1];
@@ -1154,6 +1215,9 @@ public final class GameView : View
 		}
 		catch (Throwable t)
 		{
+			// Don't allow a broken playthrough...
+			if (_scenes) _scenes.clear();
+
 			logScriptError(lastScriptFile, lineCount,
 				format("Exception thrown: \"%s\"", t.msg),
 				lastEntry);

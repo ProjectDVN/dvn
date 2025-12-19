@@ -57,6 +57,7 @@ bool writeBundleScript()
     _script ~= scriptText
       .replace("[*", "[" ~ scriptBaseName)
       .replace(":*", ":" ~ scriptBaseName)
+      .replace("->*", "->" ~ scriptBaseName)
        ~ "\r\n";
   }
 
