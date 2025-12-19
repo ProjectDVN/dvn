@@ -185,6 +185,16 @@ public final class GameSettings
   int historyMaxEntries;
 ///
   bool allowSameCharacterMultiple;
+///
+  bool displayRuby;
+///
+  double rubyOffset;
+///
+  string rubyStartChar;
+///
+  string rubyEndChar;
+///
+  bool shadowRuby;
 }
 
 /// 

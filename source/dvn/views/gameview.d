@@ -54,6 +54,8 @@ public final class SceneEntry
 	public:
 	final:
 /// 
+	bool hasRuby;
+/// 
 	string[] meta;
 /// 
 	string original;
@@ -682,6 +684,7 @@ public final class GameView : View
 						}
 
 						chance = 100;
+						entry.hasRuby = settings.displayRuby;
 						entry.chance = chance;
 						entry.name = line[1 .. $-1];
 						original = entry.name;
@@ -732,6 +735,9 @@ public final class GameView : View
 						{
 							switch (line)
 							{
+								case "ruby":
+									entry.hasRuby = true;
+									continue;
 								case "hideDialogue":
 									entry.hideDialogue = true;
 									continue;
@@ -1008,6 +1014,7 @@ public final class GameView : View
 									entry.name = original ~ "-??????????-" ~ customSceneIdCounter.to!string;
 
 									entry.music = lastEntry.music;
+									entry.hasRuby = lastEntry.hasRuby;
 									//entry.sound = lastEntry.sound;
 									entry.background = lastEntry.background;
 									entry.labels = lastEntry.labels;
@@ -1115,6 +1122,7 @@ public final class GameView : View
 										entry.name = original ~ "-??????????-" ~ customSceneIdCounter.to!string;
 
 										entry.music = lastEntry.music;
+										entry.hasRuby = lastEntry.hasRuby;
 										//entry.sound = lastEntry.sound;
 										entry.background = lastEntry.background;
 										entry.labels = lastEntry.labels;
@@ -2264,6 +2272,7 @@ public final class GameView : View
 				sceneLabel.color = label.color.getColorByHex;
 				sceneLabel.text = label.text.to!dstring;
 				sceneLabel.shadow = true;
+				sceneLabel.displayRuby = scene.hasRuby;
 				sceneLabel.position = IntVector(label.x, label.y);
 				sceneLabel.updateRect();
 				sceneLabel.show();
@@ -2613,6 +2622,23 @@ public final class GameView : View
 			if (scene.textFont && scene.textFont.length)
 			{
 				textLabel.fontName = scene.textFont;
+			}
+			textLabel.displayRuby = scene.hasRuby;
+			if (settings.rubyOffset > 0.1)
+			{
+				textLabel.rubyOffset = settings.rubyOffset;
+			}
+			if (settings.rubyStartChar && settings.rubyStartChar.length)
+			{
+				textLabel.rubyStartChar = settings.rubyStartChar[0].to!dchar;
+			}
+			if (settings.rubyEndChar && settings.rubyEndChar.length)
+			{
+				textLabel.rubyEndChar = settings.rubyEndChar[0].to!dchar;
+			}
+			if (settings.shadowRuby)
+			{
+				textLabel.shadowRuby = settings.shadowRuby;
 			}
 			textLabel.fontSize = 22;
 			textLabel.color = scene.textColor.getColorByHex;
