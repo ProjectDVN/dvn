@@ -227,6 +227,7 @@ public final class Label : Component
       import std.uni : isWhite;
 
       size_t width = _wrapWidth - (_fontSize / 2);
+      width -= (width / 100) * 10;
 
       Font runtimeFont;
       if (!super.window.application.fonts.tryGetWithFallback(_fontName, text, runtimeFont))
@@ -254,7 +255,6 @@ public final class Label : Component
           if (inRuby)
           {
               spanText ~= c;
-
               if (c == _rubyEndChar)
               {
                   inRuby = false;
@@ -291,13 +291,12 @@ public final class Label : Component
       foreach (span; spans)
       {
           int w, h;
-          wstring utf16String = span.baseText.to!wstring;
-          ushort[] utf16Buffer;
-          foreach (utfc16c; utf16String)
-              utf16Buffer ~= utfc16c;
-          utf16Buffer ~= cast(ushort)'\0';
+          wstring utf16 = span.baseText.to!wstring;
+          ushort[] buf;
+          foreach(ch; utf16) buf ~= ch;
+          buf ~= cast(ushort)'\0';
 
-          if (EXT_UnicodeTextSize(rawFont, utf16Buffer.ptr, &w, &h) != 0)
+          if (EXT_UnicodeTextSize(rawFont, buf.ptr, &w, &h) != 0)
               throw new Exception("Failed to get size");
 
           size_t spanWidth = cast(size_t)w;
@@ -308,8 +307,35 @@ public final class Label : Component
               lineWidth = 0;
           }
 
-          result ~= span.text;
-          lineWidth += spanWidth;
+          if (span.isRuby)
+          {
+              result ~= span.text;
+              lineWidth += spanWidth;
+              continue;
+          }
+
+          foreach (i; 0 .. span.text.length)
+          {
+              dchar c = span.text[i];
+
+              int cw, ch;
+              wstring utf16Char = c.to!wstring;
+              ushort[] charBuf;
+              foreach(ch2; utf16Char) charBuf ~= ch2;
+              charBuf ~= cast(ushort)'\0';
+
+              if (EXT_UnicodeTextSize(rawFont, charBuf.ptr, &cw, &ch) != 0)
+                  throw new Exception("Failed to get size");
+
+              if (lineWidth + cast(size_t)cw > width && lineWidth > 0)
+              {
+                  result ~= "\r\n";
+                  lineWidth = 0;
+              }
+
+              result ~= c;
+              lineWidth += cast(size_t)cw;
+          }
       }
 
       return result;
@@ -530,7 +556,7 @@ public final class Label : Component
       RubyEntry[] rubyEntries;
       bool parseRubyText;
       auto current = new RubyEntry;
-      bool isNotForeignText = !isForeignCharacter(line[0]);
+      bool isNotForeignText = !isForeignCharacter(line[0]) || !isKanji(line[0]);
       foreach (c; line)
       {
         if (parseRubyText)
@@ -553,7 +579,7 @@ public final class Label : Component
         }
         else
         {
-          auto isForeign = isForeignCharacter(c);
+          auto isForeign = isForeignCharacter(c) && isKanji(c);
           if (isForeign && isNotForeignText)
           {
             isNotForeignText = false;

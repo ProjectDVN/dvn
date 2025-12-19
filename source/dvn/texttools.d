@@ -49,3 +49,13 @@ bool isForeignText(dstring s)
 
   return false;
 }
+
+bool isKanji(dchar c)
+{
+            // CJK Unified Ideographs
+    return (c >= 0x4E00 && c <= 0x9FFF) ||
+            // CJK Unified Ideographs Extension A
+           (c >= 0x3400 && c <= 0x4DBF) ||
+           // CJK Compatibility Ideographs
+           (c >= 0xF900 && c <= 0xFAFF);
+}
