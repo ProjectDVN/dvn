@@ -173,6 +173,8 @@ To create your first visual novel see: https://projectdvn.com/docs/getting-start
 
 ### Preview
 
+![DVN Preview](https://i.imgur.com/LgfA3uz.png "DVN Preview")
+
 ![DVN Preview](https://tcwtnc.com/images/menu.png "DVN Preview")
 
 ![DVN Preview](https://tcwtnc.com/images/rooftop_scene.png "DVN Preview")
