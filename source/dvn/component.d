@@ -99,6 +99,8 @@ public abstract class Component : ILayout
   ulong _dataId;
   Anchor _anchor;
   bool _isInputComponent;
+  void delegate() _beforeRender;
+  void delegate() _afterRender;
 
   package(dvn) void updateEvents()
   {
@@ -169,6 +171,17 @@ public abstract class Component : ILayout
         }
       }
     }
+  }
+
+///
+  void setBeforeRender(void delegate() beforeRender)
+  {
+    _beforeRender = beforeRender;
+  }
+/// 
+  void setAfterRender(void delegate() afterRender)
+  {
+    _afterRender = afterRender;
   }
 
 /// 
@@ -1368,7 +1381,17 @@ public abstract class Component : ILayout
         }
       }
 
+      if (_beforeRender)
+      {
+        _beforeRender();
+      }
+
       renderNativeComponent();
+
+      if (_afterRender)
+      {
+        _afterRender();
+      }
 
       if (_borderColor.a > 0)
       {
