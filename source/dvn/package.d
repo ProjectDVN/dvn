@@ -35,23 +35,18 @@ public
   import dvn.view;
   import dvn.unorderedlist;
   import dvn.window;
-
   import dvn.network;
-
   import dvn.css;
   import dvn.dom;
   import dvn.collections;
   import dvn.markdown;
-
   import dvn.effects;
-
   import dvn.bundling;
-
   import dvn.layout;
-
   import dvn.audio;
-
   import dvn.characters;
+  import dvn.resourcemanager;
+
   private string[] _sceneMeta;
 
 /// 

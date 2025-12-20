@@ -3368,16 +3368,21 @@ public final class GameView : View
 				}
 				else if (k == KeyboardKey.f5)
 				{
-					window.refreshCurrentView((view)
+					import dvn.resourcemanager;
+					
+					ResourceManager.clear(window, settings, (w)
 					{
-						EXT_StopMusic();
-			
-						syncRuntimeFromSave();
+						w.refreshCurrentView((view)
+						{
+							EXT_StopMusic();
+				
+							syncRuntimeFromSave();
 
-						auto gameView = cast(GameView)view;
-						gameView.loadGame(_lastSaveFile);
+							auto gameView = cast(GameView)view;
+							gameView.loadGame(_lastSaveFile);
 
-						gameView.initializeGame(sceneName, loadBackground, loadMusic, originalSceneName, sceneText, forceRender);
+							gameView.initializeGame(sceneName, loadBackground, loadMusic, originalSceneName, sceneText, forceRender);
+						});
 					});
 				}
 				else if (holdCtrl && k == KeyboardKey.s)

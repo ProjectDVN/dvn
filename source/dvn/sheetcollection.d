@@ -10,6 +10,7 @@ import dvn.external;
 public final class SheetCollection
 {
   private:
+  bool _cleared;
   Window _window;
   EXT_Sheet[string] _sheets;
 
@@ -22,6 +23,34 @@ public final class SheetCollection
   this(Window window)
   {
     _window = window;
+  }
+
+  void clearAllSheets()
+  {
+    if (_cleared)
+    {
+      return;
+    }
+
+    _cleared = true;
+
+    if (_sheets)
+    {
+      foreach (k,s; _sheets)
+      {
+        EXT_DestroyTexture(s.sheet);
+      }
+
+      _sheets.clear();
+    }
+
+    if (_sheetEntries)
+      _sheetEntries.clear();
+  }
+
+  void enableSheets()
+  {
+    _cleared = false;
   }
 
 /// 

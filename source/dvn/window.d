@@ -376,6 +376,15 @@ public final class Window
     }
   }
 
+  void clearAllSheets()
+  {
+    _sheetCollection.clearAllSheets();
+  }
+
+  void enableSheets()
+  {
+    _sheetCollection.enableSheets();
+  }
 /// 
   void addSheet(string name, string path, IntVector columnSize, int columnCount)
   {
@@ -605,6 +614,18 @@ public final class Window
     _components = _components.filter!(c => c.id != component.id).array;
 
     component.updateRect(false);
+
+    update();
+  }
+
+  void cleanComponents()
+  {
+    foreach (c; _components)
+    {
+      c.clean();
+    }
+
+    _components = [];
 
     update();
   }
