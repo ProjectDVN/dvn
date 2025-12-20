@@ -18,4 +18,6 @@ public
   import dvn.components.rawimage;
   import dvn.components.tabview;
   import dvn.components.tabpage;
+  import dvn.components.listpanel;
+  import dvn.components.progressbar;
 }

@@ -516,6 +516,12 @@ public abstract class Component : ILayout
       _isHidden = false;
       updateRect(true);
     }
+
+    /// 
+    void addComponent(Component component)
+    {
+      addComponent(component, false);
+    }
     
   final
   {
@@ -590,12 +596,6 @@ public abstract class Component : ILayout
     {
       _isHidden = true;
       updateRect(true);
-    }
-
-/// 
-    void addComponent(Component component)
-    {
-      addComponent(component, false);
     }
 
 /// 
