@@ -510,6 +510,13 @@ public abstract class Component : ILayout
   }
 
   public:
+  /// 
+    void show()
+    {
+      _isHidden = false;
+      updateRect(true);
+    }
+    
   final
   {
 /// 
@@ -576,13 +583,6 @@ public abstract class Component : ILayout
         endPosition = p;
         return true;
       }));
-    }
-
-/// 
-    void show()
-    {
-      _isHidden = false;
-      updateRect(true);
     }
 
 /// 

@@ -11,13 +11,19 @@ import dvn.events;
 import dvn.components.scrollbar;
 
 /// 
-public final class Panel : Component
+public class Panel : Component
 {
   private:
   IntVector _scrollPosition;
   IntVector _scrollMargin;
 
   public:
+/// 
+  protected override void renderNativeComponent()
+  {
+    renderChildren();
+  }
+
   final:
   package(dvn) ScrollBar scrollBar;
 
@@ -153,11 +159,5 @@ public final class Panel : Component
 /// 
   override void repaint()
   {
-  }
-
-/// 
-  override void renderNativeComponent()
-  {
-    renderChildren();
   }
 }

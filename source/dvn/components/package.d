@@ -16,4 +16,6 @@ public
   import dvn.components.checkbox;
   import dvn.components.video;
   import dvn.components.rawimage;
+  import dvn.components.tabview;
+  import dvn.components.tabpage;
 }

@@ -99,7 +99,7 @@ public final class GridLayout
     }
 
 /// 
-    void update()
+    void update(bool isGlobal = true)
     {
         import std.algorithm : max;
 
@@ -155,8 +155,8 @@ public final class GridLayout
             }
         }
 
-        int startX = _parent.x;
-        int startY = _parent.y;
+        int startX = isGlobal ? _parent.x : 0;
+        int startY = isGlobal ? _parent.y : 0;
 
         int y = startY;
 
