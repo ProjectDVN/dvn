@@ -52,6 +52,109 @@ Effect getEffect(string name)
   return _effectHub.get(name, null);
 }
 
+public final class RainEffect : Effect
+{
+  struct RainDrop
+  {
+    double x;
+    double y;
+    double speed;
+    double length;
+  }
+
+  private:
+  size_t _windowId;
+  bool _isActive;
+  double _intensity;
+  RainDrop[] _drops;
+  double _wind;
+  uint _lastTick;
+
+  public:
+  this()
+  {
+    super("Rain");
+
+    _drops = [];
+
+    class ScreenEvents : DvnEvents
+    {
+      import dvn.view;
+
+      override void onViewChange(View oldView, View newView, string oldViewName, string newViewName)
+      {
+        _isActive = false;
+      }
+
+      override void postRenderContent(Window window)
+      {
+          if (!_isActive || window.id != _windowId)
+              return;
+
+          uint current = EXT_GetTicks();  
+          uint dticks = current - _lastTick;
+          _lastTick = current;
+
+          foreach (ref drop; _drops)
+          {
+            import std.random : uniform;
+            
+            drop.y += drop.speed * dticks;
+            drop.x += _wind * dticks;
+
+            if (drop.y > window.height)
+            {
+              drop.y = -drop.length;
+              drop.x = cast(double)uniform(0, window.width);
+            }
+
+            EXT_SetRenderDrawColor(
+                window.nativeScreen,
+                200, 200, 255, 150
+            );
+
+            EXT_RenderDrawLine(
+                window.nativeScreen,
+                cast(int)drop.x,
+                cast(int)drop.y,
+                cast(int)drop.x,
+                cast(int)(drop.y + drop.length)
+            );
+          }
+      }
+    }
+
+    DvnEvents.setEvents(new ScreenEvents);
+  }
+
+  override void handle(string[] values)
+  {
+    auto window = getApplication().getRealWindow();
+    if (!window) return;
+    _windowId = window.id;
+
+    _intensity = values.length > 0 ? to!double(values[0]) : 50;
+    auto speedLow = values.length > 1 ? to!double(values[1]) : 1;
+    auto speedHigh = values.length > 2 ? to!double(values[2]) : 4;
+    _wind = values.length > 3 ? to!double(values[3]) : 0.0;
+
+    _isActive = true;
+    _lastTick = 0;
+
+    _drops.length = cast(size_t)(_intensity);
+
+    foreach (ref drop; _drops)
+    {
+        import std.random : uniform;
+
+        drop.x = cast(double)uniform(0, window.width);
+        drop.y = cast(double)uniform(0, window.height);
+        drop.speed = cast(double)uniform(speedLow, speedHigh);
+        drop.length = cast(double)uniform(8, 16);
+    }
+  }
+}
+
 /// 
 public final class ScreenShakeEffect : Effect
 {
@@ -353,4 +456,5 @@ void initializeStandardEffects()
 {
   registerEffect(new ScreenShakeEffect);
   registerEffect(new BackgroundMoveZoomEffect);
+  registerEffect(new RainEffect);
 }

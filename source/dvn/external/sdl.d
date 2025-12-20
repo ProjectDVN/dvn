@@ -30,6 +30,10 @@ public alias EXT_GetError = SDL_GetError;
 public alias EXT_SetWindowBordered = SDL_SetWindowBordered;
 /// 
 public alias EXT_bool = SDL_bool;
+///
+public alias EXT_RenderDrawLine = SDL_RenderDrawLine;
+/// 
+public alias EXT_SetRenderDrawColor = SDL_SetRenderDrawColor;
 
 /// 
 public alias EXT_DestroyWindow = SDL_DestroyWindow;

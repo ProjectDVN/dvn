@@ -3730,6 +3730,7 @@ public final class GameView : View
 					if (effect.render && effect.render != "post") continue;
 					auto e = getEffect(effect.id);
 					if (e) e.handle(effect.values);
+
 					DvnEvents.getEvents().onEffectPost(effect);
 				}
 			}
