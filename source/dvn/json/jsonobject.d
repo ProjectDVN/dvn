@@ -334,7 +334,7 @@ if (isSomeString!S)
 
         if (_members)
         {
-          auto sortedMembers = _members ? _members.values.sort.group.map!(g => g[0]).array : [];
+          auto sortedMembers = _members ? _members.values.sort.array : [];
 
           S memberStr = join(sortedMembers.map!(m => memberTabs ~ `"%s": %s`.format(m.key, m.obj.toPrettyString(tabCount + 1, false))).array, ",\r\n");
 
@@ -395,7 +395,7 @@ if (isSomeString!S)
 
           if (_members)
           {
-            auto sortedMembers = _members ? _members.values.sort.group.map!(g => g[0]).array : [];
+            auto sortedMembers = _members ? _members.values.sort.array : [];
 
             obj ~= join(sortedMembers.map!(m => `"%s":%s`.format(m.key, m.obj.toString())).array, ",");
           }

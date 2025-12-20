@@ -132,6 +132,7 @@ public final class SceneEntry
 			ch.position = character.position;
 			ch.x = character.x;
 			ch.y = character.y;
+			ch.zIndex = character.zIndex;
 
 			chs ~= ch;
 		}
@@ -214,6 +215,8 @@ public final class SceneCharacter
 	int movementSpeed;
 /// 
 	bool characterFadeIn;
+/// 
+	int zIndex;
 
 /// 
 	SceneCharacter copyCharacter()
@@ -227,7 +230,36 @@ public final class SceneCharacter
 		c.movement = movement;
 		c.movementSpeed = movementSpeed;
 		c.characterFadeIn = characterFadeIn;
+		c.zIndex = zIndex;
 		return c;
+	}
+
+	override int opCmp(Object o)
+	{
+		auto ch = cast(SceneCharacter)o;
+
+		if (!ch)
+		{
+			return -1;
+		}
+
+		if (ch.zIndex == zIndex)
+		{
+			return 0;
+		}
+
+		if (ch.zIndex < zIndex)
+		{
+			return -1;
+		}
+
+		return 1;
+	}
+
+	/// Operator overload.
+	override bool opEquals(Object o)
+	{
+		return opCmp(o) == 0;
 	}
 }
 
@@ -780,6 +812,10 @@ public final class GameView : View
 
 						switch (key)
 						{
+							case "characterZIndex":
+							case "cz":
+								character.zIndex = value.to!int;
+								break;
 							case "continue":
 							case "then":
 							case "next":
@@ -2022,7 +2058,12 @@ public final class GameView : View
 				}
 			}
 
-			foreach (character; scene.characters)
+			import std.algorithm : sort;
+			import std.array : array;
+
+			auto sceneCharacters = scene.characters.sort.array;
+
+			foreach (character; sceneCharacters)
 			{
 				handleCharacter(character);
 			}
@@ -3369,7 +3410,7 @@ public final class GameView : View
 				else if (k == KeyboardKey.f5)
 				{
 					import dvn.resourcemanager;
-					
+
 					ResourceManager.clear(window, settings, (w)
 					{
 						w.refreshCurrentView((view)
