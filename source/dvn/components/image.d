@@ -82,6 +82,10 @@ public final class Image : Component
   @property
   {
     /// 
+    int fileWidth() { return _rect1.w; }
+    /// 
+    int fileHeight() { return _rect1.h; }
+    /// 
     bool isFilePath() { return _isFilePath; }
     /// 
     double scale() { return _scale; }

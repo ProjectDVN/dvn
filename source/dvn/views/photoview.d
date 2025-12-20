@@ -49,8 +49,11 @@ public final class PhotoView : View
 
         auto bgImage = new Image(window, path, true);
         addComponent(bgImage);
-        bgImage.size = IntVector(1280, 720);
-        bgImage.position = IntVector(0,0);
+        bgImage.size = IntVector(bgImage.fileWidth, bgImage.fileHeight);
+        bgImage.position = IntVector(
+            (window.width / 2) - (bgImage.width / 2),
+            (window.height / 2) - (bgImage.height / 2)
+        );
         bgImage.show();
         
         auto backLabel = new Label(window);
