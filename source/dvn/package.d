@@ -120,7 +120,10 @@ public
       
     auto app = new Application;
     import std.file : exists;
-    app.isDebugMode = exists("debug.txt");
+    static if (!isDVNRelease)
+    {
+      app.isDebugMode = exists("debug.txt");
+    }
     app.messageLevel = 15;
 
     foreach (k,v; gameSettings.fonts)
