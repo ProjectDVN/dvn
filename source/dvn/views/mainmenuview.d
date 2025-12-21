@@ -39,7 +39,16 @@ public final class MainMenuView : View
 			EXT_PlayMusic(music);
 		}
 
-		loadGenerator("data/game/views/mainmenuview.json", "MainMenuViewUI");
+		if (settings.language && settings.language.length &&
+			exists())
+		{
+			loadGenerator("data/game/views/mainmenuview_" ~ settings.language ~ ".json", "MainMenuViewUI");
+		}
+		else
+		{
+			loadGenerator("data/game/views/mainmenuview.json", "MainMenuViewUI");
+		}
+		
 		loadTheme("data/game/views/mainmenutheme.json", "default", true);
 
 		UIGenerator generator;
