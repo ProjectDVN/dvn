@@ -84,6 +84,8 @@ public final class GalleryView : View
             window.fadeToView("MainMenu", getColorByName("black"), false);
         }));
 
+        DvnEvents.getEvents().renderGalleryViewBackLabel(backLabel);
+
         auto prevLabel = new Label(window);
         addComponent(prevLabel);
         prevLabel.fontName = settings.defaultFont;
@@ -121,7 +123,7 @@ public final class GalleryView : View
             movePreviousPage();
         }));
 
-        //DvnEvents.getEvents().renderLoadGameViewPrevLabel(prevLabel);
+        DvnEvents.getEvents().renderGalleryViewPrevLabel(prevLabel);
 
         auto nextLabel = new Label(window);
         addComponent(nextLabel);
@@ -138,7 +140,7 @@ public final class GalleryView : View
             moveNextPage();
         }));
 
-        //DvnEvents.getEvents().renderLoadGameViewNextLabel(nextLabel);
+        DvnEvents.getEvents().renderGalleryViewNextLabel(nextLabel);
 
         auto galleryFiles = getGalleryPaged(page);
 
@@ -187,11 +189,11 @@ public final class GalleryView : View
 
                         return !rawImageHasMouseHover;
                     }));
+
+                    DvnEvents.getEvents().renderGalleryViewImage(oImage);
                 };};
 
                 closure(rawImage, galleryFile)();
-
-                //DvnEvents.getEvents().renderLoadGameViewLoadEntry(saveFile, rawImage, saveLabel);
 
                 galleryIndex++;
                 galleryX += 340 + 16;

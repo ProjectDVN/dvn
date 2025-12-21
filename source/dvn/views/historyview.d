@@ -81,6 +81,8 @@ public final class HistoryView : View
             window.fadeToView("MainMenu", getColorByName("black"), false);
         }));
 
+        DvnEvents.getEvents().renderHistoryViewLabel(backLabel);
+
         auto searchTextBox = new TextBox(window);
         addComponent(searchTextBox);
         searchTextBox.fontName = settings.defaultFont;
@@ -106,6 +108,8 @@ public final class HistoryView : View
         }
 
         searchTextBox.restyle();
+
+        DvnEvents.getEvents().renderHistoryViewTextBox(searchTextBox);
 
         void restyleButton(Button button, string buttonBackgroundColor, string buttonBackgroundBottomColor, string buttonBorderColor)
         {
@@ -162,6 +166,8 @@ public final class HistoryView : View
             showResults(searchTextBox.text.to!string);
         }));
 
+        DvnEvents.getEvents().renderHistoryViewButton(searchButton);
+
         auto historyPanel = new Panel(window);
         historyPanel.fillColor = getColorByRGB(0,0,0,150);
         historyPanel.size = IntVector(searchButton.width - 16, window.height - (searchButton.y + searchButton.height + 32));
@@ -184,6 +190,8 @@ public final class HistoryView : View
         scrollbarMessages.size = IntVector(16, historyPanel.height);
         scrollbarMessages.restyle();
         scrollbarMessages.updateRect(false);
+
+        DvnEvents.getEvents().renderHistoryViewPanel(historyPanel, scrollbarMessages);
 
         auto result = searchDialogueHistory(searchTextBox.text.to!string);
 
@@ -224,6 +232,8 @@ public final class HistoryView : View
                         gameView.initializeGame(oHistory.sceneName, oHistory.sceneBackground, oHistory.sceneMusic, oHistory.originalScene, text, isOption);
                     });
                 }));
+
+                DvnEvents.getEvents().renderHistoryViewLabel(oLabel);
             };};
 
             if (history.text && history.text.length)

@@ -39,8 +39,10 @@ public final class MainMenuView : View
 			EXT_PlayMusic(music);
 		}
 
+		import std.file : exists;
+
 		if (settings.language && settings.language.length &&
-			exists())
+			exists("data/game/views/mainmenuview_" ~ settings.language ~ ".json"))
 		{
 			loadGenerator("data/game/views/mainmenuview_" ~ settings.language ~ ".json", "MainMenuViewUI");
 		}

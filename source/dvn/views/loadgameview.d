@@ -82,6 +82,8 @@ public final class LoadGameView : View
             window.fadeToView("MainMenu", getColorByName("black"), false);
         }));
 
+        DvnEvents.getEvents().renderLoadGameViewBackLabel(backLabel);
+
         auto prevLabel = new Label(window);
         addComponent(prevLabel);
         prevLabel.fontName = settings.defaultFont;

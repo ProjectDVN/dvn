@@ -213,11 +213,33 @@ public class DvnEvents
 
     // Load Game View
 /// 
+    void renderLoadGameViewBackLabel(Label label) {}
+/// 
     void renderLoadGameViewPrevLabel(Label label) {}
 /// 
     void renderLoadGameViewNextLabel(Label label) {}
 /// 
     void renderLoadGameViewLoadEntry(SaveFile saveFile, Image image, Label saveLabel) {}
+
+    // History View
+/// 
+    void renderHistoryViewLabel(Label label) {}
+/// 
+    void renderHistoryViewTextBox(TextBox textbox) {}
+/// 
+    void renderHistoryViewButton(Button button) {}
+/// 
+    void renderHistoryViewPanel(Panel panel, ScrollBar scrollbar) {}
+
+    // Gallery
+/// 
+    void renderGalleryViewBackLabel(Label label) {}
+/// 
+    void renderGalleryViewPrevLabel(Label label) {}
+/// 
+    void renderGalleryViewNextLabel(Label label) {}
+/// 
+    void renderGalleryViewImage(Image image) {}
 
     static:
     final:
@@ -851,6 +873,14 @@ public class DvnEvents
             }
 
             // Load Game View
+            public override void renderLoadGameViewBackLabel(Label label)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderLoadGameViewBackLabel(label);
+                }
+            }
+
             public override void renderLoadGameViewPrevLabel(Label label)
             {
                 foreach (ev; _eventsHub)
@@ -872,6 +902,70 @@ public class DvnEvents
                 foreach (ev; _eventsHub)
                 {
                     ev.renderLoadGameViewLoadEntry(saveFile, image, saveLabel);
+                }
+            }
+
+            public override void renderHistoryViewLabel(Label label)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderHistoryViewLabel(label);
+                }
+            }
+
+            public override void renderHistoryViewTextBox(TextBox textbox)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderHistoryViewTextBox(textbox);
+                }
+            }
+
+            public override void renderHistoryViewButton(Button button)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderHistoryViewButton(button);
+                }
+            }
+
+            public override void renderHistoryViewPanel(Panel panel, ScrollBar scrollbar)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderHistoryViewPanel(panel, scrollbar);
+                }
+            }
+
+            public override void renderGalleryViewBackLabel(Label label)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGalleryViewBackLabel(label);
+                }
+            }
+
+            public override void renderGalleryViewPrevLabel(Label label)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGalleryViewPrevLabel(label);
+                }
+            }
+
+            public override void renderGalleryViewNextLabel(Label label)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGalleryViewNextLabel(label);
+                }
+            }
+
+            public override void renderGalleryViewImage(Image image)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGalleryViewImage(image);
                 }
             }
 

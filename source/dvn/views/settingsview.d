@@ -173,7 +173,7 @@ public final class SettingsView : View
         scrollbarSettings.restyle();
         scrollbarSettings.updateRect(false);
 
-        DvnEvents.getEvents().renderSettingsPanel(panel, scrollbarSettings);
+        DvnEvents.getEvents().renderSettingsPanel(settingsPanel, scrollbarSettings);
 
         int nextY = 16;
 
