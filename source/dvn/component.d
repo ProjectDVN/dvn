@@ -174,12 +174,12 @@ public abstract class Component : ILayout
   }
 
 ///
-  void setBeforeRender(void delegate() beforeRender)
+  public void setBeforeRender(void delegate() beforeRender)
   {
     _beforeRender = beforeRender;
   }
 /// 
-  void setAfterRender(void delegate() afterRender)
+  public void setAfterRender(void delegate() afterRender)
   {
     _afterRender = afterRender;
   }
