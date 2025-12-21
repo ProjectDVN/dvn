@@ -52,6 +52,101 @@ Effect getEffect(string name)
   return _effectHub.get(name, null);
 }
 
+public final class SunshineEffect : Effect
+{
+  import std.math : sqrt, cos, sin, PI, atan2;
+
+  private:
+  size_t _windowId;
+  bool _isActive;
+  int _x;
+  int _y;
+  struct LightRay
+  {
+      int x;
+      int y;
+      ubyte alpha;
+  }
+
+  LightRay[] _rays;
+
+  public:
+  this()
+  {
+    super("Sunshine");
+
+    class ScreenEvents : DvnEvents
+    {
+      import dvn.view;
+
+      override void onViewChange(View oldView, View newView, string oldViewName, string newViewName)
+      {
+        _isActive = false;
+      }
+
+      override void postRenderContent(Window window)
+      {
+        if (!_isActive || window.id != _windowId)
+            return;
+            
+        foreach (ray; _rays)
+        {
+          EXT_SetRenderDrawColor(
+            window.nativeScreen,
+            255, 255, 220, ray.alpha
+          );
+
+          EXT_RenderDrawLine(
+            window.nativeScreen,
+            0, 0,
+            ray.x, ray.y
+          );
+        }
+      }
+    }
+
+    DvnEvents.setEvents(new ScreenEvents);
+  }
+
+  override void handle(string[] values)
+  {
+    auto window = getApplication().getRealWindow();
+    if (!window) return;
+    _windowId = window.id;
+
+    auto intensity = values.length > 0 ? to!int(values[0]) : 3;
+    auto wideness = values.length > 1 ? to!int(values[1]) : 4;
+    _x = values.length > 2 ? to!int(values[2]) : (window.width / 2);
+    _y = values.length > 3 ? to!int(values[3]) : (window.height / 2);
+
+    _rays = [];
+
+    double dx = _x;
+    double dy = _y;
+
+    double angle = atan2(dy, dx);
+    double coneAngle = PI / wideness;
+    double radius = sqrt(dx*dx + dy*dy);
+
+    auto RAYS = 120 * intensity;
+
+    foreach (i; 0 .. RAYS)
+    {
+      double t = cast(double)i / RAYS;
+      double a = angle - coneAngle / 2 + coneAngle * t;
+
+      int rx = cast(int)(cos(a) * radius);
+      int ry = cast(int)(sin(a) * radius);
+
+      ubyte alpha = cast(ubyte)(255 * sin(t * PI));
+
+      _rays ~= LightRay(rx, ry, alpha);
+    }
+    
+    _isActive = true;
+  }
+}
+
 public final class RainEffect : Effect
 {
   struct RainDrop
@@ -457,4 +552,5 @@ void initializeStandardEffects()
   registerEffect(new ScreenShakeEffect);
   registerEffect(new BackgroundMoveZoomEffect);
   registerEffect(new RainEffect);
+  registerEffect(new SunshineEffect);
 }

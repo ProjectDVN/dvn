@@ -20,6 +20,8 @@ private
 private bool _initialized;
 
 /// 
+public alias EXT_RenderDrawPoint = SDL_RenderDrawPoint;
+/// 
 public alias EXT_GetWindowFlags = SDL_GetWindowFlags;
 /// 
 public alias EXT_WindowFlags = SDL_WindowFlags;

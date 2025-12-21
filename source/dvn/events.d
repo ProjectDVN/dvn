@@ -127,6 +127,8 @@ public class DvnEvents
 
     /// Background has been rendered, nothing else
     void onEffectPre(SceneEffect effect) {}
+    /// Every scene component has been rendered, but not the text panel or text
+    void onEffect(SceneEffect effect) {}
     /// Every component has been or is being rendered (text is delayed so it might not be finished)
     void onEffectPost(SceneEffect effect) {}
 
@@ -531,7 +533,6 @@ public class DvnEvents
                 }
             }
 
-            // Background has been rendered, nothing else
             public override void onEffectPre(SceneEffect effect)
             {
                 foreach (ev; _eventsHub)
@@ -540,7 +541,14 @@ public class DvnEvents
                 }
             }
 
-            // Every component has been or is being rendered (text is delayed so it might not be finished)
+            public override void onEffect(SceneEffect effect)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.onEffect(effect);
+                }
+            }
+
             public override void onEffectPost(SceneEffect effect)
             {
                 foreach (ev; _eventsHub)

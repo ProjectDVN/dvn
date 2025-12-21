@@ -1733,10 +1733,12 @@ public final class GameView : View
 		{
 			foreach (effect; scene.effects)
 			{
-				if (effect.render && effect.render != "pre") continue;
-				auto e = getEffect(effect.id);
-				if (e) e.handle(effect.values);
-				DvnEvents.getEvents().onEffectPre(effect);
+				if (effect.render && effect.render == "pre")
+				{
+					auto e = getEffect(effect.id);
+					if (e) e.handle(effect.values);
+					DvnEvents.getEvents().onEffectPre(effect);
+				}
 			}
 		}
 		
@@ -2304,6 +2306,16 @@ public final class GameView : View
 				ani.show();
 
 				DvnEvents.getEvents().renderGameViewAnimation(animation, ani);
+			}
+		}
+		
+		foreach (effect; scene.effects)
+		{
+			if (!effect.render || !effect.render.length)
+			{
+				auto e = getEffect(effect.id);
+				if (e) e.handle(effect.values);
+				DvnEvents.getEvents().onEffect(effect);
 			}
 		}
 
@@ -3779,11 +3791,12 @@ public final class GameView : View
 			{
 				foreach (effect; scene.effects)
 				{
-					if (effect.render && effect.render != "post") continue;
-					auto e = getEffect(effect.id);
-					if (e) e.handle(effect.values);
-
-					DvnEvents.getEvents().onEffectPost(effect);
+					if (effect.render && effect.render == "post")
+					{
+						auto e = getEffect(effect.id);
+						if (e) e.handle(effect.values);
+						DvnEvents.getEvents().onEffectPre(effect);
+					}
 				}
 			}
 		}
