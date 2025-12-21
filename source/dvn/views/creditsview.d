@@ -51,7 +51,15 @@ public final class CreditsView : View
 
         Label[][] creditLabels = [];
 
-        if (!exists("data/credits.json"))
+        string creditsPath = "data/credits.json";
+
+        if (settings.language && settings.language.length && 
+            exists("data/credits_" ~ settings.language ~ ".json"))
+        {
+            creditsPath = "data/credits_" ~ settings.language ~ ".json";
+        }
+
+        if (!exists(creditsPath))
         {
             runDelayedTask(1000, {
                 window.fadeToView("MainMenu", getColorByName("black"), false);
@@ -59,7 +67,7 @@ public final class CreditsView : View
             return;
         }
 
-        string text = readText("data/credits.json");
+        string text = readText(creditsPath);
         string[] errorMessages;
         CreditsData creditsData;
         if (!deserializeJsonSafe!(CreditsData)(text, creditsData, errorMessages))
