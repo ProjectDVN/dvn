@@ -176,6 +176,8 @@ public class DvnEvents
     void renderGameViewTextStart(SceneEntry scene) {}
 /// 
     void renderGameViewTextFinished(Label textLabel) {}
+/// Called for every frame when the scene is rendered, but not text panel etc.
+    void renderGameViewSceneFrame(Window window) {}
 
 /// 
     bool onGameViewOptionClick(Label option) { return true; }
@@ -730,6 +732,14 @@ public class DvnEvents
                 foreach (ev; _eventsHub)
                 {
                     ev.renderGameViewTextFinished(textLabel);
+                }
+            }
+
+            public override void renderGameViewSceneFrame(Window window)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderGameViewSceneFrame(window);
                 }
             }
 

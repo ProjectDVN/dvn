@@ -2318,6 +2318,15 @@ public final class GameView : View
 				DvnEvents.getEvents().onEffect(effect);
 			}
 		}
+		
+		auto renderOverlay = new Panel(window);
+		addComponent(renderOverlay);
+		renderOverlay.size = IntVector(window.width, window.height);
+		renderOverlay.position = IntVector(0,0);
+		renderOverlay.show();
+		renderOverlay.setAfterRender({
+			DvnEvents.getEvents().renderGameViewSceneFrame(window);
+		});
 
 		if (scene.labels && scene.labels.length)
 		{

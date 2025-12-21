@@ -84,7 +84,7 @@ public final class SunshineEffect : Effect
         _isActive = false;
       }
 
-      override void postRenderContent(Window window)
+      override void renderGameViewSceneFrame(Window window)
       {
         if (!_isActive || window.id != _windowId)
             return;
@@ -181,7 +181,7 @@ public final class RainEffect : Effect
         _isActive = false;
       }
 
-      override void postRenderContent(Window window)
+      override void renderGameViewSceneFrame(Window window)
       {
           if (!_isActive || window.id != _windowId)
               return;
