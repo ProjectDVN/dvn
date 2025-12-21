@@ -46,6 +46,7 @@ public
   import dvn.audio;
   import dvn.characters;
   import dvn.resourcemanager;
+  import dvn.versions;
 
   private string[] _sceneMeta;
 

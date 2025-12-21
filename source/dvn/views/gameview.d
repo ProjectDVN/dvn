@@ -20,6 +20,7 @@ import dvn.views.consoleview;
 import dvn.effects;
 import dvn.ui;
 import dvn.bundling;
+import dvn.versions;
 
 /// 
 public enum SceneComponentId : size_t
@@ -3324,11 +3325,15 @@ public final class GameView : View
 		
 		auto lastTicks = EXT_GetTicks();
 
-		window.addDebugInformation("Scene Name", sceneName);
-		window.addDebugInformation("Current Scene", scene.name);
-		window.addDebugInformation("Next Scene", nextScene ? nextScene.name : "N/A");
-		window.addDebugInformation("Last Choice", _lastChoice ? _lastChoice : "N/A");
-		window.addDebugInformation("Last Background Image", backgroundSource);
+		static if (!isDVNRelease)
+		{
+			window.addDebugInformation("Scene Name", sceneName);
+			window.addDebugInformation("Current Scene", scene.name);
+			window.addDebugInformation("Next Scene", nextScene ? nextScene.name : "N/A");
+			window.addDebugInformation("Last Choice", _lastChoice ? _lastChoice : "N/A");
+			window.addDebugInformation("Last Background Image", backgroundSource);
+			window.addDebugInformation("Skip To Next Choice", _skipToNextChoice.to!string);
+		}
 
 		DvnEvents.getEvents().addClickSafeComponents(safeComponents);
 
@@ -3393,19 +3398,25 @@ public final class GameView : View
 
 				if (k == KeyboardKey.f1)
 				{
-					_skipToNextChoice = !_skipToNextChoice;
+					static if (!isDVNRelease)
+					{
+						_skipToNextChoice = !_skipToNextChoice;
+					}
 				}
 				else if (k == KeyboardKey.f2)
 				{
-					if (window.toggleDebugPanel())
+					static if (!isDVNRelease)
 					{
-						window.addDebugInformation("FPS", "0");
-						window.addDebugInformation("Scene Name", sceneName);
-						window.addDebugInformation("Current Scene", scene.name);
-						window.addDebugInformation("Next Scene", nextScene ? nextScene.name : "N/A");
-						window.addDebugInformation("Last Choice", _lastChoice ? _lastChoice : "N/A");
-						window.addDebugInformation("Last Background Image", backgroundSource);
-						window.addDebugInformation("Skip To Next Choice", _skipToNextChoice.to!string);
+						if (window.toggleDebugPanel())
+						{
+							window.addDebugInformation("FPS", "0");
+							window.addDebugInformation("Scene Name", sceneName);
+							window.addDebugInformation("Current Scene", scene.name);
+							window.addDebugInformation("Next Scene", nextScene ? nextScene.name : "N/A");
+							window.addDebugInformation("Last Choice", _lastChoice ? _lastChoice : "N/A");
+							window.addDebugInformation("Last Background Image", backgroundSource);
+							window.addDebugInformation("Skip To Next Choice", _skipToNextChoice.to!string);
+						}
 					}
 				}
 				else if (k == KeyboardKey.f9)
