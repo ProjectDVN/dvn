@@ -147,7 +147,17 @@ public
     window.backgroundColor = getColorByName("black");
 
     window.addView!LoadingView("Loading");
-	  window.fadeToView("Loading", getColorByName("black"), false);
+    window.addView!LanguageView("LanguageSelection");
+
+	  if ((!gameSettings.language || !gameSettings.language.length) &&
+      gameSettings.languages && gameSettings.languages.length)
+    {
+      window.fadeToView("LanguageSelection", getColorByName("black"), false);
+    }
+    else
+    {
+      window.fadeToView("Loading", getColorByName("black"), false);
+    }
 
     import dvn.views.gameview : GameView;
 

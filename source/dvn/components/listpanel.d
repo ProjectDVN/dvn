@@ -38,7 +38,7 @@ public final class ListPanel : Panel
             if (_center)
             {
                 component.position = IntVector(
-                    _listPadding + ((super.width / 2) - (component.width / 2)),
+                    ((super.width / 2) - (component.width / 2)),
                     _listPadding
                 );
             }

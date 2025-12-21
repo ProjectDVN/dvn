@@ -10,6 +10,7 @@ import std.path : baseName;
 
 import dvn.events;
 import dvn.resources;
+import dvn.gamesettings;
 
 private string _script;
 
@@ -22,15 +23,32 @@ string getBundleScript()
 /// 
 bool hasScriptBundle()
 {
-  return exists("data/scripts.dvn");
+  auto settings = getGlobalSettings();
+
+  auto bundlePath = "data/scripts.dvn";
+
+  if (settings.language && settings.language.length)
+  {
+    bundlePath = "data/scripts." ~ settings.language ~ ".dvn";
+  }
+
+  return exists(bundlePath);
 }
 
 /// 
 void readBundleScript()
 {
   if (!hasScriptBundle) return;
+  auto settings = getGlobalSettings();
 
-  ubyte[] data = cast(ubyte[])read("data/scripts.dvn");
+  auto bundlePath = "data/scripts.dvn";
+
+  if (settings.language && settings.language.length)
+  {
+    bundlePath = "data/scripts." ~ settings.language ~ ".dvn";
+  }
+
+  ubyte[] data = cast(ubyte[])read(bundlePath);
 
   data = DvnEvents.getEvents().scriptBundleRead(data.dup).dup;
 
@@ -44,8 +62,30 @@ bool writeBundleScript()
   {
     return false;
   }
+  auto settings = getGlobalSettings();
 
-  auto scriptFiles = dirEntries("data/game/scripts","*.{vns}",SpanMode.depth);
+  if (settings.languages && settings.languages.length)
+  {
+    foreach (k,v; settings.languages)
+    {
+      writeBundleScript(k);
+    }
+  }
+  else
+  {
+    writeBundleScript("");
+  }
+
+  return true;
+}
+
+private void writeBundleScript(string language)
+{
+  auto scriptFiles = dirEntries(
+    language && language.length ?
+      ("data/game/scripts_" ~ language) :
+      "data/game/scripts"
+    , "*.{vns}",SpanMode.depth);
 
   foreach (scriptFile; scriptFiles)
   {
@@ -65,9 +105,10 @@ bool writeBundleScript()
 
   buffer = DvnEvents.getEvents().scriptBundleWrite(buffer.dup).dup;
 
-  write("data/scripts.dvn", buffer);
-
-  return true;
+  write(language && language.length ?
+    ("data/scripts." ~ language ~ ".dvn") :
+    "data/scripts.dvn"
+    , buffer);
 }
 
 /// 

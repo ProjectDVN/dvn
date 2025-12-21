@@ -1225,7 +1225,13 @@ public final class GameView : View
 			}
 			else
 			{
-				auto scriptFiles = dirEntries("data/game/scripts","*.{vns}",SpanMode.depth);
+				auto scriptsPath = "data/game/scripts";
+				if (settings.language && settings.language.length)
+				{
+					scriptsPath = "data/game/scripts_" ~ settings.language;
+				}
+
+				auto scriptFiles = dirEntries(scriptsPath,"*.{vns}",SpanMode.depth);
 
 				ScriptLine[] scripts = [];
 

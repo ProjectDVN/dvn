@@ -13,12 +13,19 @@ public final class GameSettings
 {
   public:
   final:
-  this() {}
+  this()
+  {
+    rubyOffset = 0.0;
+  }
 
 /// 
   string[string] fonts;
 /// 
   string[] backupFonts;
+/// 
+  string[string] languages;
+/// 
+  string language;
 /// 
   string defaultFont;
 /// 
