@@ -143,6 +143,8 @@ public final class SettingsView : View
             });
         }));
 
+        DvnEvents.getEvents().renderSettingsLabel(backLabel);
+
 		auto settingsPanel = new Panel(window);
 		addComponent(settingsPanel);
         settingsPanel.fillColor = "fff".getColorByHex.changeAlpha(150);
@@ -171,6 +173,8 @@ public final class SettingsView : View
         scrollbarSettings.restyle();
         scrollbarSettings.updateRect(false);
 
+        DvnEvents.getEvents().renderSettingsPanel(panel, scrollbarSettings);
+
         int nextY = 16;
 
         void renderSection(dstring title)
@@ -186,6 +190,8 @@ public final class SettingsView : View
             sectionHeader.updateRect();
             settingsPanel.addComponent(sectionHeader);
 
+            DvnEvents.getEvents().renderSettingsLabel(sectionHeader);
+
             nextY += sectionHeader.height + 16;
 
             auto splitter = new Panel(window);
@@ -198,6 +204,8 @@ public final class SettingsView : View
                 nextY
             );
             splitter.show();
+
+            DvnEvents.getEvents().renderSettingsPanel(splitter, null);
 
             nextY += sectionHeader.height + 16;
         }
@@ -214,6 +222,8 @@ public final class SettingsView : View
 			label.position = IntVector(16, nextY);
 			label.updateRect();
 
+            DvnEvents.getEvents().renderSettingsLabel(label);
+
             auto splitter = new Label(window);
             settingsPanel.addComponent(splitter);
 			splitter.fontName = settings.defaultFont;
@@ -223,6 +233,8 @@ public final class SettingsView : View
 			splitter.shadow = true;
 			splitter.position = IntVector(328, nextY);
 			splitter.updateRect();
+
+            DvnEvents.getEvents().renderSettingsLabel(splitter);
 
             auto checkbox = new CheckBox(window);
             checkbox.fillColor = "e5e7e9".getColorByHex;
@@ -260,6 +272,8 @@ public final class SettingsView : View
 			label.position = IntVector(16, nextY);
 			label.updateRect();
 
+            DvnEvents.getEvents().renderSettingsLabel(label);
+
             auto splitter = new Label(window);
             settingsPanel.addComponent(splitter);
 			splitter.fontName = settings.defaultFont;
@@ -269,6 +283,8 @@ public final class SettingsView : View
 			splitter.shadow = true;
 			splitter.position = IntVector(328, nextY);
 			splitter.updateRect();
+
+            DvnEvents.getEvents().renderSettingsLabel(splitter);
 
             auto leftButton = new Button(window);
             settingsPanel.addComponent(leftButton);
@@ -293,6 +309,8 @@ public final class SettingsView : View
 			valueLabel.shadow = true;
 			valueLabel.position = IntVector(leftButton.x + leftButton.width + 14, nextY + 3);
 			valueLabel.updateRect();
+
+            DvnEvents.getEvents().renderSettingsLabel(valueLabel);
             
             auto rightButton = new Button(window);
             settingsPanel.addComponent(rightButton);

@@ -197,6 +197,10 @@ public class DvnEvents
 /// 
     void renderSettingsButton(Button button) {}
 /// 
+    void renderSettingsLabel(Label label) {}
+/// 
+    void renderSettingsPanel(Panel panel, ScrollBar scrollbar) {}
+/// 
     void renderSettingsViewEnd() {}
 
     // Main Menu View
@@ -804,6 +808,20 @@ public class DvnEvents
                 foreach (ev; _eventsHub)
                 {
                     ev.renderSettingsButton(button);
+                }
+            }
+            public override void renderSettingsLabel(Label label)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderSettingsLabel(label);
+                }
+            }
+            public override void renderSettingsPanel(Panel panel, ScrollBar scrollbar)
+            {
+                foreach (ev; _eventsHub)
+                {
+                    ev.renderSettingsPanel(panel, scrollbar);
                 }
             }
             public override void renderSettingsViewEnd()
