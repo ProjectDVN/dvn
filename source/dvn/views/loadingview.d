@@ -50,6 +50,16 @@ public final class LoadingView : View
 		auto window = super.window;
 		auto settings = getGlobalSettings();
 
+		loadLanguageMap("data/game/localization/EN.json", "EN", true);
+
+		if (settings.language && settings.language.length &&
+			settings.language != "EN")
+		{
+			import dvn.i18n;
+
+			loadLanguageMap("data/game/localization/" ~ settings.language ~ ".json", settings.language, false);
+		}
+
 		EXT_SetWindowBordered(window.nativeWindow, EXT_bool.SDL_FALSE);
 
 		if (!settings.disableLoadScreenMusic)

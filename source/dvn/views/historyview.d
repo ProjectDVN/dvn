@@ -51,6 +51,8 @@ public final class HistoryView : View
 
         clean();
 
+        string language = settings.language && settings.language.length ? settings.language : "EN";
+
         auto bgImage = new Image(window, "MainMenuBackground");
         addComponent(bgImage);
         bgImage.position = IntVector(
@@ -71,7 +73,7 @@ public final class HistoryView : View
         backLabel.fontName = settings.defaultFont;
         backLabel.fontSize = 24;
         backLabel.color = "fff".getColorByHex;
-        backLabel.text = settings.backText.to!dstring;
+        backLabel.text = getLocalizedEntry(language, "history", settings.backText).to!dstring;
         backLabel.shadow = true;
         backLabel.isLink = true;
         backLabel.position = IntVector(16, 16);
@@ -142,7 +144,7 @@ public final class HistoryView : View
 		searchButton.fontName = settings.defaultFont;
 		searchButton.fontSize = 24;
 		searchButton.textColor = settings.buttonTextColor && settings.buttonTextColor.length ? settings.buttonTextColor.getColorByHex : "000".getColorByHex;
-		searchButton.text = "Search";
+		searchButton.text = getLocalizedEntry(language, "history", "search").to!dstring;
 		searchButton.fitToSize = false;
 
         if (settings.buttonBackgroundColor &&

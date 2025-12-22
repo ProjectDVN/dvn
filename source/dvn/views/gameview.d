@@ -1460,6 +1460,8 @@ public final class GameView : View
 		auto settings = getGlobalSettings();
 		auto application = getApplication();
 
+		string language = settings.language && settings.language.length ? settings.language : "EN";
+
 		void stopVoice()
 		{
 			if (_lastVoiceChannel >= 0)
@@ -3023,7 +3025,7 @@ public final class GameView : View
 		saveButton.fontName = settings.defaultFont;
 		saveButton.fontSize = 18;
 		saveButton.textColor = "000".getColorByHex;
-		saveButton.text = settings.saveButtonText.to!dstring;
+		saveButton.text = getLocalizedEntry(language, "vn", settings.saveButtonText).to!dstring;
 		saveButton.fitToSize = false;
 
 		saveButton.restyle();
@@ -3050,7 +3052,7 @@ public final class GameView : View
 		exitButton.fontName = settings.defaultFont;
 		exitButton.fontSize = 18;
 		exitButton.textColor = "000".getColorByHex;
-		exitButton.text = settings.exitButtonText.to!dstring;
+		exitButton.text = getLocalizedEntry(language, "vn", settings.exitButtonText).to!dstring;
 		exitButton.fitToSize = false;
 
 		exitButton.restyle();
@@ -3081,7 +3083,7 @@ public final class GameView : View
 		settingsButton.fontName = settings.defaultFont;
 		settingsButton.fontSize = 18;
 		settingsButton.textColor = "000".getColorByHex;
-		settingsButton.text = settings.settingsButtonText.to!dstring;
+		settingsButton.text = getLocalizedEntry(language, "vn", settings.settingsButtonText).to!dstring;
 		settingsButton.fitToSize = false;
 
 		settingsButton.restyle();
@@ -3112,7 +3114,7 @@ public final class GameView : View
 		autoButton.fontName = settings.defaultFont;
 		autoButton.fontSize = 18;
 		autoButton.textColor = "000".getColorByHex;
-		autoButton.text = (isAuto ? settings.autoButtonTextOn : settings.autoButtonTextOff).to!dstring;
+		autoButton.text = (isAuto ? getLocalizedEntry(language, "vn", settings.autoButtonTextOn) : getLocalizedEntry(language, "vn", settings.autoButtonTextOff)).to!dstring;
 		autoButton.fitToSize = false;
 
 		autoButton.restyle();
@@ -3167,7 +3169,7 @@ public final class GameView : View
 		quickSaveButton.fontName = settings.defaultFont;
 		quickSaveButton.fontSize = 18;
 		quickSaveButton.textColor = "000".getColorByHex;
-		quickSaveButton.text = (settings.quickSaveButtonText ? settings.quickSaveButtonText : "Q-Save").to!dstring;
+		quickSaveButton.text = getLocalizedEntry(language, "vn", settings.quickSaveButtonText).to!dstring;
 		quickSaveButton.fitToSize = false;
 
 		quickSaveButton.restyle();

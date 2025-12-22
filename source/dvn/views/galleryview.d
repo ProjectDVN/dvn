@@ -54,6 +54,8 @@ public final class GalleryView : View
 
         clean();
 
+        string language = settings.language && settings.language.length ? settings.language : "EN";
+
         auto bgImage = new Image(window, "MainMenuBackground");
         addComponent(bgImage);
         bgImage.position = IntVector(
@@ -74,7 +76,7 @@ public final class GalleryView : View
         backLabel.fontName = settings.defaultFont;
         backLabel.fontSize = 24;
         backLabel.color = "fff".getColorByHex;
-        backLabel.text = settings.backText.to!dstring;
+        backLabel.text = getLocalizedEntry(language, "gallery", settings.backText).to!dstring;
         backLabel.shadow = true;
         backLabel.isLink = true;
         backLabel.position = IntVector(16, 16);

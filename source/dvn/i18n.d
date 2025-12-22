@@ -69,6 +69,17 @@ void loadLanguageMap(string path, string name, bool isDefault = false)
   _languageMaps[name] = localizationMap;
 }
 
+string getLocalizedEntry(string language, string key, string value, string defaultValue = "")
+{
+  string result;
+  if (!tryGetLocalizationEntry(language, key, value, result))
+  {
+    result = defaultValue && defaultValue.length ? defaultValue : value;
+  }
+
+  return result;
+}
+
 /// 
 bool tryGetLocalizationEntry(string language, string key, string value, out string result)
 {

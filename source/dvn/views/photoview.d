@@ -47,6 +47,8 @@ public final class PhotoView : View
 		auto window = super.window;
 		auto settings = getGlobalSettings();
 
+        string language = settings.language && settings.language.length ? settings.language : "EN";
+
         auto bgImage = new Image(window, path, true);
         addComponent(bgImage);
         bgImage.size = IntVector(bgImage.fileWidth, bgImage.fileHeight);
@@ -61,7 +63,7 @@ public final class PhotoView : View
         backLabel.fontName = settings.defaultFont;
         backLabel.fontSize = 24;
         backLabel.color = "fff".getColorByHex;
-        backLabel.text = settings.backText.to!dstring;
+        backLabel.text = getLocalizedEntry(language, "gallery", settings.backText).to!dstring;
         backLabel.shadow = true;
         backLabel.isLink = true;
         backLabel.position = IntVector(16, 16);

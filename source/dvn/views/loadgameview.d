@@ -66,13 +66,15 @@ public final class LoadGameView : View
             video.size = IntVector(1280, 720);
             video.position = IntVector(0, 0);
         }
+
+        string language = settings.language && settings.language.length ? settings.language : "EN";
         
         auto backLabel = new Label(window);
         addComponent(backLabel);
         backLabel.fontName = settings.defaultFont;
         backLabel.fontSize = 24;
         backLabel.color = "fff".getColorByHex;
-        backLabel.text = settings.backText.to!dstring;
+        backLabel.text = getLocalizedEntry(language, "load_game", settings.backText).to!dstring;
         backLabel.shadow = true;
         backLabel.isLink = true;
         backLabel.position = IntVector(16, 16);
@@ -170,7 +172,9 @@ public final class LoadGameView : View
                 saveLabel.fontSize = 24;
                 saveLabel.color = "fff".getColorByHex;
 
-                auto loadingText = settings.loadText ~ saveFile.date;
+                import std.array : replace;
+
+                auto loadingText = getLocalizedEntry(language, "load_game", settings.loadText).replace("{save}", saveFile.date);
 
                 if (saveFile.id == "auto")
                 {

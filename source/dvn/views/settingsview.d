@@ -34,6 +34,8 @@ public final class SettingsView : View
 		auto window = super.window;
 		auto settings = getGlobalSettings();
 
+        string language = settings.language && settings.language.length ? settings.language : "EN";
+
         void saveSettings()
         {
             saveGameSettings("data/settings.json");
@@ -122,7 +124,7 @@ public final class SettingsView : View
         backLabel.fontName = settings.defaultFont;
         backLabel.fontSize = 24;
         backLabel.color = "fff".getColorByHex;
-        backLabel.text = settings.backText.to!dstring;
+        backLabel.text = getLocalizedEntry(language, "settings", settings.backText).to!dstring;
         backLabel.shadow = true;
         backLabel.isLink = true;
         backLabel.position = IntVector(16, 16);
@@ -177,13 +179,13 @@ public final class SettingsView : View
 
         int nextY = 16;
 
-        void renderSection(dstring title)
+        void renderSection(string title)
         {
             auto sectionHeader = new Label(window);
             sectionHeader.fontName = settings.defaultFont;
             sectionHeader.fontSize = 28;
             sectionHeader.color = "cornflowerblue".getColorByName;
-            sectionHeader.text = title;
+            sectionHeader.text = title.to!dstring;
             sectionHeader.shadow = true;
             sectionHeader.isLink = false;
             sectionHeader.position = IntVector(16, nextY);
@@ -210,14 +212,14 @@ public final class SettingsView : View
             nextY += sectionHeader.height + 16;
         }
 
-        void renderToggleSetting(dstring text, void delegate(CheckBox) handler, bool delegate() checkedHandler)
+        void renderToggleSetting(string text, void delegate(CheckBox) handler, bool delegate() checkedHandler)
         {
             auto label = new Label(window);
             settingsPanel.addComponent(label);
 			label.fontName = settings.defaultFont;
 			label.fontSize = 18;
 			label.color = "cornflowerblue".getColorByName;
-			label.text = text;
+			label.text = text.to!dstring;
 			label.shadow = true;
 			label.position = IntVector(16, nextY);
 			label.updateRect();
@@ -256,7 +258,7 @@ public final class SettingsView : View
         }
 
         void renderValueSelector(
-            dstring text,
+            string text,
             int value,
             int delegate(int) incrementor, int delegate(int) decrementor,
             dstring leftText, dstring rightText,
@@ -267,7 +269,7 @@ public final class SettingsView : View
 			label.fontName = settings.defaultFont;
 			label.fontSize = 18;
 			label.color = "cornflowerblue".getColorByName;
-			label.text = text;
+			label.text = text.to!dstring;
 			label.shadow = true;
 			label.position = IntVector(16, nextY);
 			label.updateRect();
@@ -354,9 +356,9 @@ public final class SettingsView : View
             DvnEvents.getEvents().renderSettingsButton(rightButton);
         }
 
-        renderSection("VIDEO");
+        renderSection(getLocalizedEntry(language, "settings", "video"));
 
-        renderToggleSetting("Full Screen", (checkbox) {
+        renderToggleSetting(getLocalizedEntry(language, "settings", "full_screen"), (checkbox) {
             if (checkbox.checked)
             {
                 settings.fullScreen = true;
@@ -389,7 +391,7 @@ public final class SettingsView : View
             }
         }, () { return settings.fullScreen; });
 
-        renderToggleSetting("Character Fade", (checkbox) {
+        renderToggleSetting(getLocalizedEntry(language, "settings", "character_fade"), (checkbox) {
             if (checkbox.checked)
             {
                 settings.fadeInCharacters = true;
@@ -403,7 +405,7 @@ public final class SettingsView : View
             }
         }, () { return settings.fadeInCharacters; });
 
-        renderToggleSetting("Text Fade", (checkbox) {
+        renderToggleSetting(getLocalizedEntry(language, "settings", "text_fade"), (checkbox) {
             if (checkbox.checked)
             {
                 settings.fadeInText = true;
@@ -417,7 +419,7 @@ public final class SettingsView : View
             }
         }, () { return settings.fadeInText; });
         
-        renderValueSelector("Text Panel Opacity Level", settings.textPanelOpacityLevel, (value)
+        renderValueSelector(getLocalizedEntry(language, "settings", "text_panel_opacity_level"), settings.textPanelOpacityLevel, (value)
         {
             if (value >= 255) return 255;
 
@@ -434,7 +436,7 @@ public final class SettingsView : View
             saveSettings();
         });
 
-        renderToggleSetting("Highlight New Text", (checkbox) {
+        renderToggleSetting(getLocalizedEntry(language, "settings", "highlight_new_text"), (checkbox) {
             if (checkbox.checked)
             {
                 settings.highlightNewText = true;
@@ -448,7 +450,7 @@ public final class SettingsView : View
             }
         }, () { return settings.highlightNewText; });
 
-        renderValueSelector("Window Fade Time", settings.windowFadeTime, (value)
+        renderValueSelector(getLocalizedEntry(language, "settings", "window_fade_time"), settings.windowFadeTime, (value)
         {
             if (value >= 256) return 256;
 
@@ -465,7 +467,7 @@ public final class SettingsView : View
             saveSettings();
         });
 
-        renderValueSelector("Dialogue Text Line-Spacing", settings.dialogueTextLineSpacing, (value)
+        renderValueSelector(getLocalizedEntry(language, "settings", "dialogue_text_line_spacing"), settings.dialogueTextLineSpacing, (value)
         {
             if (value >= 32) return 32;
 
@@ -484,9 +486,9 @@ public final class SettingsView : View
 
         nextY += 16;
 
-        renderSection("AUDIO");
+        renderSection(getLocalizedEntry(language, "settings", "audio"));
 
-        renderValueSelector("Volume", settings.volume, (value)
+        renderValueSelector(getLocalizedEntry(language, "settings", "volume"), settings.volume, (value)
         {
             if (value >= 100) return 100;
 
@@ -507,7 +509,7 @@ public final class SettingsView : View
             EXT_PlayLastMusic();
         });
 
-        renderToggleSetting("Mute BGM", (checkbox) {
+        renderToggleSetting(getLocalizedEntry(language, "settings", "mute_bgm"), (checkbox) {
             if (checkbox.checked)
             {
                 settings.muteMusic = true;
@@ -524,7 +526,7 @@ public final class SettingsView : View
             }
         }, () { return settings.muteMusic; });
         
-        renderToggleSetting("Mute SFX", (checkbox) {
+        renderToggleSetting(getLocalizedEntry(language, "settings", "mute_sfx"), (checkbox) {
             if (checkbox.checked)
             {
                 settings.muteSoundEffects = true;
@@ -539,7 +541,7 @@ public final class SettingsView : View
             }
         }, () { return settings.muteSoundEffects; });
 
-        renderValueSelector("Voice Timing Multiplier", settings.voiceTimingMultiplier, (value)
+        renderValueSelector(getLocalizedEntry(language, "settings", "voice_timing_multiplier"), settings.voiceTimingMultiplier, (value)
         {
             if (value >= 10) return 10;
 
@@ -558,9 +560,9 @@ public final class SettingsView : View
 
         nextY += 16;
 
-        renderSection("GAMEPLAY");
+        renderSection(getLocalizedEntry(language, "settings", "gameplay"));
         
-        renderToggleSetting("Auto Save", (checkbox) {
+        renderToggleSetting(getLocalizedEntry(language, "settings", "auto_save"), (checkbox) {
             if (checkbox.checked)
             {
                 settings.enableAutoSave = true;
@@ -573,7 +575,7 @@ public final class SettingsView : View
             }
         }, () { return settings.enableAutoSave; });
         
-        renderValueSelector("Text Speed", settings.textSpeed, (value)
+        renderValueSelector(getLocalizedEntry(language, "settings", "text_speed"), settings.textSpeed, (value)
         {
             if (value >= 512) return 512;
 
@@ -590,7 +592,7 @@ public final class SettingsView : View
             saveSettings();
         });
         
-        renderToggleSetting("Disable Swipe Gesture", (checkbox) {
+        renderToggleSetting(getLocalizedEntry(language, "settings", "disable_swipe_gesture"), (checkbox) {
             if (checkbox.checked)
             {
                 settings.disableSwipeGesture = true;
@@ -603,7 +605,7 @@ public final class SettingsView : View
             }
         }, () { return settings.disableSwipeGesture; });
         
-        renderToggleSetting("Disable Continue Arrow", (checkbox) {
+        renderToggleSetting(getLocalizedEntry(language, "settings", "disable_continue_arrow"), (checkbox) {
             if (checkbox.checked)
             {
                 settings.disableContinueArrow = true;
@@ -616,7 +618,7 @@ public final class SettingsView : View
             }
         }, () { return settings.disableContinueArrow; });
         
-        renderValueSelector("Auto Speed Increase", settings.autoSpeed, (value)
+        renderValueSelector(getLocalizedEntry(language, "settings", "auto_speed_increase"), settings.autoSpeed, (value)
         {
             if (value >= 10) return 10;
 
@@ -633,7 +635,7 @@ public final class SettingsView : View
             saveSettings();
         });
         
-        renderToggleSetting("Click Text-Panel To Advance", (checkbox) {
+        renderToggleSetting(getLocalizedEntry(language, "settings", "click_text_panel_to_advance"), (checkbox) {
             if (checkbox.checked)
             {
                 settings.clickTextBoxtoAdvance = true;
@@ -646,7 +648,7 @@ public final class SettingsView : View
             }
         }, () { return settings.clickTextBoxtoAdvance; });
         
-        renderToggleSetting("Hide Auto Indicator", (checkbox) {
+        renderToggleSetting(getLocalizedEntry(language, "settings", "hide_auto_indicator"), (checkbox) {
             if (checkbox.checked)
             {
                 settings.hideAutoIndicator = true;
@@ -659,7 +661,7 @@ public final class SettingsView : View
             }
         }, () { return settings.hideAutoIndicator; });
         
-        renderToggleSetting("Immersion Mode", (checkbox) {
+        renderToggleSetting(getLocalizedEntry(language, "settings", "immersion_mode"), (checkbox) {
             if (checkbox.checked)
             {
                 settings.immersionMode = true;
@@ -672,7 +674,7 @@ public final class SettingsView : View
             }
         }, () { return settings.immersionMode; });
 
-        renderToggleSetting("Disable Effects", (checkbox) {
+        renderToggleSetting(getLocalizedEntry(language, "settings", "disable_effects"), (checkbox) {
             if (checkbox.checked)
             {
                 settings.disableEffects = true;

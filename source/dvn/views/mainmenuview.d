@@ -63,7 +63,9 @@ public final class MainMenuView : View
 		Component exitLabel;
 		if (tryGetGenerator("MainMenuViewUI", generator))
 		{
-			generateUI("EN_US", window, this, generator, (component,eventName,componentName)
+			auto uiLanguage = (settings.language && settings.language.length) ? settings.language : "EN";
+
+			generateUI(uiLanguage, window, this, generator, (component,eventName,componentName)
 			{
 				auto button = cast(Button)component;
 				switch (componentName)
