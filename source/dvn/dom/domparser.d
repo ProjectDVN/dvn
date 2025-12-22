@@ -105,7 +105,7 @@ DomNode[] parseDomElements(string dom, DomParserSettings parserSettings) @safe
   {
     char last = i > 0 ? dom[i - 1] : '\0';
     char current = dom[i];
-    char next =  i < (dom.length - 1) ? dom[i + 1] : '\0';
+    char next =  (dom.length > 1 && i < (dom.length - 1)) ? dom[i + 1] : '\0';
 
     if (current < 32 && (current < 8 || current > 13))
     {
@@ -140,7 +140,7 @@ DomNode[] parseDomElements(string dom, DomParserSettings parserSettings) @safe
       {
         last = j > 0 ? dom[j - 1] : '\0';
         current = dom[j];
-        next =  j < (dom.length - 1) ? dom[j + 1] : '\0';
+        next =  (dom.length > 1 && j < (dom.length - 1)) ? dom[j + 1] : '\0';
 
         if ((current == '\"' || current == '\'') && !inString)
         {
@@ -222,7 +222,7 @@ DomNode[] parseDomElements(string dom, DomParserSettings parserSettings) @safe
           {
             last = i > 0 ? dom[i - 1] : '\0';
             current = dom[i];
-            next =  i < (dom.length - 1) ? dom[i + 1] : '\0';
+            next =  (dom.length > 1 && i < (dom.length - 1)) ? dom[i + 1] : '\0';
           }
         }
 
@@ -308,7 +308,7 @@ DomNode[] parseDomElements(string dom, DomParserSettings parserSettings) @safe
         {
           last = i > 0 ? dom[i - 1] : '\0';
           current = dom[i];
-          next =  i < (dom.length - 1) ? dom[i + 1] : '\0';
+          next =  (dom.length > 1 && i < (dom.length - 1)) ? dom[i + 1] : '\0';
         }
 
         if (current.isWhite || current == '>' || current == '/')

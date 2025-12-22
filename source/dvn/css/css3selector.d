@@ -208,7 +208,7 @@ Css3SelectionQuery parseParts(string selector) @safe
   {
     char last = i > 0 ? selector[i - 1] : '\0';
     char current = selector[i];
-    char next =  i < (selector.length - 1) ? selector[i + 1] : '\0';
+    char next =  (selector.length > 1 && i < (selector.length - 1)) ? selector[i + 1] : '\0';
 
     if (current == '[' && !inAttribute)
     {
@@ -342,7 +342,7 @@ Css3Selection[] parsePart(string selector) @safe
   {
     char last = i > 0 ? selector[i - 1] : '\0';
     char current = selector[i];
-    char next =  i < (selector.length - 1) ? selector[i + 1] : '\0';
+    char next =  (selector.length > 1 && i < (selector.length - 1)) ? selector[i + 1] : '\0';
 
     if (isState)
     {
@@ -440,7 +440,7 @@ Css3AttributeSelection parseAttribute(string selector) @safe
   {
     char last = i > 0 ? selector[i - 1] : '\0';
     char current = selector[i];
-    char next =  i < (selector.length - 1) ? selector[i + 1] : '\0';
+    char next =  (selector.length > 1 && i < (selector.length - 1)) ? selector[i + 1] : '\0';
 
     if (attribute._operator)
     {

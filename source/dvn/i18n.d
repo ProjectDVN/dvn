@@ -113,7 +113,7 @@ string parseLocalizedString(string language, string s)
   foreach (ref i; 0 .. s.length)
   {
     auto c = s[i];
-    auto next = i < (s.length - 1) ? s[i + 1] : '\0';
+    auto next = (s.length > 1 && i < (s.length - 1)) ? s[i + 1] : '\0';
 
     if (c == '{' && next == '{')
     {
@@ -139,7 +139,7 @@ string parseLocalizedString(string language, string s)
         string result;
         if (tryGetLocalizationEntry(language, key, value, result))
         {
-          auto resultData = result.split("|");
+          // auto resultData = result.split("|"); -- keeping this commented out, not sure why we did this in the first place, so keeping it just in case...
 
           if (functions && functions.length)
           {
