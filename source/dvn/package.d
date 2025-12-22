@@ -47,6 +47,9 @@ public
   import dvn.characters;
   import dvn.resourcemanager;
   import dvn.versions;
+  import dvn.compiler;
+  import dvn.scenegraph;
+  import dvn.testing;
 
   private string[] _sceneMeta;
 

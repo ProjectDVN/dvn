@@ -10,6 +10,7 @@ import dvn.ui;
 import dvn.application;
 import dvn.window;
 import dvn.resources;
+import dvn.scenegraph;
 
 /// 
 public enum SwipeDirection
