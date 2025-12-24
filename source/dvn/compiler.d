@@ -151,6 +151,7 @@ void compile(GameSettings settings, ScriptLine[] scriptText, ref SceneEntry[stri
     int narratorX = 0;
     int narratorY = 0;
     SceneCharacter[] characters = [];
+    string[] removeCharacters = [];
 
     string textColor = settings.defaultTextColor && settings.defaultTextColor.length ? settings.defaultTextColor : "fff";
     lineCount = 0;
@@ -344,7 +345,7 @@ void compile(GameSettings settings, ScriptLine[] scriptText, ref SceneEntry[stri
                     break;
                 case "removeCharacter":
                 case "rc":
-                    entry.characters = entry.characters.filter!(c => c.name != value).array;
+                    removeCharacters ~= value;
                     break;
                 case "meta":
                     entry.meta ~= value;
@@ -595,6 +596,16 @@ void compile(GameSettings settings, ScriptLine[] scriptText, ref SceneEntry[stri
                     entry.characters ~= characters;
                     characters = [];
 
+                    if (removeCharacters)
+                    {
+                        foreach (rc; removeCharacters)
+                        {
+                            entry.characters = entry.characters.filter!(c => c.name != rc).array;
+                        }
+                    }
+                    
+                    removeCharacters = [];
+
                     entry.voice = voice;
                     entry.characterNames = charNames;
                     entry.isNarrator = isNarrator;
@@ -823,5 +834,253 @@ Text 2
         assert(scenes.length == 2);
     }
 
-    // TODO: test all scene node types.
+    {
+        auto scenes = compileFromText(`
+[include]
+Text1
+Text2
+
+[main]
+@include
+`);
+        assert(scenes.length == 4);
+        auto scene = scenes.get("main", null);
+        assert(scene !is null);
+        assert(scene.text == "Text1");
+        auto nextScene = scenes.get(scene.nextScene, null);
+        assert(nextScene !is null);
+        assert(nextScene.text == "Text2");
+    }
+
+    {
+        auto scenes = compileFromText(`
+[main]
+ruby
+hideDialogue
+hideButtons
+stopMusic
+stopSound
+fadeMusic
+`);
+        auto scene = scenes.get("main", null);
+        assert(scene !is null);
+        assert(scene.hasRuby);
+        assert(scene.hideDialogue);
+        assert(scene.hideButtons);
+        assert(scene.stopMusic);
+        assert(scene.stopSound);
+        assert(scene.fadeMusic);
+    }
+
+    {
+        auto scenes = compileFromText(`
+[main]
+c=aya,happy
+cp=100,150
+cz=1
+cf
+c=ren
+cm=left
+cms=30
+cp=bottomSlightLeft
+This scene has characters.
+`);
+        auto scene = scenes.get("main", null);
+        assert(scene !is null);
+        assert(scene.text == "This scene has characters.");
+        assert(scene.characters && scene.characters.length == 2);
+        assert(scene.characters[0].name == "aya");
+        assert(scene.characters[0].image == "aya,happy");
+        assert(scene.characters[0].x == 100);
+        assert(scene.characters[0].y == 150);
+        assert(scene.characters[0].zIndex == 1);
+        assert(scene.characters[0].characterFadeIn);
+        assert(scene.characters[1].name == "ren");
+        assert(scene.characters[1].image == "ren");
+        assert(scene.characters[1].position == "bottomSlightLeft");
+        assert(scene.characters[1].movement == "left");
+        assert(scene.characters[1].movementSpeed == 30);
+    }
+
+    {
+        auto scenes = compileFromText(`
+[main]
+This goes to next scene.
+->~
+
+[next-scene]
+Next scene.
+`);
+        auto scene = scenes.get("main", null);
+        assert(scene !is null);
+        assert(scene.text == "This goes to next scene.");
+        assert(scene.nextScene == "next-scene");
+        scene = scenes.get(scene.nextScene, null);
+        assert(scene !is null);
+        assert(scene.text == "Next scene.");
+    }
+
+    {
+        auto scenes = compileFromText(`
+[main]
+c=aya,happy
+c=ren
+rc=ren
+This scene has one character.
+`);
+        auto scene = scenes.get("main", null);
+        assert(scene !is null);
+        assert(scene.text == "This scene has one character.");
+        assert(scene.characters && scene.characters.length == 1);
+        assert(scene.characters[0].name == "aya");
+        assert(scene.characters[0].image == "aya,happy");
+    }
+
+    {
+        auto scenes = compileFromText(`
+[main]
+tc=f00
+f=gothic
+`);
+        auto scene = scenes.get("main", null);
+        assert(scene !is null);
+        assert(scene.textColor == "f00");
+        assert(scene.textFont == "gothic");
+    }
+
+    {
+        auto scenes = compileFromText(`
+[main]
+view=MyView
+`);
+        auto scene = scenes.get("main", null);
+        assert(scene !is null);
+        assert(scene.view == "MyView");
+    }
+
+    {
+        auto scenes = compileFromText(`
+[main]
+a:start:Start Story=Act 1
+
+[start]
+This is the first scene.
+`);
+        auto scene = scenes.get("main", null);
+        assert(scene !is null);
+        assert(scene.act == "Act 1");
+        assert(scene.nextScene == "start");
+        assert(scene.actContinueButton == "Start Story");
+    }
+
+    {
+        auto scenes = compileFromText(`
+[main]
+i:150,250=MyImage
+`);
+        auto scene = scenes.get("main", null);
+        assert(scene !is null);
+        assert(scene.images && scene.images.length == 1);
+        assert(scene.images[0].source == "MyImage");
+        assert(scene.images[0].x == 150);
+        assert(scene.images[0].y == 250);
+    }
+
+    {
+        auto scenes = compileFromText(`
+[main]
+v:150,250:800,450=MyVideo
+`);
+        auto scene = scenes.get("main", null);
+        assert(scene !is null);
+        assert(scene.videos && scene.videos.length == 1);
+        assert(scene.videos[0].source == "MyVideo");
+        assert(scene.videos[0].x == 150);
+        assert(scene.videos[0].y == 250);
+        assert(scene.videos[0].width == 800);
+        assert(scene.videos[0].height == 450);
+    }
+
+    {
+        auto scenes = compileFromText(`
+[main]
+ani:150,250=MyAnimation
+`);
+        auto scene = scenes.get("main", null);
+        assert(scene !is null);
+        assert(scene.animations && scene.animations.length == 1);
+        assert(scene.animations[0].source == "MyAnimation");
+        assert(scene.animations[0].x == 150);
+        assert(scene.animations[0].y == 250);
+    }
+
+    {
+        auto scenes = compileFromText(`
+[main]
+l:28:150,250:fff=This is a label.
+`);
+        auto scene = scenes.get("main", null);
+        assert(scene !is null);
+        assert(scene.labels && scene.labels.length == 1);
+        assert(scene.labels[0].text == "This is a label.");
+        assert(scene.labels[0].fontSize == 28);
+        assert(scene.labels[0].x == 150);
+        assert(scene.labels[0].y == 250);
+        assert(scene.labels[0].color == "fff");
+    }
+
+    {
+        auto scenes = compileFromText(`
+[main]
+o:start=Start
+o:end=Quit
+`);
+        auto scene = scenes.get("main", null);
+        assert(scene !is null);
+        assert(scene.options && scene.options.length == 2);
+        assert(scene.options[0].nextScene == "start");
+        assert(scene.options[0].text == "Start");
+        assert(scene.options[1].nextScene == "end");
+        assert(scene.options[1].text == "Quit");
+    }
+
+    {
+        auto scenes = compileFromText(`
+[main]
+This is a question.
+o:yes=Yes
+o:no=No
+`);
+        auto scene = scenes.get("main", null);
+        assert(scene !is null);
+        assert(scene.text == "This is a question.");
+        assert(scene.options.length == 2);
+    }
+
+    {
+        auto scenes = compileFromText(`
+[main]
+This has options.
+o:next=Continue
+`);
+        auto scene = scenes.get("main", null);
+        assert(scene !is null);
+
+        assert(scene.options && scene.options.length == 1);
+        assert(scene.options[0].nextScene == "next");
+    }
+
+    {
+        import dvn.json : serializeJsonSafe;
+
+        auto scenes = compileFromText(`
+[main]
+This has options.
+o:next=Continue
+`);
+        auto expectedJson = `{"main":{"hasRuby":false,"meta":[],"original":"main","name":"main","act":"","actContinueButton":"","music":"","sound":"","voice":"","fadeMusic":false,"background":"","labels":[],"characters":[],"characterNames":[],"images":[],"videos":[],"animations":[],"effects":[],"textColor":"fff","textFont":"","text":"This has options.","nextScene":"main-??????????-1","options":[{"text":"Continue","nextScene":"next","chance":100}],"view":"","hideDialogue":false,"hideButtons":false,"isNarrator":false,"narratorX":0,"narratorY":0,"chance":100,"stopMusic":false,"stopSound":false,"delay":0}}`;
+        string json;
+        assert(serializeJsonSafe(scenes, json, false));
+        assert(json == expectedJson);
+    }
 }
