@@ -168,7 +168,7 @@ final class HtmlDocument : DomDocument
       elements ~= dummyNode.querySelectorAll(selector);
     }
 
-    return elements ? elements.sort.group.map!(g => g[0]).array : [];
+    return elements ? elements.sort.group.map!(g => g[0]).filter!(n => !n.isTextNode).array : [];
   }
 
   /**

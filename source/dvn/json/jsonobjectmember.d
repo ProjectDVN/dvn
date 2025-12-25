@@ -46,17 +46,17 @@ final class JsonObjectMember(S)
       return -1;
     }
 
-    if (obj._index == _index)
+    if (_index > obj._index)
     {
-      return 0;
+      return 1;
     }
 
-    if (obj._index > _index)
+    if (_index < obj._index)
     {
       return -1;
     }
 
-    return 1;
+    return 0;
   }
 
   /// Operator overload.

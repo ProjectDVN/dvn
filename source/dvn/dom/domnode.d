@@ -54,6 +54,9 @@ public final class DomNode
 
   @property
   {
+    /// Gets the node id.
+    size_t nodeId() @safe { return _nodeId; }
+
     /// Gets the name of the node.
     string name() @safe { return _name; }
 
@@ -542,229 +545,141 @@ public final class DomNode
   */
   DomNode[] querySelectorAll(string selector)
   {
-    import std.array : split, array;
-    import std.algorithm : map, filter, sort, group;
+      import std.array : array;
+      import std.algorithm : map, filter, sort, group, countUntil;
+      import std.string : strip, split;
 
-    import dvn.css;
+      import dvn.css;
 
-    auto selectorCollection = selector.split(",");
+      auto selectorCollection = selector.split(",");
 
-    DomNode[] elements;
-    bool hadWildCard;
+      DomNode[] elements;
 
-    foreach (cssSelector; selectorCollection)
-    {
-      if (hadWildCard)
+      foreach (cssSelector; selectorCollection)
       {
-        break;
-      }
+          auto parser = parseSelection(cssSelector.strip);
 
-      DomNode[] selectorElements;
+          DomNode[] context = this._children.dup;
+          string combinator = " ";
 
-      auto query = parseCss3Selector(cssSelector);
-
-      if (query)
-      {
-        Css3SelectionQuery current = query;
-        Css3SelectionQuery last;
-
-        DomNode[] currentNodes = [this];
-
-        while (current && !hadWildCard)
-        {
-          Css3SelectorOperator operator = current.operator;
-
-          if (operator == Css3SelectorOperator.none)
+          while (!parser.isEOF)
           {
-            if (!last)
-            {
-              break;
-            }
+              auto cssNode = parser.peek();
 
-            operator = last.operator;
-          }
-
-          if (current.selections)
-          {
-            auto nodes = currentNodes.dup;
-            currentNodes = [];
-
-            foreach (selection; current.selections)
-            {
-              if (selection.hasWildcard)
+              switch (cssNode.type)
               {
-                foreach (currentNode; nodes)
-                {
-                  elements = [currentNode];
-                  elements ~= currentNode.getAll();
-                }
+                  case CssNodeType.Combinator:
+                      combinator = cssNode.value;
+                      break;
 
-                hadWildCard = true;
-                break;
+                  case CssNodeType.Universal:
+                      // no filtering
+                      break;
+
+                  case CssNodeType.Tag:
+                  {
+                      DomNode[] next;
+
+                      foreach (n; context)
+                      {
+                          switch (combinator)
+                          {
+                              case ">":
+                                  foreach (c; n.children)
+                                      if (c.name == cssNode.value)
+                                          next ~= c;
+                                  break;
+
+                              case "+":
+                                  auto siblings = n.parent ? n.parent.children : null;
+                                  if (siblings)
+                                  {
+                                      auto idx = siblings.countUntil!(s => s is n);
+                                      if (idx != -1 && idx + 1 < siblings.length)
+                                      {
+                                          auto sib = siblings[idx + 1];
+                                          if (sib.name == cssNode.value)
+                                              next ~= sib;
+                                      }
+                                  }
+                                  break;
+
+                              case "~":
+                                  auto siblings = n.parent ? n.parent.children : null;
+                                  if (siblings)
+                                  {
+                                      auto idx = siblings.countUntil!(s => s is n);
+                                      if (idx != -1)
+                                      {
+                                          foreach (sib; siblings[idx + 1 .. $])
+                                              if (sib.name == cssNode.value)
+                                                  next ~= sib;
+                                      }
+                                  }
+                                  break;
+
+                              case " ":
+                              default:
+                                  next ~= n
+                                      .getAll(true)
+                                      .filter!(x => x.name == cssNode.value)
+                                      .array;
+                                  break;
+                          }
+                      }
+
+                      context = next;
+                      combinator = " ";
+                      break;
+                  }
+
+                  case CssNodeType.Class:
+                      context = context
+                          .filter!(n => n.hasAttributeContains("class", cssNode.value))
+                          .array;
+                      break;
+
+                  case CssNodeType.Attribute:
+                      context = context.filter!((n)
+                      {
+                          switch (cssNode.operator)
+                          {
+                              case "~=":
+                                  return n.hasAttributeContains(cssNode.value, cssNode.extra);
+                              case "|=":
+                                  return n.hasAttributeContains(cssNode.value, cssNode.extra);
+                              case "^=":
+                                  return n.hasAttributeStartsWith(cssNode.value, cssNode.extra);
+                              case "$=":
+                                  return n.hasAttributeEndsWith(cssNode.value, cssNode.extra);
+                              case "*=":
+                                  return n.hasAttributeSubstring(cssNode.value, cssNode.extra);
+                              case "=":
+                                  return n.hasAttribute(cssNode.value, cssNode.extra);
+                              default:
+                                  return n.hasAttribute(cssNode.value);
+                          }
+                      }).array;
+                      break;
+
+                  default:
+                      break;
               }
 
-              foreach (currentNode; nodes)
-              {
-                DomNode[] filterNodes(DomNode[] temp) @safe
-                {
-                  foreach (tagName; selection.tagNames)
-                  {
-                    temp = temp.filter!(n => n.name == tagName).array;
-                  }
-
-                  foreach (id; selection.ids)
-                  {
-                    temp = temp.filter!(n => n.hasAttribute("id", id)).array;
-                  }
-
-                  foreach (className; selection.classNames)
-                  {
-                    temp = temp.filter!(n => n.hasAttributeContains("class", className)).array;
-                  }
-
-                  if (selection.attributeSelection)
-                  {
-                    auto attribute = selection.attributeSelection;
-
-                    switch (attribute.operator)
-                    {
-                      case Css3SelectorAttributeOperator.equals:
-                      {
-                        temp = temp.filter!(n => n.hasAttribute(attribute.name, attribute.value)).array;
-                        break;
-                      }
-
-                      case Css3SelectorAttributeOperator.containsWord:
-                      {
-                        temp = temp.filter!(n => n.hasAttributeContains(attribute.name, attribute.value)).array;
-                        break;
-                      }
-
-                      case Css3SelectorAttributeOperator.listStartsWith:
-                      {
-                        auto values = attribute.value.split("-");
-
-                        foreach (value; values)
-                        {
-                          temp = temp.filter!(n => n.hasAttributeContains(attribute.name, value)).array;
-                        }
-                        break;
-                      }
-
-                      case Css3SelectorAttributeOperator.startsWith:
-                      {
-                        temp = temp.filter!(n => n.hasAttributeStartsWith(attribute.name, attribute.value)).array;
-                        break;
-                      }
-
-                      case Css3SelectorAttributeOperator.endsWith:
-                      {
-                        temp = temp.filter!(n => n.hasAttributeEndsWith(attribute.name, attribute.value)).array;
-                        break;
-                      }
-
-                      case Css3SelectorAttributeOperator.contains:
-                      {
-                        temp = temp.filter!(n => n.hasAttributeSubstring(attribute.name, attribute.value)).array;
-                        break;
-                      }
-
-                      default: break;
-                    }
-                  }
-
-                  return temp;
-                }
-
-                switch (operator)
-                {
-                  case Css3SelectorOperator.firstChild:
-                  {
-                    if (currentNode._children)
-                    {
-                      DomNode[] temp = currentNode._children.dup;
-
-                      temp = filterNodes(temp);
-
-                      if (temp && temp.length)
-                      {
-                        currentNodes ~= temp[0];
-                      }
-                    }
-                    break;
-                  }
-
-                  case Css3SelectorOperator.firstSibling:
-                  {
-                    if (currentNode._parent && currentNode._parent._children)
-                    {
-                      DomNode[] temp = currentNode._parent._children.dup;
-
-                      temp = filterNodes(temp);
-
-                      if (temp && temp.length)
-                      {
-                        currentNodes ~= temp[0];
-                      }
-                    }
-                    break;
-                  }
-
-                  case Css3SelectorOperator.allChildren:
-                  {
-                    if (currentNode._children)
-                    {
-                      DomNode[] temp = currentNode.getAll().dup;
-
-                      temp = filterNodes(temp);
-
-                      if (temp && temp.length)
-                      {
-                        currentNodes ~= temp;
-                      }
-                    }
-                    break;
-                  }
-
-                  case Css3SelectorOperator.allSiblings:
-                  {
-                    if (currentNode._parent && currentNode._parent._children)
-                    {
-                      DomNode[] temp = currentNode._parent._children.dup;
-
-                      temp = filterNodes(temp);
-
-                      if (temp && temp.length)
-                      {
-                        currentNodes ~= temp;
-                      }
-                    }
-                    break;
-                  }
-
-                  default: break;
-                }
-              }
-            }
-
-            if (hadWildCard)
-            {
-              current = null;
-              continue;
-            }
+              parser.next();
           }
 
-          last = current;
-          current = current.nextSelection;
-        }
-
-        selectorElements = currentNodes;
+          elements ~= context;
       }
 
-      elements ~= selectorElements;
-    }
-
-    return elements ? elements.sort.group.map!(g => g[0]).array : [];
+      return elements.length
+          ? elements
+              .sort
+              .group
+              .map!(g => g[0])
+              .filter!(n => !n.isTextNode)
+              .array
+          : [];
   }
 
   /**
@@ -791,9 +706,14 @@ public final class DomNode
   * Returns:
   *   An array of all nested nodes.
   */
-  private DomNode[] getAll()
+  private DomNode[] getAll(bool includeSelf = false)
   {
     DomNode[] nodes;
+
+    if (includeSelf)
+    {
+      nodes ~= this;
+    }
 
     if (_children)
     {
@@ -925,17 +845,17 @@ public final class DomNode
       return -1;
     }
 
-    if (node._nodeId == _nodeId)
+    if (_nodeId > node._nodeId)
     {
-      return 0;
+      return 1;
     }
 
-    if (node._nodeId < _nodeId)
+    if (_nodeId < node._nodeId)
     {
       return -1;
     }
 
-    return 1;
+    return 0;
   }
 
   /// Operator overload.

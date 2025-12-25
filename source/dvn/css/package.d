@@ -5,5 +5,5 @@ module dvn.css;
 
 public
 {
-  import dvn.css.css3selector;
+  import dvn.css.css3selectorparser;
 }

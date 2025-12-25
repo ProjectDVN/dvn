@@ -197,17 +197,17 @@ public final class SceneCharacter
 			return -1;
 		}
 
-		if (ch.zIndex == zIndex)
+		if (zIndex > ch.zIndex)
 		{
-			return 0;
+			return 1;
 		}
 
-		if (ch.zIndex < zIndex)
+		if (zIndex < ch.zIndex)
 		{
 			return -1;
 		}
 
-		return 1;
+		return 0;
 	}
 
 	/// Operator overload.
