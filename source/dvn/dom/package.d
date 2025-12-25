@@ -188,6 +188,21 @@ unittest
   {
     auto selection =
       parseHtmlBody(`
+        <p class="a b c">1</p>
+        <p class="a c">2</p>
+        <p class="b c">3</p>
+      `)
+      .body
+      .querySelectorAll(`.a`);
+
+    assert(selection.length == 2);
+    assert(selection[0].text == "1");
+    assert(selection[1].text == "2");
+  }
+
+  {
+    auto selection =
+      parseHtmlBody(`
         <p data-id="user-123">1</p>
         <p data-id="admin-1">2</p>
       `)
