@@ -89,8 +89,9 @@ DVN is the opposite
 * Auto-skipping
 * Dom Parser (html, xml, svg etc.)
 * CSS3 Selector Parser
+* Basic CSS3 Parser with basic media query support.
 * Markdown Parser
-* Effects (Like screen shake) + Custom Effects
+* Effects (Like screen shake, rain etc.) + Custom Effects
 * Effects can stack
 * Fast and light-weight
 * Allows rapid development
