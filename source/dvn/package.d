@@ -50,6 +50,7 @@ public
   import dvn.compiler;
   import dvn.scenegraph;
   import dvn.testing;
+  import dvn.uigenerator;
 
   private string[] _sceneMeta;
 

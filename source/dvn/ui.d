@@ -27,6 +27,7 @@ public
     
     import dvn.components;
     import dvn.external;
+    import dvn.uigenerator;
 }
 
 public:

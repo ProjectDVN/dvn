@@ -559,7 +559,23 @@ public final class DomNode
       {
           auto parser = parseSelection(cssSelector.strip);
 
-          DomNode[] context = this._children.dup;
+          DomNode[] context;
+          auto first = parser.peek();
+          if (first.type == CssNodeType.Class ||
+              first.type == CssNodeType.Id ||
+              first.type == CssNodeType.Attribute)
+          {
+              context = this.getAll(true);
+          }
+          else if (first.type == CssNodeType.Universal)
+          {
+            context = this.getAll(false);
+          }
+          else
+          {
+              context = this._children.dup;
+          }
+          
           string combinator = " ";
 
           while (!parser.isEOF)
@@ -638,6 +654,12 @@ public final class DomNode
                           .filter!(n => n.hasAttributeContains("class", cssNode.value))
                           .array;
                       break;
+
+                  case CssNodeType.Id:
+                    context = context
+                        .filter!(n => n.hasAttribute("id", cssNode.value))
+                        .array;
+                    break;
 
                   case CssNodeType.Attribute:
                       context = context.filter!((n)
