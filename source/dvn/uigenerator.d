@@ -12,6 +12,7 @@ import std.file : exists;
 void generateHtmlUI(string language, string html, string css, Window window, View view, void delegate(Component,HtmlNode) initializer)
 {
     auto doc = parseDom!HtmlDocument(html, new HtmlParserSettings);
+
     auto rules = parseCss(css, window.width, window.height);
 
     foreach (rule; rules)
@@ -30,6 +31,11 @@ void generateHtmlUI(string language, string html, string css, Window window, Vie
         }
     }
 
+    if (_componentMap)
+    {
+        _componentMap.clear();
+    }
+
     foreach (child; doc.body.children)
     {
         generateHtmlUIComponent(language, window, view, child, initializer); // recursive call from panels + sections
@@ -37,7 +43,9 @@ void generateHtmlUI(string language, string html, string css, Window window, Vie
 }
 
 private:
-Component generateHtmlUIComponent(string language, Window window, View view, HtmlNode node, void delegate(Component,HtmlNode) initializer,  Component parent = null, Component sectionComponent = null)
+Component[string] _componentMap;
+
+Component generateHtmlUIComponent(string language, Window window, View view, HtmlNode node, void delegate(Component,HtmlNode) initializer,  Component parent = null, Component sectionComponent = null, bool layoutHorizontal = false, int gap = 0)
 {
     auto attributes = node.getAttributes();
 
@@ -45,12 +53,55 @@ Component generateHtmlUIComponent(string language, Window window, View view, Htm
     Panel panel;
     ScrollBar scrollbar;
     DropDown dropdown;
+    Button button;
+    TextBox textbox;
+    CheckBox checkbox;
+    ProgressBar progress;
 
     void addComponent(Component c)
     {
         if (parent) parent.addComponent(c);
         else if (view) view.addComponent(c);
         else window.addComponent(c);
+    }
+
+    void applyColorAttribute(void delegate(Color) colorApply, DomAttribute attribute)
+    {
+        auto colorValues = attribute.value.split(" ");
+        auto color = colorValues[0].getColorByHex;
+        if (colorValues.length > 1)
+        {
+            color = color.changeAlpha(to!int(colorValues[1]));
+        }
+        colorApply(color);
+    }
+
+    void restyleComponents()
+    {
+        if (button)
+        {
+            button.restyle();
+        }
+
+        if (textbox)
+        {
+            textbox.restyle();
+        }
+
+        if (dropdown)
+        {
+            dropdown.restyle();   
+        }
+
+        if (checkbox)
+        {
+            checkbox.updateRect();
+        }
+
+        if (progress)
+        {
+            progress.updateBarPanel();
+        }
     }
 
     switch (node.name)
@@ -74,10 +125,16 @@ Component generateHtmlUIComponent(string language, Window window, View view, Htm
             break;
 
         case "section":
+            auto sectionGap = 0;
+            auto sectionGapAttribute = node.getAttribute("gap");
+            if (sectionGapAttribute && sectionGapAttribute.value && sectionGapAttribute.value.length)
+            {
+                sectionGap = to!int(sectionGapAttribute.value);
+            }
             Component lastComponent = null;
             foreach (child; node.children)
             {
-                lastComponent = generateHtmlUIComponent(language, window, view, child, initializer, parent, lastComponent);
+                lastComponent = generateHtmlUIComponent(language, window, view, child, initializer, parent, lastComponent, node.hasAttribute("layout", "horizontal"), sectionGap);
             }
             break;
 
@@ -146,7 +203,7 @@ Component generateHtmlUIComponent(string language, Window window, View view, Htm
             break;
             
         case "button":
-            auto button = new Button(window);
+            button = new Button(window);
             addComponent(button);
             button.text = parseLocalizedString(language, node.text.strip).to!dstring;
 
@@ -163,12 +220,46 @@ Component generateHtmlUIComponent(string language, Window window, View view, Htm
                         break;
 
                     case "ui-color":
-                        auto colorValues = attribute.value.split(" ");
-                        button.textColor = colorValues[0].getColorByHex;
-                        if (colorValues.length > 1)
-                        {
-                            button.textColor = button.textColor.changeAlpha(to!int(colorValues[1]));
-                        }
+                        applyColorAttribute((c) { button.textColor = c; }, attribute);
+                        break;
+
+                    case "ui-background-color-default":
+                        applyColorAttribute((c) { button.defaultPaint.backgroundColor = c; }, attribute);
+                        break;
+                    case "ui-background-color-default-bottom":
+                        applyColorAttribute((c) { button.defaultPaint.backgroundBottomColor = c; }, attribute);
+                        break;
+                    case "ui-background-color-default-border":
+                        applyColorAttribute((c) { button.defaultPaint.borderColor = c; }, attribute);
+                        break;
+                    case "ui-background-color-default-shadow":
+                        applyColorAttribute((c) { button.defaultPaint.shadowColor = c; }, attribute);
+                        break;
+                        
+                    case "ui-background-color-hover":
+                        applyColorAttribute((c) { button.hoverPaint.backgroundColor = c; }, attribute);
+                        break;
+                    case "ui-background-color-hover-bottom":
+                        applyColorAttribute((c) { button.hoverPaint.backgroundBottomColor = c; }, attribute);
+                        break;
+                    case "ui-background-color-hover-border":
+                        applyColorAttribute((c) { button.hoverPaint.borderColor = c; }, attribute);
+                        break;
+                    case "ui-background-color-hover-shadow":
+                        applyColorAttribute((c) { button.hoverPaint.shadowColor = c; }, attribute);
+                        break;
+
+                    case "ui-background-color-click":
+                        applyColorAttribute((c) { button.clickPaint.backgroundColor = c; }, attribute);
+                        break;
+                    case "ui-background-color-click-bottom":
+                        applyColorAttribute((c) { button.clickPaint.backgroundBottomColor = c; }, attribute);
+                        break;
+                    case "ui-background-color-click-border":
+                        applyColorAttribute((c) { button.clickPaint.borderColor = c; }, attribute);
+                        break;
+                    case "ui-background-color-click-shadow":
+                        applyColorAttribute((c) { button.clickPaint.shadowColor = c; }, attribute);
                         break;
 
                     default: break;
@@ -176,14 +267,65 @@ Component generateHtmlUIComponent(string language, Window window, View view, Htm
             }
 
             button.fitToSize = false;
+
             component = button;
+            break;
+
+        case "progress":
+            auto barPadding = 0;
+            auto barPaddingAttribute = node.getAttribute("padding");
+            if (barPaddingAttribute && barPaddingAttribute.value && barPaddingAttribute.value.length)
+            {
+                barPadding = to!int(barPaddingAttribute.value);
+            }
+            progress = new ProgressBar(window, barPadding);
+            addComponent(progress);
+
+            foreach (attribute; attributes)
+            {
+                switch (attribute.name)
+                {
+                    case "ui-background-color-bar":
+                        applyColorAttribute((c) { progress.barFillColor = c; }, attribute);
+                        break;
+                    case "ui-border-color-bar":
+                        applyColorAttribute((c) { progress.barBorderColor = c; }, attribute);
+                        break;
+
+                    default: break;
+                }
+            }
+
+            size_t value = 0;
+            auto valueAttribute = node.getAttribute("value");
+            if (valueAttribute && valueAttribute.value && valueAttribute.value.length)
+            {
+                value = to!size_t(valueAttribute.value);
+            }
+            size_t upperValue = 100;
+            auto upperValueAttribute = node.getAttribute("max");
+            if (upperValueAttribute && upperValueAttribute.value && upperValueAttribute.value.length)
+            {
+                upperValue = to!size_t(upperValueAttribute.value);
+            }
+
+            progress.upperValue = upperValue;
+            progress.value = value;
+
+            component = progress;
             break;
 
         case "input":
             switch (node.getAttribute("type").value)
             {
+                case "checkbox":
+                    checkbox = new CheckBox(window);
+                    addComponent(checkbox);
+
+                    component = checkbox;
+                    break;
                 case "text":
-                    auto textbox = new TextBox(window);
+                    textbox = new TextBox(window);
                     addComponent(textbox);
 
                     foreach (attribute; attributes)
@@ -207,6 +349,36 @@ Component generateHtmlUIComponent(string language, Window window, View view, Htm
                                 }
                                 break;
 
+                            case "ui-background-color-default":
+                                applyColorAttribute((c) { textbox.defaultPaint.backgroundColor = c; }, attribute);
+                                break;
+                            case "ui-background-color-default-border":
+                                applyColorAttribute((c) { textbox.defaultPaint.borderColor = c; }, attribute);
+                                break;
+                            case "ui-background-color-default-shadow":
+                                applyColorAttribute((c) { textbox.defaultPaint.shadowColor = c; }, attribute);
+                                break;
+                                
+                            case "ui-background-color-hover":
+                                applyColorAttribute((c) { textbox.hoverPaint.backgroundColor = c; }, attribute);
+                                break;
+                            case "ui-background-color-hover-border":
+                                applyColorAttribute((c) { textbox.hoverPaint.borderColor = c; }, attribute);
+                                break;
+                            case "ui-background-color-hover-shadow":
+                                applyColorAttribute((c) { textbox.hoverPaint.shadowColor = c; }, attribute);
+                                break;
+
+                            case "ui-background-color-focus":
+                                applyColorAttribute((c) { textbox.focusPaint.backgroundColor = c; }, attribute);
+                                break;
+                            case "ui-background-color-focus-border":
+                                applyColorAttribute((c) { textbox.focusPaint.borderColor = c; }, attribute);
+                                break;
+                            case "ui-background-color-focus-shadow":
+                                applyColorAttribute((c) { textbox.focusPaint.shadowColor = c; }, attribute);
+                                break;
+
                             default: break;
                         }
                     }
@@ -228,8 +400,6 @@ Component generateHtmlUIComponent(string language, Window window, View view, Htm
                     {
                         textbox.hideCharacter = hideCharacter.value[0].to!dchar;
                     }
-
-                    textbox.restyle();
 
                     component = textbox;
                     break;
@@ -263,6 +433,32 @@ Component generateHtmlUIComponent(string language, Window window, View view, Htm
                         }
                         break;
 
+                    case "ui-background-color-default":
+                        applyColorAttribute((c) { dropdown.defaultPaint.backgroundColor = c; }, attribute);
+                        break;
+                    case "ui-background-color-default-bottom":
+                        applyColorAttribute((c) { dropdown.defaultPaint.backgroundBottomColor = c; }, attribute);
+                        break;
+                    case "ui-background-color-default-border":
+                        applyColorAttribute((c) { dropdown.defaultPaint.borderColor = c; }, attribute);
+                        break;
+                    case "ui-background-color-default-shadow":
+                        applyColorAttribute((c) { dropdown.defaultPaint.shadowColor = c; }, attribute);
+                        break;
+                        
+                    case "ui-background-color-hover":
+                        applyColorAttribute((c) { dropdown.hoverPaint.backgroundColor = c; }, attribute);
+                        break;
+                    case "ui-background-color-hover-bottom":
+                        applyColorAttribute((c) { dropdown.hoverPaint.backgroundBottomColor = c; }, attribute);
+                        break;
+                    case "ui-background-color-hover-border":
+                        applyColorAttribute((c) { dropdown.hoverPaint.borderColor = c; }, attribute);
+                        break;
+                    case "ui-background-color-hover-shadow":
+                        applyColorAttribute((c) { dropdown.hoverPaint.shadowColor = c; }, attribute);
+                        break;
+
                     default: break;
                 }
             }
@@ -273,6 +469,13 @@ Component generateHtmlUIComponent(string language, Window window, View view, Htm
         default: return null;
     }
 
+    auto idAttribute = node.getAttribute("id");
+
+    if (idAttribute && idAttribute.value && idAttribute.value.length)
+    {
+        _componentMap[idAttribute.value] = component;
+    }
+
     auto width = node.getAttribute("width");
     auto height = node.getAttribute("height");
 
@@ -280,6 +483,25 @@ Component generateHtmlUIComponent(string language, Window window, View view, Htm
         height && height.value && height.value.length)
     {
         component.size = IntVector(to!int(width.value), to!int(height.value));
+    }
+
+    if (checkbox)
+    {
+        checkbox.initialize();
+
+        foreach (attribute; attributes)
+        {
+            switch (attribute.name)
+            {
+                case "ui-color":
+                    applyColorAttribute((c) { checkbox.checkColor = c; }, attribute);
+                    break;
+
+                default: break;
+            }
+        }
+
+        checkbox.updateRect();
     }
 
     if (dropdown)
@@ -322,11 +544,61 @@ Component generateHtmlUIComponent(string language, Window window, View view, Htm
         dropdown.restyle();
     }
 
+    restyleComponents();
+
     if (component)
     {
         if (sectionComponent)
         {
-            component.moveBelow(sectionComponent, 0, node.hasAttribute("ui-position", "center"));
+            if (layoutHorizontal)
+            {
+                component.moveRightOf(sectionComponent, gap, node.hasAttribute("ui-position", "center"));
+            }
+            else
+            {
+                component.moveBelow(sectionComponent, gap, node.hasAttribute("ui-position", "center"));
+            }
+        }
+
+        auto forAttribute = node.getAttribute("for");
+        if (forAttribute && forAttribute.value && forAttribute.value.length && _componentMap)
+        {
+            auto forComponent = _componentMap.get(forAttribute.value, null);
+
+            if (forComponent)
+            {
+                auto moveAttribute = node.getAttribute("move");
+
+                if (moveAttribute && moveAttribute.value && moveAttribute.value.length)
+                {
+                    auto forGap = 0;
+
+                    auto forGapAttribute = node.getAttribute("gap");
+                    if (forGapAttribute && forGapAttribute.value && forGapAttribute.value.length)
+                    {
+                        forGap = to!int(forGapAttribute.value);
+                    }
+
+                    auto shouldCenter = node.hasAttribute("ui-position", "center");
+
+                    switch (moveAttribute.value)
+                    {
+                        case "below":
+                            component.moveBelow(forComponent, forGap, shouldCenter);
+                            break;
+                        case "right":
+                            component.moveRightOf(forComponent, forGap, shouldCenter);
+                            break;
+                        case "left":
+                            component.moveLeftOf(forComponent, forGap, shouldCenter);
+                            break;
+                        case "above":
+                            component.moveAbove(forComponent, forGap, shouldCenter);
+                            break;
+                        default: break;
+                    }
+                }
+            }
         }
 
         foreach (attribute; attributes)
@@ -334,7 +606,7 @@ Component generateHtmlUIComponent(string language, Window window, View view, Htm
             switch (attribute.name)
             {
                 case "ui-position":
-                    if (!sectionComponent)
+                    if (!sectionComponent && !forAttribute)
                     {
                         auto values = attribute.value.split(" ");
                         if (values.length == 2)
@@ -345,6 +617,39 @@ Component generateHtmlUIComponent(string language, Window window, View view, Htm
                         {
                             switch (attribute.value)
                             {
+                                case "center-y":
+                                    if (parent)
+                                    {
+                                        component.position = IntVector(
+                                            component.x,
+                                            (parent.height / 2) - (component.height / 2)
+                                        );
+                                    }
+                                    else
+                                    {
+                                        component.position = IntVector(
+                                            component.x,
+                                            (window.height / 2) - (component.height / 2)
+                                        );
+                                    }
+                                    break;
+
+                                case "center-x":
+                                    if (parent)
+                                    {
+                                        component.position = IntVector(
+                                            (parent.width / 2) - (component.width / 2),
+                                            component.y
+                                        );
+                                    }
+                                    else
+                                    {
+                                        component.position = IntVector(
+                                            (window.width / 2) - (component.width / 2),
+                                            component.y
+                                        );
+                                    }
+                                    break;
                                 case "center":
                                     if (parent)
                                     {
@@ -375,6 +680,11 @@ Component generateHtmlUIComponent(string language, Window window, View view, Htm
                 case "ui-margin-top":
                     auto marginValue = to!int(attribute.value);
                     component.position = IntVector(component.x, component.y + marginValue);
+                    break;
+
+                case "ui-margin-left":
+                    auto marginValue = to!int(attribute.value);
+                    component.position = IntVector(component.x + marginValue, component.y);
                     break;
 
                 case "ui-background-color":
@@ -412,11 +722,13 @@ Component generateHtmlUIComponent(string language, Window window, View view, Htm
 
         if (panel)
         {
-            if (node.hasAttribute("scrollable"))
+            auto scrollable = node.getAttribute("scrollable");
+            if (scrollable)
             {
                 scrollbar = new ScrollBar(window, panel);
                 addComponent(scrollbar);
-                scrollbar.isVertical = true;
+                
+                scrollbar.isVertical = !scrollable.value || !scrollable.value.length || scrollable.value != "horizontal";
                 
                 auto bgAttribute = node.getAttribute("scrollbar-background-color");
                 auto bgColorValues = bgAttribute ? bgAttribute.value.split(" ") : ["#000", "150"];
@@ -434,8 +746,17 @@ Component generateHtmlUIComponent(string language, Window window, View view, Htm
                     scrollbar.borderColor = scrollbar.borderColor.changeAlpha(to!int(borderColorValues[1]));
                 }
                 
-                panel.scrollMargin = IntVector(0,cast(int)((cast(double)panel.height / 3.5) / 2));
-                scrollbar.position = IntVector(panel.x + panel.width, panel.y);
+                if (scrollbar.isVertical)
+                {
+                    panel.scrollMargin = IntVector(0,cast(int)((cast(double)panel.height / 3.5) / 2));
+                    scrollbar.position = IntVector(panel.x + panel.width, panel.y);
+                }
+                else
+                {
+                    panel.scrollMargin = IntVector(cast(int)((cast(double)panel.width / 3.5) / 2),0);
+                    scrollbar.position = IntVector(panel.x, panel.y + panel.height);
+                }
+                
                 scrollbar.buttonScrollAmount = cast(int)((cast(double)panel.height / 3.5) / 2);
                 scrollbar.fontName = "Calibri";
                 scrollbar.fontSize = 8;
@@ -450,19 +771,37 @@ Component generateHtmlUIComponent(string language, Window window, View view, Htm
 
                 scrollbar.createDecrementButton("▲", "◀");
                 scrollbar.createIncrementButton("▼", "▶");
-                scrollbar.size = IntVector(16, panel.height);
+
+                if (scrollbar.isVertical)
+                {
+                    scrollbar.size = IntVector(16, panel.height);
+                }
+                else
+                {
+                    scrollbar.size = IntVector(panel.width, 16);
+                }
+
                 scrollbar.restyle();
                 scrollbar.updateRect(false);
+            }
+
+            auto panelGap = 0;
+            auto panelGapAttribute = node.getAttribute("gap");
+            if (panelGapAttribute && panelGapAttribute.value && panelGapAttribute.value.length)
+            {
+                panelGap = to!int(panelGapAttribute.value);
             }
 
             // We do this here because we want panel styling first ...
             Component lastComponent = null;
             foreach (child; node.children)
             {
-                lastComponent = generateHtmlUIComponent(language, window, view, child, initializer, panel, lastComponent);
+                lastComponent = generateHtmlUIComponent(language, window, view, child, initializer, panel, lastComponent, node.hasAttribute("layout", "horizontal"), panelGap);
             }
         }
     }
+
+    restyleComponents();
 
     if (panel && scrollbar)
     {

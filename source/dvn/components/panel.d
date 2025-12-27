@@ -37,7 +37,7 @@ public class Panel : Component
   void makeScrollableWithWheel()
   {
     onMouseWheel(new MouseWheelEventHandler((a,p) {
-      if (_scrollMargin.y <= 0 || a == 0 || !scrollBar) return true;
+      if (!scrollBar || (scrollBar.isVertical ? (_scrollMargin.y <= 0) : (_scrollMargin.x <= 0)) || a == 0) return true;
 
       bool hover = super.intersectsWith(p);
 
