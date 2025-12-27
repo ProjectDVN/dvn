@@ -179,12 +179,7 @@ Component generateHtmlUIComponent(string language, Window window, View view, Htm
                         break;
 
                     case "ui-color":
-                        auto colorValues = attribute.value.split(" ");
-                        label.color = colorValues[0].getColorByHex;
-                        if (colorValues.length > 1)
-                        {
-                            label.color = label.color.changeAlpha(to!int(colorValues[1]));
-                        }
+                        applyColorAttribute((c) { label.color = c; }, attribute);
                         break;
 
                     default: break;
