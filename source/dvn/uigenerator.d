@@ -662,8 +662,36 @@ Component generateHtmlUIComponent(string language, Window window, View view, Htm
                                     }
                                     break;
 
-                                case "top-center":
+                                case "top":
                                     component.anchor = Anchor.top;
+                                    break;
+
+                                case "top-left":
+                                    component.anchor = Anchor.topLeft;
+                                    break;
+
+                                case "top-right":
+                                    component.anchor = Anchor.topRight;
+                                    break;
+
+                                case "left":
+                                    component.anchor = Anchor.left;
+                                    break;
+
+                                case "right":
+                                    component.anchor = Anchor.right;
+                                    break;
+
+                                case "bottom":
+                                    component.anchor = Anchor.bottom;
+                                    break;
+
+                                case "bottom-left":
+                                    component.anchor = Anchor.bottomLeft;
+                                    break;
+
+                                case "bottom-right":
+                                    component.anchor = Anchor.bottomRight;
                                     break;
 
                                 default: break;
