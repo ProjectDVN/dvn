@@ -728,11 +728,6 @@ Component generateHtmlUIComponent(string language, Window window, View view, Htm
                     }
                     break;
 
-                case "ui-size":
-                    auto sizeValues = attribute.value.split(" ");
-                    component.size = IntVector(to!int(sizeValues[0]), to!int(sizeValues[1]));
-                    break;
-
                 default: break;
             }
         }
