@@ -82,6 +82,18 @@ public alias EXT_Point = SDL_Point;
 
 int EXT_RenderDrawCircle(EXT_Screen renderer, int x, int y, int radius)
 {
+    // https://gist.github.com/Gumichan01/332c26f6197a432db91cc4327fcabb1c
+    /*
+       
+      Gumichan01
+      commented
+      on May 13, 2018
+
+      You can remove CHECK_RENDERER_MAGIC, it was used because it was planned to be used in SDL2.
+
+      The source code is under the MIT Licence
+
+    */
     x += radius;
     y += radius;
 
@@ -134,6 +146,18 @@ int EXT_RenderDrawCircle(EXT_Screen renderer, int x, int y, int radius)
 
 int EXT_RenderFillCircle(EXT_Screen renderer, int x, int y, int radius)
 {
+    // https://gist.github.com/Gumichan01/332c26f6197a432db91cc4327fcabb1c
+    /*
+       
+      Gumichan01
+      commented
+      on May 13, 2018
+
+      You can remove CHECK_RENDERER_MAGIC, it was used because it was planned to be used in SDL2.
+
+      The source code is under the MIT Licence
+
+    */
     x += radius;
     y += radius;
     
