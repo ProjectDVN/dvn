@@ -319,6 +319,15 @@ Component generateHtmlUIComponent(string language, Window window, View view, Htm
 
                     component = checkbox;
                     break;
+
+                case "radio":
+                    checkbox = new CheckBox(window);
+                    addComponent(checkbox);
+                    checkbox.isRadio = true;
+
+                    component = checkbox;
+                    break;
+                
                 case "text":
                     textbox = new TextBox(window);
                     addComponent(textbox);

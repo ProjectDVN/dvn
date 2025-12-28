@@ -101,6 +101,7 @@ public abstract class Component : ILayout
   bool _isInputComponent;
   void delegate() _beforeRender;
   void delegate() _afterRender;
+  bool _isCircleRender;
 
   package(dvn) void updateEvents()
   {
@@ -1029,6 +1030,13 @@ public abstract class Component : ILayout
     final
     {
       /// 
+      bool isCircleRender() { return _isCircleRender; }
+      /// 
+      void isCircleRender(bool isCircle)
+      {
+        _isCircleRender = isCircle;
+      }
+      /// 
       bool isInputComponent() { return _isInputComponent; }
       ///
       void isInputComponent(bool isInput)
@@ -1368,7 +1376,14 @@ public abstract class Component : ILayout
       {
         EXT_SetScreenDrawColor(_window.nativeScreen, _fillColor);
 
-        EXT_FillRectangle(_window.nativeScreen, _nativeRenderRectangle);
+        if (_isCircleRender)
+        {
+          EXT_RenderFillCircle(_window.nativeScreen, _nativeRenderRectangle.x, _nativeRenderRectangle.y, _nativeRenderRectangle.w / 2);
+        }
+        else
+        {
+          EXT_FillRectangle(_window.nativeScreen, _nativeRenderRectangle);
+        }
       }
 
       if (_currentPainting)
@@ -1397,7 +1412,14 @@ public abstract class Component : ILayout
       {
         EXT_SetScreenDrawColor(_window.nativeScreen, _borderColor);
 
-        EXT_DrawRectangle(_window.nativeScreen, _nativeRenderRectangle);
+        if (_isCircleRender)
+        {
+          EXT_RenderDrawCircle(_window.nativeScreen, _nativeRenderRectangle.x, _nativeRenderRectangle.y, _nativeRenderRectangle.w / 2);
+        }
+        else
+        {
+          EXT_DrawRectangle(_window.nativeScreen, _nativeRenderRectangle);
+        }
       }
 
       if (_currentPainting)

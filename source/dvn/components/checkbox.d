@@ -42,6 +42,14 @@ public final class CheckBox : Component
     @property
     {
         /// 
+        bool isRadio() { return super.isCircleRender; }
+        /// 
+        void isRadio(bool radio)
+        {
+            super.isCircleRender = radio;
+        }
+
+        /// 
         bool checked() { return _isChecked; }
         /// 
         void checked(bool isChecked)
@@ -87,6 +95,7 @@ public final class CheckBox : Component
     void initialize()
     {
         _checkMark = new Panel(window);
+        _checkMark.isCircleRender = isRadio;
         super.addComponent(_checkMark, true);
         _checkMark.size = IntVector(
             width / 2,

@@ -80,6 +80,110 @@ public alias EXT_QueryTexture = SDL_QueryTexture;
 /// 
 public alias EXT_Point = SDL_Point;
 
+int EXT_RenderDrawCircle(EXT_Screen renderer, int x, int y, int radius)
+{
+    x += radius;
+    y += radius;
+
+    int offsetx, offsety, d;
+    int status;
+
+    offsetx = 0;
+    offsety = radius;
+    d = radius -1;
+    status = 0;
+
+    while (offsety >= offsetx)
+    {
+        status += EXT_RenderDrawPoint(renderer, x + offsetx, y + offsety);
+        status += EXT_RenderDrawPoint(renderer, x + offsety, y + offsetx);
+        status += EXT_RenderDrawPoint(renderer, x - offsetx, y + offsety);
+        status += EXT_RenderDrawPoint(renderer, x - offsety, y + offsetx);
+        status += EXT_RenderDrawPoint(renderer, x + offsetx, y - offsety);
+        status += EXT_RenderDrawPoint(renderer, x + offsety, y - offsetx);
+        status += EXT_RenderDrawPoint(renderer, x - offsetx, y - offsety);
+        status += EXT_RenderDrawPoint(renderer, x - offsety, y - offsetx);
+
+        if (status < 0)
+        {
+            status = -1;
+            break;
+        }
+
+        if (d >= 2*offsetx)
+        {
+            d -= 2*offsetx + 1;
+            offsetx +=1;
+        }
+        else if (d < 2 * (radius - offsety))
+        {
+            d += 2 * offsety - 1;
+            offsety -= 1;
+        }
+        else
+        {
+            d += 2 * (offsety - offsetx - 1);
+            offsety -= 1;
+            offsetx += 1;
+        }
+    }
+
+    return status;
+}
+
+
+int EXT_RenderFillCircle(EXT_Screen renderer, int x, int y, int radius)
+{
+    x += radius;
+    y += radius;
+    
+    int offsetx, offsety, d;
+    int status;
+
+    offsetx = 0;
+    offsety = radius;
+    d = radius -1;
+    status = 0;
+
+    while (offsety >= offsetx)
+    {
+        status += EXT_RenderDrawLine(renderer, x - offsety, y + offsetx,
+                                     x + offsety, y + offsetx);
+        status += EXT_RenderDrawLine(renderer, x - offsetx, y + offsety,
+                                     x + offsetx, y + offsety);
+        status += EXT_RenderDrawLine(renderer, x - offsetx, y - offsety,
+                                     x + offsetx, y - offsety);
+        status += EXT_RenderDrawLine(renderer, x - offsety, y - offsetx,
+                                     x + offsety, y - offsetx);
+
+        if (status < 0)
+        {
+            status = -1;
+            break;
+        }
+
+        if (d >= 2*offsetx)
+        {
+            d -= 2*offsetx + 1;
+            offsetx +=1;
+        }
+        else if (d < 2 * (radius - offsety))
+        {
+            d += 2 * offsety - 1;
+            offsety -= 1;
+        }
+        else
+        {
+            d += 2 * (offsety - offsetx - 1);
+            offsety -= 1;
+            offsetx += 1;
+        }
+    }
+
+    return status;
+}
+
+
 /// 
 EXT_Point EXT_QueryTextureSize(EXT_Texture texture)
 {
